@@ -1,0 +1,356 @@
+/* Lightbox container styles */
+.lightbox-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2000;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 15, 15, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.lightbox-container.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  color: white;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10000;
+}
+.left {
+  left: 20px;
+}
+.right {
+  right: 20px;
+}
+.close {
+  position: absolute;
+  top: 50px;
+  right: 50px;
+  font-size: 3.1rem;
+  color: white;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+/* ----------------SIGN IN------------------ */
+.left-banner-side  {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.left-banner-side::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+    background: linear-gradient(185.43deg, #FFBA3F 4.22%, rgba(255, 200, 108, 0.933285) 79.69%, rgba(255, 255, 255, 0.67) 179.14%);
+}
+
+
+.white-logoleft p{
+    font-family: Poppins;
+font-weight: 500;
+font-size: 20px;
+line-height: 28px;
+letter-spacing: 0%;
+text-align: center;
+vertical-align: middle;
+color: #FFFFFF;
+margin-bottom: 0px;
+margin-top: 27px;
+}
+.white-logoleft{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 99;
+}
+.left-bannero-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+   
+    z-index: 2;
+}
+.left-banerr-bottom{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+   
+    z-index: 2;
+}
+.login-bttn{
+background: rgba(255, 189, 89, 1);
+border-radius: 6px;
+border: none;
+font-family: Montserrat;
+font-weight: 400;
+font-size: 20px;
+line-height: 28px;
+letter-spacing: 0px;
+vertical-align: middle;
+color: #000;
+padding: 11px 20px;
+}
+.refister-bttn{
+background: #F2F2F2;
+border-radius: 6px;
+border: none;
+font-family: Montserrat;
+font-weight: 500;
+font-size: 20px;
+line-height: 28px;
+letter-spacing: 0px;
+vertical-align: middle;
+color: #9A9A9A;
+padding: 11px 20px;
+}
+.header-text{
+    font-family: Montserrat;
+font-weight: 600;
+font-size: 20px;
+line-height: 28px;
+letter-spacing: 0px;
+vertical-align: middle;
+color: #1A1A1A;
+}
+.input-filed-design-hauzzi{
+    padding: 16px 18px !important;
+    background-color: #F2F2F2 !important;
+    border-radius: 6px;
+    border: 1px solid #E5E5E5 !important;
+    font-family: Montserrat;
+font-weight: 400 !important;
+font-size: 11px !important;
+line-height: 12px !important;
+letter-spacing: 0.3px;
+vertical-align: bottom;
+}
+.input-filed-design-hauzzi:focus{
+    box-shadow: none !important;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+.toogle-switch:checked + .slider {
+  background-color: #2196F3;
+}
+
+.toogle-switch:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+.toogle-switch:checked + .slider:before {
+  transform: translateX(20px);
+}
+.toogle-switch-text{
+    font-family: Montserrat;
+font-weight: 400;
+font-size: 11px;
+line-height: 12px;
+letter-spacing: 0.3px;
+color: #1A1A1A;
+}
+.new-forgot-pasword{
+    font-family: Montserrat;
+font-weight: 400;
+font-size: 11px;
+line-height: 12px;
+letter-spacing: 0.3px;
+text-align: right;
+color: #000;
+text-decoration: none;
+}
+.Iniciar-bbtn{
+    background-color: #FFBD59;
+    font-family: Montserrat;
+font-weight: 400;
+font-size: 14px;
+line-height: 20px;
+letter-spacing: 0.3px;
+text-align: center;
+vertical-align: middle;
+    color: #000;
+    border-radius: 6px;
+    border: none;
+    padding: 10px 20px;
+    width: 100%;
+}
+.continue-with-section {
+    padding: 7px;
+    border-radius: 6px;
+    border: 1px solid #E5E5E5;
+}
+.continue-with-text p{
+    margin-bottom: 0px;
+    font-family: Montserrat;
+font-weight: 600;
+font-size: 14px;
+line-height: 20px;
+letter-spacing: 0.3px;
+text-align: center;
+vertical-align: middle;
+color: #000000;
+}
+.continue-with-text{
+    position: absolute;
+    top: 30%;
+    width: 100%;
+    text-align: center;
+}
+.dont-have-acount{
+    font-family: Montserrat;
+font-weight: 600;
+font-size: 12px;
+line-height: 20px;
+letter-spacing: 0.3px;
+text-align: right;
+color: #000000;
+}
+.dont-have-acount a{
+    text-decoration: none;
+    font-family: Montserrat;
+font-weight: 400;
+font-size: 12px;
+line-height: 20px;
+letter-spacing: 0.3px;
+color: #1A1A1A;
+}
+
+.form-check-input[type="checkbox"]:checked  {
+      background-color: #FFBD59; /* Bootstrap success color */
+      color: white;
+      border-color: #FFBD59 !important;
+}
+.form-check-input:checked ~ label {
+  color: #000 !important;
+  font-family: Montserrat;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  line-height: 100% !important;
+  letter-spacing: 0 !important;
+}
+
+.new-form-label{
+font-family: Montserrat;
+font-weight: 300;
+font-size: 14px;
+line-height: 100%;
+letter-spacing: 0%;
+color: #696969;
+}
+.form-check-input:focus {
+    box-shadow: none !important;
+    border: none !important;
+}
+.Bienvenido h2{
+    font-family: Montserrat;
+font-weight: 600;
+font-size: 20px;
+line-height: 28px;
+letter-spacing: 0px;
+vertical-align: middle;
+color: #1A1A1A;
+}
+.forgot-tetx{
+    font-family: Montserrat;
+font-weight: 400;
+font-size: 14px;
+line-height: 28px;
+letter-spacing: 0px;
+vertical-align: middle;
+color: #1A1A1A;
+}
+
+/* calender */
+.calendar {
+  max-width: 400px;
+  margin: auto;
+  text-align: center;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.day-box {
+  padding: 10px;
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.day-box.current-date {
+  background-color: #ffbd59;
+  font-weight: bold;
+}
+
+.day-box:hover {
+  background-color: #dcdcdc;
+}
+
+.small-placeholder::placeholder {
+  font-size: 11px; /* or any smaller value you prefer */
+}

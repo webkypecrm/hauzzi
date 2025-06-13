@@ -1,0 +1,158 @@
+@media (min-width: 1400px) {
+  .white_sec {
+    width: 80%;
+  }
+  .view-counter {
+    margin: 0 15px;
+  }
+  .highlight-btn {
+    font-size: 17px;
+  }
+}
+@media (min-width: 1300px) {
+  .sepration_sec .mainimg {
+    height: 345px;
+    margin-left: 0;
+  }
+}
+@media (max-width: 1180px) {
+  .sepration_sec .mainimg {
+    max-height: 270px;
+    margin-top: -40px;
+    min-height: 285px;
+  }
+}
+@media (max-width: 992px) {
+  .agent-img img {
+    height: 80px;
+  }
+  .top-btn12 {
+    margin-top: 12%;
+  }
+  /* .top-margin {
+    margin-top: 12%;
+  } */
+  .bg-img {
+    border-radius: 50px;
+  }
+  .sepration_sec .mainimg {
+    height: 230px;
+    width: 100%;
+    object-fit: cover;
+    margin-top: 0px;
+  }
+  .desc {
+    padding: 17px 0px 5px;
+  }
+  .view-counter {
+    margin: 0 0;
+  }
+}
+@media (max-width: 768px) {
+  .tabbing_sec .nav-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    text-wrap: nowrap;
+    overflow: auto;
+  }
+  .agent-img img {
+    height: 80px;
+  }
+  .top-btn12 {
+    margin-top: 12%;
+  }
+  /* .top-margin {
+    margin-top: 12%;
+  } */
+  .bg-img {
+    border-radius: 50px;
+    overflow: hidden;
+  }
+  .bg-img .row {
+    flex-direction: column-reverse;
+  }
+  .sepration_sec .mainimg {
+    margin: auto;
+    height: 250px;
+    display: flex;
+  }
+  .desc {
+    padding: 50px 20px 0px;
+    text-align: center;
+  }
+  .header-mt {
+    margin-top: 25%;
+  }
+  .pricing_sec .pricing-card h3 {
+    margin-top: 20px;
+  }
+  .myadsnav {
+    overflow: auto;
+    flex-wrap: nowrap !important;
+    width: 100%;
+    display: inline-flex !important;
+    justify-content: start !important;
+  }
+  .myadsnav .nav-button {
+    white-space: nowrap;
+  }
+  .view-counter {
+    margin: 0 5px;
+  }
+  .highlight-btn {
+    font-size: 10px;
+  }
+  .card.myfav .agent-img img {
+    height: 115px;
+  }
+}
+@media (max-width: 576px) {
+  .top-btn12 {
+    margin-top: 25%;
+  }
+  /* .top-margin {
+    margin-top: 25%;
+  } */
+  .myadsnav {
+    overflow: auto;
+    flex-wrap: nowrap !important;
+    width: 100%;
+    display: inline-flex !important;
+    justify-content: start !important;
+  }
+  .myadsnav .nav-button {
+    white-space: nowrap;
+  }
+  .view-counter {
+    margin: 0 5px;
+  }
+  .highlight-btn {
+    font-size: 12px;
+  }
+  .chat-panel {
+    flex-direction: column;
+    align-items: flex-start;
+    border-top: 1px solid #d4d4d4;
+  }
+  .ad-title {
+    justify-content: start;
+    flex-direction: row-reverse;
+    margin-top: 15px;
+  }
+  .chat-box {
+    border-right: 0px;
+    border-radius: 0px;
+  }
+  .my-comp {
+    display: flex;
+    overflow-x: auto;
+  }
+  .my-comp button.btn {
+    text-wrap: nowrap;
+    margin-bottom: 10px;
+  }
+  .propertyrow {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+}
