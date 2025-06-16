@@ -53,6 +53,7 @@ const PropertyDetils = () => {
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
   const token2 = localStorage.getItem("token");
   const customerId = localStorage.getItem("tokenId") || "";
+  console.log("tocken", token2);
 
   // const lightboxImageRef = useRef();
 
@@ -358,6 +359,126 @@ const PropertyDetils = () => {
       setWishlistIds((prev) =>
         prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
       );
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
+  //----------------------Calender------------------
+  const [date, setDate] = useState(new Date());
+  const [currentMonth, setCurrentMonth] = useState(date.getMonth());
+  const [currentYear, setCurrentYear] = useState(date.getFullYear());
+  const [daysArray, setDaysArray] = useState([]);
+
+  const today = new Date();
+
+  const dayNames = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+
+  useEffect(() => {
+    generateCalendar(currentYear, currentMonth);
+  }, [currentMonth, currentYear]);
+
+  const generateCalendar = (year, month) => {
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDay = new Date(year, month + 1, 0).getDate();
+
+    let days = [];
+
+    // Add empty slots before the first day
+    for (let i = 0; i < firstDay; i++) {
+      days.push("");
+    }
+
+    // Add actual days
+    for (let i = 1; i <= lastDay; i++) {
+      days.push(i);
+    }
+
+    setDaysArray(days);
+  };
+
+  const handlePrevMonth = () => {
+    const newMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    const newYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+    setCurrentMonth(newMonth);
+    setCurrentYear(newYear);
+  };
+
+  const handleNextMonth = () => {
+    const newMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+    const newYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+    setCurrentMonth(newMonth);
+    setCurrentYear(newYear);
+  };
+
+  const formattedDate = new Date(currentYear, currentMonth).toLocaleString(
+    "en-US",
+    { month: "short", year: "numeric" }
+  );
+
+  // calender POST Api
+  const initialState = {
+    email: "",
+    phone: "",
+    type: "En persona",
+    date: "",
+    time: "",
+    // forBookTour: "true",
+    // customerId: localStorage.getItem("tokenId") || "",
+    propertyId: id || "",
+    userId: localStorage.getItem("tokenId") || "",
+  };
+  // console.log("first", customerId);
+  const [calenderData, setCalenderData] = useState(initialState);
+
+  const handelCalenderInputChange = (e) => {
+    const { name, value } = e.target;
+    setCalenderData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleDateSelect = (day) => {
+    if (!day) return;
+
+    const selected = new Date(currentYear, currentMonth, day);
+    const todayOnly = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+
+    if (selected < todayOnly) return;
+
+    const formatted =
+      selected.getFullYear() +
+      "-" +
+      String(selected.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(selected.getDate()).padStart(2, "0");
+
+    setCalenderData((prev) => ({
+      ...prev,
+      date: formatted,
+    }));
+  };
+
+  const handelCalenderSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        `${apiUrl}/enquiry/add`,
+        calenderData,
+        {
+          headers: {
+            Authorization: `Bearer ${token2}`,
+          },
+        }
+      );
+      setCalenderData(initialState);
+      console.log("response", response);
+      toast.success(response.data.message);
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
@@ -1047,88 +1168,159 @@ const PropertyDetils = () => {
                         Solicitar información
                       </button>
                     </div>
+
                     {activeTab === "agendar" && (
-                      <div id="agendar" className="tabcontent mt-4">
-                        <div className="radio12">
-                          <label className="container1">
-                            En persona
-                            <input
-                              type="radio"
-                              defaultChecked="checked"
-                              name="radio"
-                            />
-                            <span className="checkmark" />
-                          </label>
-                          <label className="container1">
-                            Videollamada
-                            <input type="radio" name="radio" />
-                            <span className="checkmark" />
-                          </label>
-                        </div>
-                        {/* <div className="calendar">
-                          <header>
-                            <pre className="left">◀</pre>
-                            <div className="header-display">
-                              <p className="display">""</p>
-                            </div>
-                            <pre className="right">▶</pre>
-                          </header>
-                          <div className="week">
-                            <div>Su</div>
-                            <div>Mo</div>
-                            <div>Tu</div>
-                            <div>We</div>
-                            <div>Th</div>
-                            <div>Fr</div>
-                            <div>Sa</div>
+                      <form onSubmit={handelCalenderSubmit}>
+                        <div id="agendar" className="tabcontent mt-4">
+                          <div className="radio12">
+                            <label className="container1">
+                              En persona
+                              <input
+                                type="radio"
+                                name="type"
+                                value="En persona"
+                                checked={calenderData.type === "En persona"}
+                                onChange={handelCalenderInputChange}
+                              />
+                              <span className="checkmark" />
+                            </label>
+                            <label className="container1">
+                              Videollamada
+                              <input
+                                type="radio"
+                                name="type"
+                                value="Videollamada"
+                                checked={calenderData.type === "Videollamada"}
+                                onChange={handelCalenderInputChange}
+                              />
+                              <span className="checkmark" />
+                            </label>
                           </div>
-                          <div className="days" />
-                        </div> */}
-                        <Calendar />
-                        <div className="form-group mt-2">
-                          <label htmlFor="usr">Hora</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="usr"
-                            placeholder="Ingresa la hora"
-                          />
+                          <div className="calendar">
+                            <header>
+                              <pre className="left" onClick={handlePrevMonth}>
+                                ◀
+                              </pre>
+                              <div className="header-display">
+                                <p className="display">{formattedDate}</p>
+                              </div>
+                              <pre className="right" onClick={handleNextMonth}>
+                                ▶
+                              </pre>
+                            </header>
+
+                            <div className="week">
+                              {dayNames.map((day, i) => (
+                                <div key={i}>{day}</div>
+                              ))}
+                            </div>
+
+                            <div className="days">
+                              {daysArray.map((day, i) => {
+                                if (!day) {
+                                  return (
+                                    <div
+                                      key={i}
+                                      className="day-box empty"
+                                    ></div>
+                                  );
+                                }
+
+                                const isToday =
+                                  today.getDate() === day &&
+                                  today.getMonth() === currentMonth &&
+                                  today.getFullYear() === currentYear;
+
+                                const formattedDay = `${currentYear}-${String(
+                                  currentMonth + 1
+                                ).padStart(2, "0")}-${String(day).padStart(
+                                  2,
+                                  "0"
+                                )}`;
+                                const isSelected =
+                                  calenderData.date === formattedDay;
+
+                                const isPast =
+                                  new Date(currentYear, currentMonth, day) <
+                                  new Date(
+                                    today.getFullYear(),
+                                    today.getMonth(),
+                                    today.getDate()
+                                  );
+
+                                return (
+                                  <div
+                                    key={i}
+                                    className={`day-box 
+          ${isToday ? "current-date" : ""} 
+          ${isSelected ? "selected-date" : ""} 
+          ${isPast ? "disabled-date" : ""}`}
+                                    onClick={() =>
+                                      !isPast && handleDateSelect(day)
+                                    }
+                                  >
+                                    {day}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          <div className="form-group mt-2">
+                            <label htmlFor="usr">Hora</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="usr"
+                              placeholder="Ingresa la hora"
+                              name="time"
+                              value={calenderData.time}
+                              onChange={handelCalenderInputChange}
+                            />
+                          </div>
+                          <div className="form-group mt-3">
+                            <label htmlFor="email">Email</label>
+                            <input
+                              type="email"
+                              className="form-control"
+                              id="email"
+                              placeholder="Ingresa tu correo electrónico"
+                              name="email"
+                              value={calenderData.email}
+                              onChange={handelCalenderInputChange}
+                            />
+                          </div>
+                          <div className="form-group mt-3">
+                            <label htmlFor="teléfono">Teléfono</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="teléfono"
+                              placeholder="Ingresa tu teléfono"
+                              name="phone"
+                              value={calenderData.phone}
+                              onChange={handelCalenderInputChange}
+                            />
+                          </div>
+                          <div className="checkbox mt-3 mb-3">
+                            <label>
+                              <input type="checkbox" defaultValue="" /> Quiero
+                              recibir alertas de inmuebles similares a este
+                            </label>
+                          </div>
+                          <div className="text-center mb-4">
+                            <button
+                              type="submit"
+                              className="btn btn-warning"
+                              style={{ width: "90%" }}
+                            >
+                              Agendar tour
+                            </button>
+                          </div>
                         </div>
-                        <div className="form-group mt-3">
-                          <label htmlFor="email">Email</label>
-                          <input
-                            type="email"
-                            className="form-control"
-                            id="email"
-                            placeholder="Ingresa tu correo electrónico"
-                          />
-                        </div>
-                        <div className="form-group mt-3">
-                          <label htmlFor="teléfono">Teléfono</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="teléfono"
-                            placeholder="Ingresa tu teléfono"
-                          />
-                        </div>
-                        <div className="checkbox mt-3 mb-3">
-                          <label>
-                            <input type="checkbox" defaultValue="" /> Quiero
-                            recibir alertas de inmuebles similares a este
-                          </label>
-                        </div>
-                        <div className="text-center mb-4">
-                          <button
-                            type="button"
-                            className="btn btn-warning"
-                            style={{ width: "90%" }}
-                          >
-                            Agendar tour
-                          </button>
-                        </div>
-                      </div>
+                      </form>
                     )}
+
                     {activeTab === "solicitar" && (
                       <div id="solicitar" className="tabcontent mt-3">
                         <div className="form-group mt-2">

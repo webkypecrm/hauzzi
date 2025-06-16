@@ -3,6 +3,8 @@ import Header from "../MainPage/Header";
 import Footer from "../MainPage/Footer";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import Loading from "../../Loading";
 
 const Dashboard = () => {
@@ -37,16 +39,35 @@ const Dashboard = () => {
   const profileImg = allData?.userDetails?.map((item) => item.photoUrl);
   const photo = allData?.userDetails?.map((item) => item.photo);
 
-  // const handleImageUpload = (event) => {
-  //   const file = event.target.files[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onload = (e) => {
-  //       setImageSrc(e.target.result);
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
+// logout
+const navigate = useNavigate();
+
+ const handleLogout = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(`${apiUrl}/employee/employeeLogOut`,{}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        localStorage.removeItem("token");
+        toast.success("Logout successful!");
+        navigate("/login");
+      } else {
+        toast.error("Logout failed.");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+      // toast.error("Something went wrong during logout.");
+      toast.error(error.response.data.message);
+    }
+  };
+
+
+
   return (
     <Fragment>
       <div className="index-page">
@@ -221,7 +242,7 @@ const Dashboard = () => {
                     </div>
 
                     <div className="col-lg-4 col-md-4">
-                      <Link to="/myprofile">
+                      <Link to="" onClick={handleLogout}>
                         <div className="inmueble-card">
                           <img
                             src="img/my-img/user-icon.png"

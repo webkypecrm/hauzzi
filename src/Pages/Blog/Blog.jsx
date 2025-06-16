@@ -238,7 +238,7 @@ const Blog = () => {
                               {/* <!-- submit button --> */}
                               <div className="search">
                                 <input
-                                  className="search-txt"
+                                  className="search-txt small-placeholder"
                                   type="text"
                                   name=""
                                   placeholder="Busca por dirección, ciudad o código postal"
@@ -284,7 +284,7 @@ const Blog = () => {
                         data-aos-delay="300"
                       >
                         <img
-                          src="img/my-img/contact.png"
+                          src="blog.jpg"
                           alt="Hero Image"
                           className="img-fluid"
                         />

@@ -316,6 +316,8 @@ vertical-align: middle;
 color: #1A1A1A;
 }
 
+
+
 /* calender */
 .calendar {
   max-width: 400px;
@@ -343,14 +345,99 @@ color: #1A1A1A;
 }
 
 .day-box.current-date {
-  background-color: #ffbd59;
+  background-color: #eee;
   font-weight: bold;
 }
 
-.day-box:hover {
+/* .day-box:hover {
   background-color: #dcdcdc;
-}
+} */
 
 .small-placeholder::placeholder {
-  font-size: 11px; /* or any smaller value you prefer */
+  font-size: 11px; 
 }
+
+.selected-date {
+  background-color: #FFBD59;
+  color: white;
+  border-radius: 50%;
+}
+
+.selected-date:hover {
+  background-color: #FFBD59!important;
+  color: white!important;
+}
+.current-date {
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 50%;
+}
+
+.selected-date {
+  /* border: 2px solid #007bff; */
+  border-radius: 50%;
+}
+
+.disabled-date {
+  pointer-events: none;
+  color: #ccc;
+}
+.day-box.empty {
+  background: none;
+  pointer-events: none;
+  cursor: default;
+}
+.current-date.selected-date {
+  background-color: #FFBD59 !important;
+  color: white !important;
+}
+
+
+
+
+
+
+
+/* my visit */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+.popup-content {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 100%;
+  position: relative;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.close-btn {
+  background-color: #FFBD59;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.type-label {
+  font-size: 10px;
+  background: #FFBD59;
+  color: white;
+  border-radius: 4px;
+  padding: 2px 0px;
+  margin-top: 2px;
+  display: inline-block;
+}
+
+
+

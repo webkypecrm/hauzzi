@@ -13,7 +13,7 @@ const MyProfile = () => {
   );
 
   const initialData = {
-    watsApp: "",
+    whatsApp: "",
     name: "",
     email: "",
     phone: "",
@@ -70,23 +70,23 @@ const MyProfile = () => {
       setProfileData(initialData);
       toast.success("Profile Updated", {
         autoClose: 1000,
-      })
+      });
     } catch (error) {
       console.error(error);
       toast.error(error.response.data.message);
     }
   };
 
+  // Password reset
+  const initialPasswordState = {
+    customerId: localStorage.getItem("tokenId") || "",
+    // userType: localStorage.getItem("userType") || "",
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  };
 
-// Password reset
- const initialPasswordState = {
-  customerId: localStorage.getItem("tokenId") || "",
-  oldPassword: "",
-  newPassword: "",
-  confirmPassword: "",
-};
-
-const [resetPassword, setResetPassword] = useState(initialPasswordState);
+  const [resetPassword, setResetPassword] = useState(initialPasswordState);
 
   const handelPasswordInputChange = (e) => {
     setResetPassword((prev) => ({
@@ -105,22 +105,22 @@ const [resetPassword, setResetPassword] = useState(initialPasswordState);
       setResetPassword(initialPasswordState);
       toast.success("Password changed", {
         autoClose: 1000,
-      })
+      });
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
     }
-  }
+  };
 
   // Social Media
   const initialSocialMediaState = {
-     customerId: localStorage.getItem("tokenId") || "",
+    customerId: localStorage.getItem("tokenId") || "",
     facebook: "",
     instagram: "",
     linkedIn: "",
     youtube: "",
     tiktok: "",
-  }
+  };
   const [socialMedia, setSocialMedia] = useState(initialSocialMediaState);
 
   const handelSocialMediaInputChange = (e) => {
@@ -128,20 +128,65 @@ const [resetPassword, setResetPassword] = useState(initialPasswordState);
       ...prev,
       [e.target.name]: e.target.value,
     }));
-
-  }
+  };
   const handleSubmitSocialMedia = async (e) => {
     e.preventDefault();
     try {
-       const res = await axios.post(`${apiUrl}/profile/add`, socialMedia, {
+      const res = await axios.post(`${apiUrl}/profile/add`, socialMedia, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      toast.success("Social Media Updated", {
+        autoClose: 1000,
+      })
     } catch (error) {
       console.log(error);
+      toast.error(error.response.data.message);
     }
-  }
+  };
+
+    // Social Media
+  const initialSpecialtiesState = {
+    customerId: localStorage.getItem("tokenId") || "",
+    specialities: "",
+    userType: localStorage.getItem("userType") || "",
+  };
+  const [specialties, setSpecialties] = useState(initialSpecialtiesState);
+
+  const handelSpecialtiesInputChange = (e) => {
+    setSpecialties((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+  const handleSubmitSpecialties = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(`${apiUrl}/profile/add`, specialties, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success("Specialities Updated", {
+        autoClose: 1000,
+      })
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
+
+
+
+  // usertype GET
+  const getUserTypeLabel = () => {
+    const type = localStorage.getItem("userType");
+    if (type === "1") return "Agent";
+    if (type === "2") return "Real Estate";
+    return "User";
+  };
+
   return (
     <Fragment>
       <div className="index-page">
@@ -162,34 +207,33 @@ const [resetPassword, setResetPassword] = useState(initialPasswordState);
                 <button className="nav-button active">Mi perfil</button>
               </div> */}
               <div className="d-flex flex-wrap justify-content-center mb-4 ">
-                    <Link to={"/publish-propert"} className="nav-button ">
-                      Publicar inmueble
-                    </Link>
-                    <Link to={"/myads"} className="nav-button">
-                      Mis anuncios
-                    </Link>
-                    <Link to={"/myfavoriets"} className="nav-button">
-                      Mis favoritos
-                    </Link>
-                    <Link to={"/myalert"} className="nav-button">
-                      Mis alertas
-                    </Link>
-                    <Link to={"/mymessages"} className="nav-button">
-                      Mis mensajes
-                    </Link>
-                    <Link to={"/mycomparisons"} className="nav-button">
-                      Mis comparaciones
-                    </Link>
-                    <Link to={"/myvisit"} className="nav-button">
-                      Mis visitas
-                    </Link>
-                    <Link to={"/myprofile"} className="nav-button active">
-                      Mi perfil
-                    </Link>
-                  </div>
+                <Link to={"/publish-propert"} className="nav-button ">
+                  Publicar inmueble
+                </Link>
+                <Link to={"/myads"} className="nav-button">
+                  Mis anuncios
+                </Link>
+                <Link to={"/myfavoriets"} className="nav-button">
+                  Mis favoritos
+                </Link>
+                <Link to={"/myalert"} className="nav-button">
+                  Mis alertas
+                </Link>
+                <Link to={"/mymessages"} className="nav-button">
+                  Mis mensajes
+                </Link>
+                <Link to={"/mycomparisons"} className="nav-button">
+                  Mis comparaciones
+                </Link>
+                <Link to={"/myvisit"} className="nav-button">
+                  Mis visitas
+                </Link>
+                <Link to={"/myprofile"} className="nav-button active">
+                  Mi perfil
+                </Link>
+              </div>
               <hr style={{ borderColor: "#d7d6d6" }} />
               <div className="row g-4">
-
                 <div className="col-lg-6">
                   <h4 className="mb-4">Información básica</h4>
                   <form onSubmit={handleSubmit}>
@@ -214,6 +258,20 @@ const [resetPassword, setResetPassword] = useState(initialPasswordState);
                     {/* </div> */}
 
                     <div className="mb-3">
+                      <label className="form-label">User Type</label>
+                      <div className="input-group">
+                        <span className="input-group-text  border-0">
+                          <i className="bi bi-person-fill primary-text" />
+                        </span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={getUserTypeLabel()}
+                          disabled
+                        />
+                      </div>
+                    </div>
+                    <div className="mb-3">
                       <label className="form-label">Nombre(s)</label>
                       <div className="input-group">
                         <span className="input-group-text bg-light border-0">
@@ -223,26 +281,13 @@ const [resetPassword, setResetPassword] = useState(initialPasswordState);
                           type="text"
                           className="form-control"
                           // defaultValue="VictorIA"
+                          placeholder="Nombre(s)"
                           name="name"
                           value={profileData.name}
                           onChange={handelInputChange}
                         />
                       </div>
                     </div>
-                    {/* Apellido */}
-                    {/* <div className="mb-3">
-                      <label className="form-label">Apellido(s)</label>
-                      <div className="input-group">
-                        <span className="input-group-text bg-light border-0">
-                          <i className="bi bi-person-fill primary-text" />
-                        </span>
-                        <input
-                          type="text"
-                          className="form-control"
-                          defaultValue="VictorIA"
-                        />
-                      </div>
-                    </div> */}
                     {/* Email */}
                     <div className="mb-3">
                       <label className="form-label">Email</label>
@@ -288,8 +333,8 @@ const [resetPassword, setResetPassword] = useState(initialPasswordState);
                           type="tel"
                           className="form-control"
                           placeholder="+58 123 456 789"
-                          name="watsApp"
-                          value={profileData.watsApp}
+                          name="whatsApp"
+                          value={profileData.whatsApp}
                           onChange={handelInputChange}
                         />
                       </div>
@@ -352,6 +397,9 @@ const [resetPassword, setResetPassword] = useState(initialPasswordState);
                         rows={8}
                         placeholder="Introduce tu biografía"
                         defaultValue={""}
+                        name="notes"
+                        value={profileData.notes}
+                        onChange={handelInputChange}
                       />
                     </div>
                     <button
@@ -460,9 +508,9 @@ const [resetPassword, setResetPassword] = useState(initialPasswordState);
                           type="url"
                           className="form-control"
                           placeholder="https://www.instagram.com"
-                             name="instagram"
-        value={socialMedia.instagram}
-        onChange={handelSocialMediaInputChange}
+                          name="instagram"
+                          value={socialMedia.instagram}
+                          onChange={handelSocialMediaInputChange}
                         />
                       </div>
                     </div>
@@ -478,8 +526,8 @@ const [resetPassword, setResetPassword] = useState(initialPasswordState);
                           className="form-control"
                           placeholder="https://www.youtube.com"
                           name="youtube"
-        value={socialMedia.youtube}
-        onChange={handelSocialMediaInputChange}
+                          value={socialMedia.youtube}
+                          onChange={handelSocialMediaInputChange}
                         />
                       </div>
                     </div>
@@ -494,9 +542,9 @@ const [resetPassword, setResetPassword] = useState(initialPasswordState);
                           type="url"
                           className="form-control"
                           placeholder="https://www.tiktok.com"
-                            name="tiktok"
-        value={socialMedia.tiktok}
-        onChange={handelSocialMediaInputChange}
+                          name="tiktok"
+                          value={socialMedia.tiktok}
+                          onChange={handelSocialMediaInputChange}
                         />
                       </div>
                     </div>
@@ -528,48 +576,54 @@ const [resetPassword, setResetPassword] = useState(initialPasswordState);
                         />
                       </div>
                     </div> */}
-                    <button type ="submit" className="btn btn-primary w-100 p-2 mb-4">
+                    <button
+                      type="submit"
+                      className="btn btn-primary w-100 p-2 mb-4"
+                    >
                       Guardar cambios
                     </button>
                   </form>
-                    <h4 className="mb-4">Idiomas</h4>
-                    <div className="mb-4">
-                      <label className="form-label">
-                        Selecciona idioma(s){" "}
-                      </label>
-                      <div className="input-group">
-                        <span className="input-group-text bg-light border-0">
-                          <i className="bi bi-translate primary-text" />
-                        </span>
-                        <select type="text" className="form-control">
-                          <option value={0}>Seleccionar idioma(s)</option>
-                          <option value={1}>Seleccionar idioma(s)</option>
-                        </select>
-                      </div>
+                  <h4 className="mb-4">Idiomas</h4>
+                  <div className="mb-4">
+                    <label className="form-label">Selecciona idioma(s) </label>
+                    <div className="input-group">
+                      <span className="input-group-text bg-light border-0">
+                        <i className="bi bi-translate primary-text" />
+                      </span>
+                      <select type="text" className="form-control">
+                        <option value={0}>Seleccionar idioma(s)</option>
+                        <option value={1}>Seleccionar idioma(s)</option>
+                      </select>
                     </div>
-                    <button className="btn btn-primary w-100 p-2 mb-4">
-                      Guardar cambios
-                    </button>
-                    <h4 className="mb-4">Especialidades</h4>
-                    <div className="mb-4">
-                      <label className="form-label">Especialidades</label>
-                      <div className="input-group">
-                        <span className="input-group-text bg-light border-0">
-                          <i className="bi bi-houses-fill primary-text" />
-                        </span>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="#Apartamentos #Casas de lujo #Locales # Galpones"
-                        />
-                      </div>
+                  </div>
+                  <button className="btn btn-primary w-100 p-2 mb-4">
+                    Guardar cambios
+                  </button>
+                  <h4 className="mb-4">Especialidades</h4>
+                  <form onSubmit={handleSubmitSpecialties}>
+                  <div className="mb-4">
+                    <label className="form-label">Especialidades</label>
+                    <div className="input-group">
+                      <span className="input-group-text bg-light border-0">
+                        <i className="bi bi-houses-fill primary-text" />
+                      </span>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="#Apartamentos #Casas de lujo #Locales # Galpones"
+                        name="specialities"
+                        value={specialties.specialities}
+                        onChange={handelSpecialtiesInputChange}
+                      />
                     </div>
-                    <button className="btn btn-primary w-100 p-2 mb-4">
-                      Guardar cambios
-                    </button>
-                    
-                    <h4 className="mb-4">Seguridad</h4>
-                    <form onSubmit={handleSubmitPassword}>
+                  </div>
+                  <button type="submit" className="btn btn-primary w-100 p-2 mb-4">
+                    Guardar cambios
+                  </button>
+                  </form>
+
+                  <h4 className="mb-4">Seguridad</h4>
+                  <form onSubmit={handleSubmitPassword}>
                     <div className="mb-3">
                       <label className="form-label">Contraseña actual</label>
                       <div className="input-group">
@@ -618,11 +672,14 @@ const [resetPassword, setResetPassword] = useState(initialPasswordState);
                         />
                       </div>
                     </div>
-                    <button type="submit" className="btn btn-primary w-100 p-2 mb-4">
+                    <button
+                      type="submit"
+                      className="btn btn-primary w-100 p-2 mb-4"
+                    >
                       Guardar cambios
                     </button>
-                    </form>
-                  
+                  </form>
+
                   <h4 className="mb-4">Eliminar mi cuenta de Hauzzi</h4>
                   <p>
                     Si tienes previsto volver a utilizar Hauzzi dentro de un

@@ -343,8 +343,8 @@ li.breadcrumb-item a,
   padding: 1rem;
 }
 .agent-img img {
-  width: auto;
-  height: 150px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -527,14 +527,14 @@ div#swiper1 .feat_property .thumb .thmb_cntnt .icon {
   align-items: center;
   justify-content: end;
   margin-bottom: 0px;
-  margin-top: 8px;
+  margin-top: 12px;
 }
 .agent-profile li:not(:last-child) {
   margin-bottom: 5px;
 }
 .agent-profile ul li img {
   width: auto;
-  height: 20px;
+  height: 18px;
 }
 .counter-box {
   border: 1px solid #ebebeb;

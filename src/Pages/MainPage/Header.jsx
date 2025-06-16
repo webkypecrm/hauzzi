@@ -256,7 +256,7 @@ const Header = () => {
                    <FontAwesomeIcon icon={faCircleUser} />
                 </Link>)} */}
 
-                {photo == "" ? (
+                {profileImg == null ? (
                   <Link
                     to="/login"
                     className="h-icon-btn"
@@ -271,12 +271,11 @@ const Header = () => {
                 ) : (
                   <a 
                   href={redirectTo} 
-                  // target="_blank"
                   {...(isLoginPage ? { target: "_blank" } : {})}
                   >
                     <img
                       src={profileImg}
-                      // alt="Perfil"
+                      alt="Perfil"
                       className="profile-pic "
                     />
                   </a>

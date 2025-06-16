@@ -3218,11 +3218,11 @@ pre {
   width: 3em;
   border-radius: 100%;
 }
-.days div:hover {
+/* .days div:hover {
   background: var(--accent-2);
   color: rgb(25, 25, 201);
   cursor: pointer;
-}
+} */
 .week div {
   opacity: 0.5;
 }

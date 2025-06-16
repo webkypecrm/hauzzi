@@ -167,7 +167,7 @@ const About = () => {
                             animationName: "fadeInUp",
                           }}
                         >
-                                                   {/* <!-- single input --> */}
+                          {/* <!-- single input --> */}
                           <div className="query__input">
                                 <select
                                   name="adult"
@@ -239,7 +239,7 @@ const About = () => {
                           {/* submit button */}
                           <div className="search">
                             <input
-                              className="search-txt"
+                              className="search-txt small-placeholder"
                               type="text"
                               name=""
                               placeholder="Busca por dirección, ciudad o código postal"
@@ -276,7 +276,7 @@ const About = () => {
                     data-aos-delay={300}
                   >
                     <img
-                      src="img/my-img/abmainban.png"
+                      src="aboutUs2.jpg"
                       alt="Hero Image"
                       className="img-fluid"
                     />
