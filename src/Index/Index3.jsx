@@ -55,7 +55,7 @@ const Index3 = () => {
             {" "}
             Publica tu propiedad y conecta con miles de interesados{" "}
           </h1>
-          <p className="mb-4  text-white">
+          <p className="mb-4 ">
             {" "}
             Gana visibilidad con Hauzzi y conecta con quienes buscan inmuebles
             similares al tuyo{" "}
@@ -72,9 +72,10 @@ const Index3 = () => {
       <div className="col-lg-6">
         <div className="hero-image" data-aos="zoom-out" data-aos-delay={300}>
           <img
-            src="img/my-img/index3.png"
+            src="index3.jpg"
             alt="Hero Image"
             className="img-fluid"
+            style={{height:"145%"}}
           />
         </div>
       </div>

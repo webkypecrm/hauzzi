@@ -1,9 +1,45 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Header from "../MainPage/Header";
 import Footer from "../MainPage/Footer";
 import { Link } from "react-router-dom";
+import gola from "../../assets/img/agentGola.png";
+import axios from "axios";
 
 const AgentMobiliario = () => {
+  const [agents, setAgents] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [count, setCount] = useState(0);
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
+  const userId = localStorage.getItem("userType") || "";
+
+
+
+  const getAgentsData = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`${apiUrl}/profile/getAll?userType=${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+       )
+
+      setAgents(res.data?.data || []);
+      setCount(res.data?.totalcount || "");
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false);
+    }
+  }
+  console.log("first", agents);
+
+  useEffect(() => {
+    getAgentsData();
+  }, []);
   return (
     <Fragment>
       <div className="index-page">
@@ -865,7 +901,7 @@ const AgentMobiliario = () => {
               <div className="sepration_sec mb-5">
                 <div className="row g-4 justify-content-center">
                   <div className="col-lg-11">
-                    <div className="bg-img">
+                    <div className="bg-img" style={{backgroundColor: "#FFBD59",borderRadius: "40px"}}>
                       <div className="row justify-content-center">
                         <div className="col-lg-4 col-md-4">
                           <img
@@ -875,7 +911,7 @@ const AgentMobiliario = () => {
                         </div>
                         <div className="col-lg-6 col-md-6">
                           <div className="shape1">
-                            <img src="img/my-img/shape1.png" />
+                            <img src={gola} />
                           </div>
                           <div className="desc">
                             <h3>

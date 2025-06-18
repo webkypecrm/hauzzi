@@ -36,11 +36,11 @@ const Footer = () => {
               <h4>Suscríbete gratis</h4>
               <div className="subs-btn">
                 <div className="text-foot1">
-                  <p>Ingresa tu correo electrónico</p>
+                  <p style={{marginBottom: 0}}>Ingresa tu correo electrónico</p>
                   <Link
                     className="btn-getstarted mt-0 btn-footer-btn"
                     to="#"
-                    style={{ padding: 9, margin: 0, borderRadius: 50 }}
+                    style={{ padding: 9, margin: 0, borderRadius: 50,color: "black",fontWeight:500 }}
                   >
                     Suscríbete gratis{" "}
                     <i

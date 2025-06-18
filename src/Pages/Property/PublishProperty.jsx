@@ -19,9 +19,9 @@ const PublishProperty = () => {
   const [propertyCategory, setPropertyCategory] = useState([]);
   const [activeTypeIndex, setActiveTypeIndex] = useState(null);
   const [activeCategoryIndex, setActiveCategoryIndex] = useState(null);
-  const [mode, setMode] = useState("vender"); // 'vender' or 'alquilar'
+  const [mode, setMode] = useState("vender");
   const [alsoRent, setAlsoRent] = useState(false);
-  const [mastersData, setMastersData] = useState([]); // masters data
+  const [mastersData, setMastersData] = useState([]);
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
@@ -94,9 +94,10 @@ const PublishProperty = () => {
       );
       setPropertyCategory(res.data?.data || []);
       setActiveCategoryIndex(null);
-      setMastersData([]); // clear master data when category changes
+      setMastersData([]); 
     } catch (error) {}
   };
+
   // console.log("category", propertyCategory);
   const handleSelectCategory = (category, index) => {
     setActiveCategoryIndex(index);
@@ -121,7 +122,6 @@ const PublishProperty = () => {
       setMastersData(res.data?.data || []);
     } catch (error) {}
   };
-  // console.log("first", mastersData);
 
   // POST Api
   const initialData = {
@@ -160,7 +160,7 @@ const PublishProperty = () => {
     photo10: null,
     isDraft: "",
     customerId: localStorage.getItem("tokenId") || "",
-    // userType: localStorage.getItem("userType") || "",
+    userType: localStorage.getItem("userType") || "",
   };
 
   const [propertyData, setPropertyData] = useState({
@@ -249,7 +249,6 @@ const PublishProperty = () => {
       setPropertyData(initialData);
       initialData.listingDetails = {};
       toast.success("Product added successfully!");
-      console.log(res);
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);

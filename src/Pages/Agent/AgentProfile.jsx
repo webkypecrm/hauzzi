@@ -400,9 +400,9 @@ console.log("first", agentData);
                       </p>
                       <h5 className="fw-bold mt-3">Especialidades</h5>
                       <ul className="list-inline speciality_sec ">
-                        <li>Comercial</li>
-                        <li>Galpones</li>
-                        <li>Administración de fincas</li>
+                        {agentData?.userDetails?.[0]?.specialities?.map((item,id) =><li key={id}> {item}</li>)}
+                        {/* <li>Galpones</li>
+                        <li>Administración de fincas</li> */}
                       </ul>
                       <h5 className="fw-bold">Idiomas</h5>
                       <ul className="list-inline language_sec">
@@ -419,17 +419,17 @@ console.log("first", agentData);
                       </Link>
                       <ul className="list-inline socailicon_sec">
                         <li>
-                          <Link to="javascript:void(0)" target="_blank">
+                          <Link to={agentData?.userDetails?.[0]?.facebook} target="_blank">
                             <img src="img/my-img/facebook.png" />
                           </Link>
                         </li>
                         <li>
-                          <Link to="javascript:void(0)" target="_blank">
+                          <Link to={agentData?.userDetails?.[0]?.instagram} target="_blank">
                             <img src="img/my-img/Instagram.png" />
                           </Link>
                         </li>
                         <li>
-                          <Link to="javascript:void(0)" target="_blank">
+                          <Link to={agentData?.userDetails?.[0]?.youtube} target="_blank">
                             <img src="img/my-img/Youtube.png" />
                           </Link>
                         </li>

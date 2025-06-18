@@ -223,6 +223,21 @@ const Header = () => {
                         Property Details
                       </Link>
                     </li>
+                    <li>
+                      <Link className="dropdown-item" to="/real-state-agencies">
+                        Agencies
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/real-state-profile">
+                        Agencies Details
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/sellforrent">
+                        Sell for Rent
+                      </Link>
+                    </li>
                   </ul>
                 </div>
               </div>

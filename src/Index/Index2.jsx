@@ -56,7 +56,7 @@ const Index2 = () => {
                     data-aos-delay="200"
                   >
                     <h1 className="mb-4"> Vende y alquila antes que nadie </h1>
-                    <p className="mb-4  text-white">
+                    <p className="mb-4  ">
                       {" "}
                       Conéctate con miles de clientes potenciales y transforma
                       tus propiedades en oportunidades.{" "}
@@ -78,9 +78,12 @@ const Index2 = () => {
                     data-aos-delay="300"
                   >
                     <img
-                      src="img/my-img/index2-ban.png"
+                      // src="index2img.png"
+                      src="index2.jpg"
                       alt="Hero Image"
                       className="img-fluid"
+                      // style={{height:"145%"}}
+                      style={{height:"auto"}}
                     />
                   </div>
                 </div>

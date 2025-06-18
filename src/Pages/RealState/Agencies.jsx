@@ -2,6 +2,8 @@ import React, { Fragment } from "react";
 import Header from "../MainPage/Header";
 import Footer from "../MainPage/Footer";
 import { Link } from "react-router-dom";
+import gola from "../../assets/img/agentGola.png";
+
 
 const Agencies = () => {
   return (
@@ -1216,7 +1218,7 @@ const Agencies = () => {
               <div className="sepration_sec mb-5">
                 <div className="row g-4 justify-content-center">
                   <div className="col-lg-11">
-                    <div className="bg-img">
+                    <div className="bg-img" style={{backgroundColor: "#FFBD59",borderRadius: "40px"}}>
                       <div className="row justify-content-center">
                         <div className="col-lg-4 col-md-4">
                           <img
@@ -1226,7 +1228,7 @@ const Agencies = () => {
                         </div>
                         <div className="col-lg-6 col-md-6">
                           <div className="shape1">
-                            <img src="img/my-img/shape1.png" />
+                            <img src={gola} />
                           </div>
                           <div className="desc">
                             <h4>

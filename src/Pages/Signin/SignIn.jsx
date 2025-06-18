@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,6 +35,7 @@ const SignIn = () => {
       navigate("/dashboard");
     } catch (error) {
       console.log(error);
+      toast.error(error.response.data.message);
     }
   };
   

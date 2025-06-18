@@ -88,6 +88,7 @@ const AppDownloading = () => {
                       src="img/my-img/appdownloading.png"
                       alt="Hero Image"
                       className="img-fluid"
+                      style={{height:"auto"}}
                     />
                   </div>
                 </div>

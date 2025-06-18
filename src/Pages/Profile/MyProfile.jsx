@@ -115,6 +115,7 @@ const MyProfile = () => {
   // Social Media
   const initialSocialMediaState = {
     customerId: localStorage.getItem("tokenId") || "",
+    userType: localStorage.getItem("userType") || "",
     facebook: "",
     instagram: "",
     linkedIn: "",

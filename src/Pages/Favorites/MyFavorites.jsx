@@ -37,30 +37,70 @@ const MyFavorites = () => {
   }, []);
   console.log("allData", favPropertys);
 
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    autoplay: true,
-    speed: 2000,
-    autoplaySpeed: 2000,
-    // cssEase: "linear",
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: { slidesToShow: 3 },
+  // const sliderSettings = {
+  //   dots: true,
+  //   infinite: true,
+  //   slidesToShow: 3,
+  //   slidesToScroll: 1,
+  //   autoplay: true,
+  //   speed: 2000,
+  //   autoplaySpeed: 2000,
+  //   cssEase: "linear",
+  //   responsive: [
+  //     {
+  //       breakpoint: 1024,
+  //       settings: { slidesToShow: 3 },
+  //     },
+  //     {
+  //       breakpoint: 768,
+  //       settings: { slidesToShow: 2 },
+  //     },
+  //     {
+  //       breakpoint: 480,
+  //       settings: { slidesToShow: 1 },
+  //     },
+  //   ],
+  // };
+
+const getSliderSettings = (count) => ({
+  dots: true,
+  infinite: count > 3,
+  slidesToShow: Math.min(count, 3),
+  slidesToScroll: 1,
+  autoplay: count > 3,
+  speed: 1000,
+  autoplaySpeed: 3000,
+  cssEase: "linear",
+  centerMode: count < 3, // Center the slides if less than 3
+  centerPadding: count === 1 ? "33.33%" : count === 2 ? "16.66%" : "0px",
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: Math.min(count, 3),
+        centerMode: count < 3,
+        centerPadding: count === 1 ? "33.33%" : count === 2 ? "16.66%" : "0px",
       },
-      {
-        breakpoint: 768,
-        settings: { slidesToShow: 2 },
+    },
+    {
+      breakpoint: 768,
+      settings: {
+        slidesToShow: Math.min(count, 2),
+        centerMode: count < 2,
+        centerPadding: count === 1 ? "25%" : "0px",
       },
-      {
-        breakpoint: 480,
-        settings: { slidesToShow: 1 },
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+        centerMode: false,
+        centerPadding: "0px",
       },
-    ],
-  };
+    },
+  ],
+});
+
 
   return (
     <Fragment>
@@ -130,32 +170,10 @@ const MyFavorites = () => {
                     </div>
                   </div>
                   {/* Mis listas */}
-                  {favPropertys?.length > 0 && (
+                  {/* {favPropertys?.length > 0 && (
                     <Fragment>
                       <h4 className="mb-3">Mis listas</h4>
                       <div className="row g-4">
-                        {/* {favPropertys?.map((item, index) => (          
-                <div className="col" key={index}>
-                  <div className="list-card">
-                    <img
-                      src={item?.images[0]}
-                      className="w-100"
-                      alt="House"
-                    />
-                    <div className="d-flex justify-content-between pt-2 align-items-start">
-                      <div>
-                        <h6>{item?.name}</h6>
-                        <small className="text-muted d-block mb-2">
-                          1 inmueble
-                        </small>
-                      </div>
-                      <button className="btn btn-primary w-auto btn-sm">
-                        <i className="bi bi-person-plus-fill" /> Invitar
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                 ))} */}
                         <Slider {...sliderSettings}>
                           {favPropertys.map((item, index) => (
                             <div className="p-2" key={index}>
@@ -183,7 +201,39 @@ const MyFavorites = () => {
                         </Slider>
                       </div>
                     </Fragment>
-                  )}
+                  )} */}
+                  {favPropertys?.length > 0 && (
+  <Fragment>
+    <h4 className="mb-3">Mis listas</h4>
+    <div className="row g-4">
+      <Slider {...getSliderSettings(favPropertys.length)}>
+        {favPropertys.map((item, index) => (
+          <div className="p-2" key={index}>
+            <div className="list-card">
+              <img
+                src={item?.images?.[0] || "img/default.jpg"}
+                className="w-100"
+                alt="House"
+              />
+              <div className="d-flex justify-content-between pt-2 align-items-start">
+                <div>
+                  <h6>{item?.name}</h6>
+                  <small className="text-muted d-block mb-2">
+                    1 inmueble
+                  </small>
+                </div>
+                <button className="btn btn-primary w-auto btn-sm">
+                  <i className="bi bi-person-plus-fill" /> Invitar
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </Slider>
+    </div>
+  </Fragment>
+)}
+
                   {/* Listas sugeridas */}
                   <h5 className="mt-5 mb-0">Listas sugeridas</h5>
                   <p className="text-muted">
