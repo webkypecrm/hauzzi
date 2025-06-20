@@ -221,7 +221,8 @@ const PropertySell = () => {
                                       <div className="title-price">
                                         <h4>{e.name}</h4>
                                         <span className="fp_price">
-                                          ${e.maxPrice}
+                                          {/* ${e.maxPrice} */}
+                                          ${e.maxPrice ? e.maxPrice : e.rentalPrice}
                                         </span>
                                       </div>
                                       <p>
@@ -247,7 +248,7 @@ const PropertySell = () => {
                                         <li className="list-inline-item">
                                           <span>
                                             <img src="img/my-img/icon_1.png" />{" "}
-                                            {e.maxSize} m2{" "}
+                                            {e?.propertySize || e?.maxSize} m2{" "}
                                           </span>
                                         </li>
                                       </ul>
@@ -283,6 +284,10 @@ const PropertySell = () => {
                                                   : e.Customer?.agentDetails
                                                       ?.length > 0
                                                   ? e.Customer.agentDetails[0]
+                                                      .photoUrl
+                                                  : e.Customer?.agencyDetails
+                                                      ?.length > 0
+                                                  ? e.Customer.agencyDetails[0]
                                                       .photoUrl
                                                   : "default.jpg" // fallback image if none exists
                                               }

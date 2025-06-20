@@ -133,7 +133,8 @@ const MyAds = () => {
                                 <div className="title-price">
                                   <h4>{e.name}</h4>
                                   <span className="fp_price">
-                                    ${e.maxPrice}
+                                    {/* ${e.maxPrice} */}
+                                    ${e.maxPrice ? e.maxPrice : e.rentalPrice}
                                   </span>
                                 </div>
                                 <p>
@@ -158,7 +159,7 @@ const MyAds = () => {
                                   <li className="list-inline-item">
                                     <span>
                                       <img src="img/my-img/icon_1.png" />{" "}
-                                      {e.maxSize} m2{" "}
+                                      {e?.propertySize || e?.maxSize} m2{" "}
                                     </span>
                                   </li>
                                 </ul>

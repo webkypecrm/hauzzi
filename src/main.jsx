@@ -30,45 +30,45 @@ import SignUp from "./Pages/Signup/SignUp.jsx";
 import ForgotPassword from "./Pages/Password/ForgotPassword.jsx";
 import CreatePassword from "./Pages/Password/CreatePassword.jsx";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-import GoogleMapsWrapper from "./GoogleMapsWrapper.jsx";
+import "react-toastify/dist/ReactToastify.css";
+import BlogDetails from "./Pages/Blog/BlogDetails.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    {/* <GoogleMapsWrapper> */}
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/index2" element={<Index2/>} />
-        <Route path="/index3" element={<Index3/>} />
-        <Route path="/dashboard" element={<Dashboard/>} />
-        <Route path="/agentprofile" element={<AgentProfile/>} />
-        <Route path="/agentmobiliario" element={<AgentMobiliario/>} />
-        <Route path="/appdownload" element={<AppDownloading/>} />
-        <Route path="/myads" element={<MyAds/>} />
-        <Route path="/myfavoriets" element={<MyFavorites/>} />
-        <Route path="/mymessages" element={<Messages/>} />
-        <Route path="/myalert" element={<MyAlert/>} />
-        <Route path="/myvisit" element={<MyVisit/>} />
-        <Route path="/myprofile" element={<MyProfile/>} />
-        <Route path="/mycomparisons" element={<MyComparisons/>} />
-        <Route path="/plans" element={<Plans/>} />
-        <Route path="/propertysell" element={<PropertySell/>} />
-        <Route path="/publish-propert" element={<PublishProperty/>} />
-        <Route path="/propert-details/:id" element={<PropertyDetils/>} />
-        <Route path="/real-state-agencies" element={<Agencies/>} />
-        <Route path="/real-state-profile" element={<Profile/>} />
-        <Route path="/sellforrent" element={<SellForRent/>} />
-        <Route path="/blog" element={<Blog/>} />
-        <Route path="/contact" element={<Contact/>} />
-        <Route path="/about" element={<About/>} />
-        <Route path="/login" element={<SignIn/>} />
-        <Route path="/sign-up" element={<SignUp/>} />
-        <Route path="/forgot-password" element={<ForgotPassword/>} />
-        <Route path="/create-password" element={<CreatePassword/>} />
+        <Route path="/index2" element={<Index2 />} />
+        <Route path="/index3" element={<Index3 />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/agentprofile" element={<AgentProfile />} />
+        <Route path="/agentmobiliario" element={<AgentMobiliario />} />
+        <Route path="/appdownload" element={<AppDownloading />} />
+        <Route path="/myads" element={<MyAds />} />
+        <Route path="/myfavoriets" element={<MyFavorites />} />
+        <Route path="/mymessages" element={<Messages />} />
+        <Route path="/myalert" element={<MyAlert />} />
+        <Route path="/myvisit" element={<MyVisit />} />
+        <Route path="/myprofile" element={<MyProfile />} />
+        <Route path="/mycomparisons" element={<MyComparisons />} />
+        <Route path="/plans" element={<Plans />} />
+        <Route path="/propertysell" element={<PropertySell />} />
+        <Route path="/publish-propert" element={<PublishProperty />} />
+        <Route path="/propert-details/:id" element={<PropertyDetils />} />
+        <Route path="/real-state-agencies" element={<Agencies />} />
+        <Route path="/real-state-profile" element={<Profile />} />
+        <Route path="/sellforrent" element={<SellForRent />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog-details/:id" element={<BlogDetails/>} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/login" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/create-password" element={<CreatePassword />} />
       </Routes>
-            <ToastContainer />
+      
     </BrowserRouter>
-    {/* </GoogleMapsWrapper> */}
+    <ToastContainer style={{padding: "20px"}}/>
   </StrictMode>
 );

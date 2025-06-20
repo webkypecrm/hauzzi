@@ -310,7 +310,7 @@ const Blog = () => {
                         <div className="row">
                           {blogsData4.map((blog) => (
                             <div className="col-xl-6 col-md-6" key={blog.id}>
-                              <Link to="#">
+                              <Link to={`/blog-details/${blog.id}`}>
                                 <div className="feat_property">
                                   <div className="thumb">
                                     {blog.photoUrl && (
@@ -403,7 +403,7 @@ const Blog = () => {
                         <h4 className="mb-3">Post populares</h4>
                         <div className="row">
                           {blogsData5.map((e) => (
-                            <Fragment>
+                            <Fragment key={e.id}>
                               <div className="col-md-4">
                                 <div className="img-v">
                                   <img

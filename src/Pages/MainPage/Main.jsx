@@ -380,7 +380,8 @@ const handleLookingForChange = (e) => {
                                   <div className="title-price">
                                     <h4>{e.name}</h4>
                                     <span className="fp_price">
-                                      ${e.maxPrice}
+                                      {/* ${e.maxPrice} */}
+                                      ${e.maxPrice ? e.maxPrice : e.rentalPrice}
                                     </span>
                                   </div>
                                   <p>
@@ -417,7 +418,7 @@ const handleLookingForChange = (e) => {
                                           src="img/my-img/icon_1.png"
                                           alt="area"
                                         />{" "}
-                                        {e.maxSize} m2
+                                        {e?.propertySize || e?.maxSize} m2
                                       </span>
                                     </li>
                                   </ul>
@@ -441,13 +442,33 @@ const handleLookingForChange = (e) => {
                                       style={{ marginRight: "0px" }}
                                     >
                                       <span>
-                                        <img
+                                        {/* <img
                                           src={e.Customer?.userDetails.map(
                                             (item) => item.photoUrl
                                           )}
                                           // alt="poster"
                                           className="profile-pic"
-                                        />
+                                        /> */}
+                                        <img
+                                              src={
+                                                e.Customer?.userDetails
+                                                  ?.length > 0
+                                                  ? e.Customer.userDetails[0]
+                                                      .photoUrl
+                                                  : e.Customer?.agentDetails
+                                                      ?.length > 0
+                                                  ? e.Customer.agentDetails[0]
+                                                      .photoUrl
+                                                  : e.Customer?.agencyDetails
+                                                      ?.length > 0
+                                                  ? e.Customer.agencyDetails[0]
+                                                      .photoUrl
+                                                  : "default.jpg" // fallback image if none exists
+                                              }
+                                              alt="poster"
+                                              className="profile-pic"
+                                              style={{ width: "40px" }}
+                                            />
                                       </span>
                                       <span
                                         className="d-flex align-items-center"

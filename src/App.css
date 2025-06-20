@@ -398,7 +398,7 @@ color: #1A1A1A;
 
 
 
-/* my visit */
+/* my visit modal */
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -438,6 +438,53 @@ color: #1A1A1A;
   margin-top: 2px;
   display: inline-block;
 }
+/* ----toastyfy */
+.Toastify{
+  padding: 0px !important;
+}
+/* modal 2 agentProfile */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  z-index: 9999;
+}
+.popup-contentt {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  max-height: 90vh;
+  overflow-y: auto;
+  width: 600px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+.popup-contentt::-webkit-scrollbar {
+  display: none;
+}
+.popup-contentt {
+  scrollbar-width: none;
+}
+
+.agent-description {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limit to 3 lines */
+  -webkit-box-orient: vertical;
+  margin-bottom: 0!important;
+}
+
+.agent-description.expanded {
+  -webkit-line-clamp: unset;
+  display: block;
+}
+
 
 
 

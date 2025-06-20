@@ -467,15 +467,11 @@ const PropertyDetils = () => {
   const handelCalenderSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${apiUrl}/enquiry/add`,
-        calenderData,
-        {
-          headers: {
-            Authorization: `Bearer ${token2}`,
-          },
-        }
-      );
+      const response = await axios.post(`${apiUrl}/enquiry/add`, calenderData, {
+        headers: {
+          Authorization: `Bearer ${token2}`,
+        },
+      });
       setCalenderData(initialState);
       console.log("response", response);
       toast.success(response.data.message);
@@ -1459,7 +1455,9 @@ const PropertyDetils = () => {
                             <div className="tc_content">
                               <div className="title-price">
                                 <h4>{e.name}</h4>
-                                <span className="fp_price">${e.maxPrice}</span>
+                                <span className="fp_price">
+                                  ${e.maxPrice ? e.maxPrice : e.rentalPrice}
+                                </span>
                               </div>
                               <p>
                                 <img src={locationn} alt="hh" />
@@ -1483,7 +1481,7 @@ const PropertyDetils = () => {
                                 </li>
                                 <li className="list-inline-item">
                                   <span>
-                                    <img src={img5} /> {e.maxSize} m2
+                                    <img src={img5} /> {e?.propertySize || e?.maxSize} m2
                                   </span>
                                 </li>
                               </ul>
@@ -1507,11 +1505,25 @@ const PropertyDetils = () => {
                                   style={{ marginRight: "0px" }}
                                 >
                                   <span>
-                                    <img
+                                    {/* <img
                                       src={e.Customer?.userDetails.map(
                                         (item) => item.photoUrl
                                       )}
                                       // alt="poster"
+                                      className="profile-pic"
+                                    /> */}
+                                    <img
+                                      src={
+                                        e.Customer?.userDetails?.length > 0
+                                          ? e.Customer.userDetails[0].photoUrl
+                                          : e.Customer?.agentDetails?.length > 0
+                                          ? e.Customer.agentDetails[0].photoUrl
+                                          : e.Customer?.agencyDetails?.length >
+                                            0
+                                          ? e.Customer.agencyDetails[0].photoUrl
+                                          : "default.jpg" // fallback image if none exists
+                                      }
+                                      alt="poster"
                                       className="profile-pic"
                                     />
                                   </span>

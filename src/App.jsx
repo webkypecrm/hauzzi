@@ -12,8 +12,6 @@ import "@fontsource/roboto";
 import 'swiper/css';
 import 'swiper/css/navigation';
 import Main from "./Pages/MainPage/Main";
-// import { ToastContainer } from "react-toastify";
-// import 'react-toastify/dist/ReactToastify.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 

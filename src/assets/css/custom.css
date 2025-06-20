@@ -502,8 +502,8 @@ div#swiper1 .prop_details span img {
   margin-right: 5px;
 }
 div#swiper1 .feat_property .details .tc_content h4 {
-  font-weight: 600;
-  font-size: 15px;
+  font-weight: 800;
+  font-size: 18px;
 }
 div#swiper1 .feat_property span.fp_price {
   font-weight: 600;
@@ -660,7 +660,7 @@ div#salecarousel .fp_footer .fp_meta li span {
   align-items: center;
 }
 div#salecarousel .fp_footer .fp_meta li span img {
-  width: auto;
+  /* width: auto; */
   height: 40px;
 }
 div#salecarousel a.btn-getstarted.gt {
@@ -693,7 +693,7 @@ div#rentcarousel .fp_footer .fp_meta li span {
   align-items: center;
 }
 div#rentcarousel .fp_footer .fp_meta li span img {
-  width: auto;
+  /* width: auto; */
   height: 40px;
 }
 div#rentcarousel a.btn-getstarted.gt {
@@ -889,7 +889,7 @@ button.btn-close:hover {
   margin-bottom: 2px;
 }
 .card-text-subtitle {
-  font-size: 14px;
+  font-size: 12.9px;
   color: #555;
 }
 .inmueble-card img {
