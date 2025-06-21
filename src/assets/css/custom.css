@@ -1406,7 +1406,8 @@ input[type="checkbox"].asButton:disabled + label {
   margin: 5px 0px 0px -24px;
 }
 .my-comp-img img {
-  height: 170px;
+  height: 142px;
+  width: 203.5px;
   position: relative;
 }
 .my-comp-img p {

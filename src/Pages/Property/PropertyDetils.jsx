@@ -5,6 +5,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import Loading from "../../Loading";
 import img1 from "../../assets/img/my-img/icon123.png";
+import { FaBalanceScale } from "react-icons/fa";
 import img2 from "../../assets/img/my-img/icon_123.png";
 import img3 from "../../assets/img/my-img/icon.png";
 import img4 from "../../assets/img/my-img/Vector_1.png";
@@ -48,6 +49,12 @@ const PropertyDetils = () => {
   // const [allData, setAllData] = useState([]);
   const [wishlistIds, setWishlistIds] = useState([]);
   const [wishlistLoaded, setWishlistLoaded] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [currentMonth, setCurrentMonth] = useState(date.getMonth());
+  const [currentYear, setCurrentYear] = useState(date.getFullYear());
+  const [daysArray, setDaysArray] = useState([]);
+  const [compareIds, setCompareIds] = useState([]);
+  const [compareLoaded, setCompareLoaded] = useState(false);
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
@@ -142,18 +149,8 @@ const PropertyDetils = () => {
     }
   };
 
-  //   let showData = [];
-
-  // if (propertyData?.Customer?.userDetails?.length > 0) {
-  //   showData = propertyData.Customer.userDetails;
-  // } else if (propertyData?.Customer?.agentDetails?.length > 0) {
-  //   showData = propertyData.Customer.agentDetails;
-  // } else if (propertyData?.Customer?.agencyDetails?.length > 0) {
-  //   showData = propertyData.Customer.agencyDetails;
-  // }
-
   let showData = [];
-  let profileType = ""; // 👈 agent ya agency set karne ke liye
+  let profileType = ""; 
 
   if (propertyData?.Customer?.userDetails?.length > 0) {
     showData = propertyData.Customer.userDetails;
@@ -244,7 +241,6 @@ const PropertyDetils = () => {
       zoom: 13,
     });
 
-    // ✅ Add current product location to Map 2
     new window.google.maps.Marker({
       position: { lat, lng },
       map: map2,
@@ -254,7 +250,6 @@ const PropertyDetils = () => {
       // },
     });
 
-    // ✅ Add other nearby products
     allProducts.forEach((product) => {
       const productLat = parseFloat(product.lat);
       const productLng = parseFloat(product.lng);
@@ -388,11 +383,62 @@ const PropertyDetils = () => {
       toast.error(error.response.data.message);
     }
   };
+
+  // compair api
+  useEffect(() => {
+    const fetchCompareList = async () => {
+      try {
+        const res = await axios.get(
+          `${apiUrl}/property/getCompare/${customerId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const ids = Array.isArray(res?.data?.data)
+          ? res?.data?.data.map((item) =>
+              typeof item === "object" && item !== null
+                ? Number(item.id)
+                : Number(item)
+            )
+          : [];
+        console.log("compareIDs", ids);
+
+        setCompareIds(ids);
+      } catch (err) {
+        setCompareIds([]);
+      } finally {
+        setCompareLoaded(true);
+      }
+    };
+
+    if (customerId) fetchCompareList();
+  }, [customerId]);
+
+  const handleCompare = async (id) => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}/property/addToCompare/${customerId}-${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success(response.data.message);
+
+      // Toggle logic
+      setCompareIds((prev) =>
+        prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+      );
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  };
+
   //----------------------Calender------------------
-  const [date, setDate] = useState(new Date());
-  const [currentMonth, setCurrentMonth] = useState(date.getMonth());
-  const [currentYear, setCurrentYear] = useState(date.getFullYear());
-  const [daysArray, setDaysArray] = useState([]);
 
   const today = new Date();
 
@@ -736,12 +782,41 @@ const PropertyDetils = () => {
                     <Link className="btn-getstarted" to="#">
                       <i className="fa fa-share-alt p-2" /> Share{" "}
                     </Link>
-                    <Link to="#">
-                      <img
-                        src={img1}
-                        style={{ width: "10%", marginLeft: 15 }}
-                      />
+                    {/* <Link to="#" onClick={() => handleCompare(property.id)}>
+  <img
+    src={compareIds.includes(property.id) ? img1Active : img1}
+    alt="Compare"
+    style={{
+      width: "10%",
+      marginLeft: 15,
+      cursor: "pointer",
+      transition: "all 0.3s ease-in-out",
+    }}
+  />
+</Link> */}
+                    <Link to="#" onClick={() => handleCompare(propertyData.id)}>
+                      {compareIds.includes(propertyData.id) ? (
+                        <FaBalanceScale
+                          style={{
+                            fontSize: "35px",
+                            color: "#6c63ff", // active color
+                            marginLeft: 15,
+                            cursor: "pointer",
+                          }}
+                        />
+                      ) : (
+                        <img
+                          src={img1}
+                          alt="Compare"
+                          style={{
+                            width: "10%",
+                            marginLeft: 15,
+                            cursor: "pointer",
+                          }}
+                        />
+                      )}
                     </Link>
+
                     <Link to="">
                       <img
                         src={img2}

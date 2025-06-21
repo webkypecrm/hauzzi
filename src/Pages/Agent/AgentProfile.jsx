@@ -34,9 +34,7 @@ import img1 from "../../assets/img/my-img/discovery.png";
 import img2 from "../../assets/img/my-img/agent-rent-img.jpeg";
 import icon1 from "../../assets/img/my-img/ellipse.png";
 
-
 const AgentProfile = () => {
-
   const toShareSlides = [
     {
       image: img1,
@@ -100,7 +98,7 @@ const AgentProfile = () => {
   console.log("tocken", token);
   const token2 = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
   const apiUrl = import.meta.env.VITE_API_URL;
-  const {id} = useParams();
+  const { id } = useParams();
 
   // Get All Property
   const getAgentData = async () => {
@@ -159,7 +157,7 @@ const AgentProfile = () => {
       console.log(error);
     }
   };
-console.log("rent", rentProperty);
+  console.log("rent", rentProperty);
   useEffect(() => {
     getAgentData();
     getSellProperty();
@@ -170,7 +168,6 @@ console.log("rent", rentProperty);
 
   const handleToggle = () => setExpanded(!expanded);
 
-
   // --------Review Apis----------
   // post review
   const initialState = {
@@ -179,11 +176,11 @@ console.log("rent", rentProperty);
     content: "",
     rating: "",
     title: "",
-  }
+  };
 
   const [reviewData, setReviewData] = useState(initialState);
 
-   const handleInputChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setReviewData({ ...reviewData, [name]: value });
   };
@@ -191,7 +188,7 @@ console.log("rent", rentProperty);
   const handleRatingChange = (event, newValue) => {
     setReviewData({ ...reviewData, rating: newValue });
   };
-  
+
   // const handelReviewSubmit = async (e) => {
   //   e.preventDefault();
   //   try {
@@ -210,28 +207,31 @@ console.log("rent", rentProperty);
   // };
 
   const handelReviewSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const res = await axios.post(`${apiUrl}/profile-review/addReview`, {
-      ...reviewData,
-      rating: reviewData.rating.toString(),
-      content: editorData,
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    e.preventDefault();
+    try {
+      const res = await axios.post(
+        `${apiUrl}/profile-review/addReview`,
+        {
+          ...reviewData,
+          rating: reviewData.rating.toString(),
+          content: editorData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    setReviewData(initialState);
-    setEditorData("");
-    setShowPopup(false);
-    toast.success(res?.data?.message);
-  } catch (error) {
-    console.log(error);
-    toast.error(error.res?.data?.message);
-  }
-};
-
+      setReviewData(initialState);
+      setEditorData("");
+      setShowPopup(false);
+      toast.success(res?.data?.message);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.res?.data?.message);
+    }
+  };
 
   // GET review
   const [getReviewData, setGetReviewData] = useState([]);
@@ -241,7 +241,7 @@ console.log("rent", rentProperty);
 
   const getReview = async () => {
     try {
-      const res = await axios.get(`${apiUrl}/profile-review/getReview`, {
+      const res = await axios.get(`${apiUrl}/profile-review/getReviewBycustomerId/${id}`, {
         headers: {
           Authorization: `Bearer ${token2}`,
         },
@@ -253,14 +253,15 @@ console.log("rent", rentProperty);
     }
   };
 
-   const handleToggleContent = (index) => {
+  const handleToggleContent = (index) => {
     setExpandedReviewIndex(index === expandedReviewIndex ? null : index);
   };
 
-  const visibleReviews = showAllReviews ? getReviewData : getReviewData.slice(0, 2);
+  const visibleReviews = showAllReviews
+    ? getReviewData
+    : getReviewData.slice(0, 2);
 
   console.log("review", countReview);
-
 
   useEffect(() => {
     getReview();
@@ -303,8 +304,7 @@ console.log("rent", rentProperty);
                               <b>{agentData?.name}</b>
                             </li>
                             <li>
-                              <img src={start} />{" "}
-                              <span>( 112 ) Reseñas</span>
+                              <img src={start} /> <span>( 112 ) Reseñas</span>
                             </li>
                             <li>
                               <img src={heart} />{" "}
@@ -396,10 +396,7 @@ console.log("rent", rentProperty);
                                           </span>
                                         </div>
                                         <p>
-                                          <img
-                                            src={location}
-                                            alt=""
-                                          />
+                                          <img src={location} alt="" />
                                           <span style={{ marginLeft: "5px" }}>
                                             {e.address1}
                                           </span>
@@ -407,29 +404,20 @@ console.log("rent", rentProperty);
                                         <ul className="prop_details mb0 p-0">
                                           <li className="list-inline-item">
                                             <span>
-                                              <img
-                                                src={hab}
-                                                alt=""
-                                              />{" "}
+                                              <img src={hab} alt="" />{" "}
                                               {e?.listingDetails?.Habitaciones}{" "}
                                               Hab.
                                             </span>
                                           </li>{" "}
                                           <li className="list-inline-item">
                                             <span>
-                                              <img
-                                                src={bath}
-                                                alt=""
-                                              />{" "}
+                                              <img src={bath} alt="" />{" "}
                                               {e?.listingDetails?.Baños} Baños
                                             </span>
                                           </li>
                                           <li className="list-inline-item">
                                             <span>
-                                              <img
-                                                src={area}
-                                                alt=""
-                                              />{" "}
+                                              <img src={area} alt="" />{" "}
                                               {e?.propertySize || e?.maxSize} m2
                                             </span>
                                           </li>
@@ -505,11 +493,8 @@ console.log("rent", rentProperty);
                         <li>Italiano</li>
                       </ul>
                       <Link to="javascript:void(0)" className="primary-text">
-                        <img
-                          src={global}
-                          style={{ width: 20 }}
-                        />{" "}
-                        Visitar la página web del agente
+                        <img src={global} style={{ width: 20 }} /> Visitar la
+                        página web del agente
                       </Link>
                       <ul className="list-inline socailicon_sec">
                         <li>
@@ -553,7 +538,6 @@ console.log("rent", rentProperty);
                         </li> */}
                       </ul>
                       <div className="map_sec">
-   
                         <AgentMap />
                         <p className="mt-1">
                           Este mapa puede mostrar los listados recientes{" "}
@@ -568,52 +552,50 @@ console.log("rent", rentProperty);
                               <div className="side-c text-center">
                                 <img src={item.photoUrl} className="img-r" />
                                 <div
-                              className="side-design text-center"
-                              style={{ marginTop: "15px" }}
-                            >
+                                  className="side-design text-center"
+                                  style={{ marginTop: "15px" }}
+                                >
                                   {/* <div className="agent_details"> */}
-                                    <h6>{agentData?.name}</h6>
-                                    <p style={{ fontSize: 13 }}>
-                                      <span className="primary-text">03</span>{" "}
-                                      listados de inmuebles
-                                    </p>
+                                  <h6>{agentData?.name}</h6>
+                                  <p style={{ fontSize: 13 }}>
+                                    <span className="primary-text">03</span>{" "}
+                                    listados de inmuebles
+                                  </p>
                                   {/* </div> */}
                                 </div>
                               </div>
                             </div>
-                            <div className="card-de">
-                              <div className="pr-det" style={{ marginTop: "10%" }}>
-                                <p >
-                                                            <img
-                                                              src={call}
-                                                              style={{ width: 18, marginRight: 9 }}
-                                                            />
-                                                            Teléfono
-                                                          </p>
+                            {/* <div className="card-de">
+                              <p className="de-i"></p>
+                              <div
+                                className="pr-det"
+                                style={{ marginTop: "10%", }}
+                              >
+                                <p style={{ marginLeft: "-22px" }}>
+                                  <img
+                                    src={call}
+                                    style={{ width: 18, marginRight: 9 }}
+                                  />
+                                  Teléfono
+                                </p>
                                 <p>
-                            <b>{item.phone}</b>
-                          </p>
+                                  <b>{item.phone}</b>
+                                </p>
                               </div>
-                              <div className="row mb-3 align-items-center justify-content-center">
-                                <div className="col-auto text-warning">
-                                  <img
-                                    src={whats}
-                                    style={{ width: 18 }}
-                                  />
-                                </div>
-                                <div className="col-lg-3 col-md-3">
+                              <div className="pr-det">
+                                <p className="de-i"></p>
+                                <p className="">
+                                  <img src={whats} style={{ width: 18 }} />
                                   Whatsapp
-                                </div>
-                                <div className="col-lg-6 col-md-6 text-start">
-                                  {item.whatsApp}
-                                </div>
+                                </p>
+                           
+                                <p className="col-lg-6 col-md-6 text-start">
+                                  <b>{item.whatsApp}</b>
+                                </p>
                               </div>
                               <div className="row mb-3 align-items-center justify-content-center">
                                 <div className="col-auto text-warning">
-                                  <img
-                                    src={sms}
-                                    style={{ width: 18 }}
-                                  />
+                                  <img src={sms} style={{ width: 18 }} />
                                 </div>
                                 <div className="col-lg-3 col-md-3">Correo</div>
                                 <div className="col-lg-6 col-md-6 text-start">
@@ -622,10 +604,7 @@ console.log("rent", rentProperty);
                               </div>
                               <div className="row align-items-center justify-content-center">
                                 <div className="col-auto text-warning">
-                                  <img
-                                    src={global}
-                                    style={{ width: 18 }}
-                                  />
+                                  <img src={global} style={{ width: 18 }} />
                                 </div>
                                 <div className="col-lg-3 col-md-3">
                                   Página web
@@ -633,6 +612,53 @@ console.log("rent", rentProperty);
                                 <div className="col-lg-6 col-md-6 text-start">
                                   {item.website}
                                 </div>
+                              </div>
+                            </div> */}
+                            <div className="card-de" key={item.id}>
+                              <div
+                                className="pr-det"
+                                style={{ marginTop: "10%" }}
+                              >
+                                <p className="de-i"></p>
+                                <p style={{ marginLeft: "-22px" }}>
+                                  <img
+                                    src={call}
+                                    style={{ width: 18, marginRight: 9 }}
+                                  />
+                                  Teléfono
+                                </p>
+                                <p>
+                                  <b>{item.phone}</b>
+                                </p>
+                                <p />
+                              </div>
+                              <div className="pr-det">
+                                <p className="de-i"></p>
+                                <p>
+                                  <img
+                                    src={sms}
+                                    style={{ width: 18, marginRight: 9 }}
+                                  />
+                                  Correo
+                                </p>
+                                <p>
+                                  <b>{agentData.email}</b>
+                                </p>
+                                <p />
+                              </div>
+                              <div className="pr-det">
+                                <p className="de-i"></p>
+                                <p style={{ marginLeft: 10 }}>
+                                  <img
+                                    src={global}
+                                    style={{ width: 18, marginRight: 9 }}
+                                  />
+                                  Página web
+                                </p>
+                                <p>
+                                  <b>{item.website}</b>
+                                </p>
+                                <p />
                               </div>
                             </div>
                           </div>
@@ -783,10 +809,7 @@ console.log("rent", rentProperty);
                                         </span>
                                       </div>
                                       <p>
-                                        <img
-                                          src={location}
-                                          alt="location"
-                                        />
+                                        <img src={location} alt="location" />
                                         <span style={{ marginLeft: 5 }}>
                                           {property.address1}
                                         </span>
@@ -794,10 +817,7 @@ console.log("rent", rentProperty);
                                       <ul className="prop_details mb-0 p-0">
                                         <li className="list-inline-item">
                                           <span>
-                                            <img
-                                              src={hab}
-                                              alt=""
-                                            />{" "}
+                                            <img src={hab} alt="" />{" "}
                                             {
                                               property?.listingDetails
                                                 ?.Habitaciones
@@ -807,20 +827,14 @@ console.log("rent", rentProperty);
                                         </li>{" "}
                                         <li className="list-inline-item">
                                           <span>
-                                            <img
-                                              src={bath}
-                                              alt=""
-                                            />{" "}
+                                            <img src={bath} alt="" />{" "}
                                             {property?.listingDetails?.Baños}{" "}
                                             Baños{" "}
                                           </span>
                                         </li>
                                         <li className="list-inline-item">
                                           <span>
-                                            <img
-                                              src={area}
-                                              alt=""
-                                            />{" "}
+                                            <img src={area} alt="" />{" "}
                                             {property?.propertySize ||
                                               property?.maxSize}{" "}
                                             m2{" "}
@@ -993,10 +1007,7 @@ console.log("rent", rentProperty);
                                         </span>
                                       </div>
                                       <p>
-                                        <img
-                                          src={location}
-                                          alt="vector"
-                                        />
+                                        <img src={location} alt="vector" />
                                         <span style={{ marginLeft: 5 }}>
                                           {prop.address1}
                                         </span>
@@ -1004,29 +1015,20 @@ console.log("rent", rentProperty);
                                       <ul className="prop_details mb-0 p-0">
                                         <li className="list-inline-item">
                                           <span>
-                                            <img
-                                              src={hab}
-                                              alt="hab"
-                                            />{" "}
+                                            <img src={hab} alt="hab" />{" "}
                                             {prop?.listingDetails?.Habitaciones}{" "}
                                             Hab.
                                           </span>
                                         </li>{" "}
                                         <li className="list-inline-item">
                                           <span>
-                                            <img
-                                              src={bath}
-                                              alt="baños"
-                                            />{" "}
+                                            <img src={bath} alt="baños" />{" "}
                                             {prop?.listingDetails?.Baños} Baños
                                           </span>
                                         </li>
                                         <li className="list-inline-item">
                                           <span>
-                                            <img
-                                              src={area}
-                                              alt="size"
-                                            />{" "}
+                                            <img src={area} alt="size" />{" "}
                                             {prop?.propertySize ||
                                               prop?.maxSize}{" "}
                                             m2
@@ -1269,9 +1271,6 @@ console.log("rent", rentProperty);
                   </div> */}
 
                   <div className="row">
-                    
-                      
-                   
                     <div className="col-lg-7 col-md-7">
                       <div className="d-flex justify-content-between align-items-center">
                         <h5 className="fw-bold">Reseñas ({countReview})</h5>
@@ -1349,56 +1348,62 @@ console.log("rent", rentProperty);
                       <hr className="mt-5 mb-5" />
                        </Fragment>
                        ))} */}
-                        {visibleReviews.map((item, index) => (
-        <Fragment key={index}>
-          <div className="d-flex justify-content-between align-items-center">
-            <h5 className="fw-bold">
-              {item.title}{" "}
-              <span style={{ color: "#eceaea", fontWeight: 300 }}>|</span>{" "}
-              {item.rating} <i className="fa fa-star primary-text" />
-            </h5>
-            <Link to="#" className="text-grey">
-              Reportar Problema
-            </Link>
-          </div>
-          <p className="text-capitalize ps-3">
-            <span className="me-3">
-              {new Date(item.createdAt).toLocaleDateString("en-US")}
-            </span>{" "}
-            {item?.reviewer?.customer?.name}
-          </p>
-          <p
-            className={`agent-description ${
-              expandedReviewIndex === index ? "expanded" : ""
-            }`}
-          >
-            {item.content}
-          </p>
-          <Link
-            to="#"
-            className="primary-text"
-            onClick={() => handleToggleContent(index)}
-          >
-            {expandedReviewIndex === index ? "Ver menos" : "Ver más"}
-          </Link>
-          <hr className="mt-5 mb-5" />
-        </Fragment>
-      ))}
+                      {visibleReviews.map((item, index) => (
+                        <Fragment key={index}>
+                          <div className="d-flex justify-content-between align-items-center">
+                            <h5 className="fw-bold">
+                              {item.title}{" "}
+                              <span
+                                style={{ color: "#eceaea", fontWeight: 300 }}
+                              >
+                                |
+                              </span>{" "}
+                              {item.rating}{" "}
+                              <i className="fa fa-star primary-text" />
+                            </h5>
+                            <Link to="#" className="text-grey">
+                              Reportar Problema
+                            </Link>
+                          </div>
+                          <p className="text-capitalize ps-3">
+                            <span className="me-3">
+                              {new Date(item.createdAt).toLocaleDateString(
+                                "en-US"
+                              )}
+                            </span>{" "}
+                            {item?.reviewer?.customer?.name}
+                          </p>
+                          <p
+                            className={`agent-description ${
+                              expandedReviewIndex === index ? "expanded" : ""
+                            }`}
+                          >
+                            {item.content}
+                          </p>
+                          <Link
+                            to="#"
+                            className="primary-text"
+                            onClick={() => handleToggleContent(index)}
+                          >
+                            {expandedReviewIndex === index
+                              ? "Ver menos"
+                              : "Ver más"}
+                          </Link>
+                          <hr className="mt-5 mb-5" />
+                        </Fragment>
+                      ))}
 
-      {getReviewData.length > 2 && (
-        <div className="text-center mt-3">
-          <button
-            className="btn btn-outline-primary"
-            onClick={() => setShowAllReviews(!showAllReviews)}
-          >
-            {showAllReviews ? "Leer menos" : "Ver más"}
-          </button>
-        </div>
-      )}
-                   
-                     
+                      {getReviewData.length > 2 && (
+                        <div className="text-center mt-3">
+                          <button
+                            className="btn btn-outline-primary"
+                            onClick={() => setShowAllReviews(!showAllReviews)}
+                          >
+                            {showAllReviews ? "Leer menos" : "Ver más"}
+                          </button>
+                        </div>
+                      )}
                     </div>
-                    
                   </div>
                 </div>
               </section>
@@ -1461,59 +1466,65 @@ console.log("rent", rentProperty);
 
               {/* MODAL */}
               {showPopup && (
-      <div className="popup-overlay" onClick={() => setShowPopup(false)}>
-        <div className="popup-contentt" onClick={(e) => e.stopPropagation()}>
-          <h4>Escribir reseña</h4>
-          <form onSubmit={handelReviewSubmit}>
-            <div>
-              <Box>
-                <Typography component="legend">Rating</Typography>
-                <Rating
-                  name="simple-controlled"
-                  value={reviewData.rating}
-                  onChange={handleRatingChange}
-                />
-              </Box>
-            </div>
+                <div
+                  className="popup-overlay"
+                  onClick={() => setShowPopup(false)}
+                >
+                  <div
+                    className="popup-contentt"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <h4>Escribir reseña</h4>
+                    <form onSubmit={handelReviewSubmit}>
+                      <div>
+                        <Box>
+                          <Typography component="legend">Rating</Typography>
+                          <Rating
+                            name="simple-controlled"
+                            value={reviewData.rating}
+                            onChange={handleRatingChange}
+                          />
+                        </Box>
+                      </div>
 
-            <div className="col-md-12 mb-3">
-              <label className="form-label">Title</label>
-              <div className="d-flex align-items-center position-relative">
-                <input
-                  type="text"
-                  className="form-control border bg-transparent"
-                  name="title"
-                  value={reviewData.title}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
+                      <div className="col-md-12 mb-3">
+                        <label className="form-label">Title</label>
+                        <div className="d-flex align-items-center position-relative">
+                          <input
+                            type="text"
+                            className="form-control border bg-transparent"
+                            name="title"
+                            value={reviewData.title}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </div>
 
-            <div className="col-md-12 mb-3">
-              <label className="form-label">Review Content</label>
-              <SimpleMDE
-                value={editorData}
-                onChange={setEditorData}
-                options={{ status: false }}
-              />
-            </div>
+                      <div className="col-md-12 mb-3">
+                        <label className="form-label">Review Content</label>
+                        <SimpleMDE
+                          value={editorData}
+                          onChange={setEditorData}
+                          options={{ status: false }}
+                        />
+                      </div>
 
-            <div className="d-flex justify-content-end">
-              <button
-                className="close-btn me-2"
-                type="button"
-                onClick={() => setShowPopup(false)}
-              >
-                Cerrar
-              </button>
-              <button className="close-btn ms-2" type="submit">
-                Submit
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    )}
+                      <div className="d-flex justify-content-end">
+                        <button
+                          className="close-btn me-2"
+                          type="button"
+                          onClick={() => setShowPopup(false)}
+                        >
+                          Cerrar
+                        </button>
+                        <button className="close-btn ms-2" type="submit">
+                          Submit
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
 
               <Footer />
             </div>

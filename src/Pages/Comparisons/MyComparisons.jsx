@@ -1,9 +1,63 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Footer from "../MainPage/Footer";
 import Header from "../MainPage/Header";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import Loading from "../../Loading";
+import { toast } from "react-toastify";
 
 const MyComparisons = () => {
+  const [comparisonsData, setComparisonsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
+  const customerId = localStorage.getItem("tokenId") || "";
+
+  const getComparisons = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(
+        `${apiUrl}/property/getCompare/${customerId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setComparisonsData(res?.data?.data || []);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  console.log("comparisonsData", comparisonsData);
+
+  useEffect(() => {
+    getComparisons();
+  }, []);
+
+  // remove comparision
+  const handleCompare = async (id) => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}/property/addToCompare/${customerId}-${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success(response.data.message);
+      getComparisons();
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  };
+
   return (
     <Fragment>
       <div className="index-page">
@@ -13,16 +67,6 @@ const MyComparisons = () => {
           <section className="top-btn12">
             <div className="container-lg py-3">
               {/* Navigation */}
-              {/* <div className="d-flex flex-wrap justify-content-center mb-2 myadsnav">
-                <button className="nav-button">Publicar inmueble</button>
-                <button className="nav-button">Mis anuncios</button>
-                <button className="nav-button">Mis favoritos</button>
-                <button className="nav-button">Mis alertas</button>
-                <button className="nav-button">Mis mensajes</button>
-                <button className="nav-button active">Mis comparaciones</button>
-                <button className="nav-button">Mis visitas</button>
-                <button className="nav-button">Mi perfil</button>
-              </div> */}
               <div className="d-flex flex-wrap justify-content-center mb-4 ">
                 <Link to={"/publish-propert"} className="nav-button ">
                   Publicar inmueble
@@ -125,190 +169,200 @@ const MyComparisons = () => {
                     Hasta 4 propiedades
                   </button>
                 </div>
-                <div className="col">
-                  <div className="my-comp-img">
-                    <img src="img/my-img/discovery.png" className="rounded" />
-                    <span>
-                      <img src="img/my-img/X-circle.png" />
-                    </span>
-                    <p>Eaton Garth Penthouse</p>
+                {comparisonsData.map((item, index) => (
+                  <div className="col" key={index}>
+                    <div className="my-comp-img">
+                      <img src={item?.images[0]} className="rounded" />
+                      <span onClick={() => handleCompare(item.id)}>
+                        <img src="img/my-img/X-circle.png" />
+                      </span>
+                      <p>{item?.name}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="col">
-                  <div className="my-comp-img">
-                    <img src="img/my-img/discovery.png" className="rounded" />
-                    <span>
-                      <img src="img/my-img/X-circle.png" />
-                    </span>
-                    <p>Eaton Garth Penthouse</p>
-                  </div>
-                </div>
-                <div className="col">
-                  <div className="my-comp-img">
-                    <img src="img/my-img/discovery.png" className="rounded" />
-                    <span>
-                      <img src="img/my-img/X-circle.png" />
-                    </span>
-                    <p>Eaton Garth Penthouse</p>
-                  </div>
-                </div>
-                <div className="col">
-                  <div className="my-comp-img">
-                    <img src="img/my-img/discovery.png" className="rounded" />
-                    <span>
-                      <img src="img/my-img/X-circle.png" />
-                    </span>
-                    <p>Eaton Garth Penthouse</p>
-                  </div>
-                </div>
+                ))}
               </div>
+
               <h6 className="table_heading">Vista General</h6>
               <div className="table-container table-responsive mb-4">
                 <table className="table table-striped text-center">
                   <thead>
                     <tr>
                       <th className="text-start">Status</th>
-                      <th>Venta</th>
-                      <th>Venta</th>
-                      <th>Alquiler</th>
-                      <th>Compartir</th>
+                      {comparisonsData.map((item, index) => (
+                        <th key={index}>{item?.purpose}</th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
                       <td className="text-start">Precio</td>
-                      <td>300.000$</td>
-                      <td>275.000$</td>
-                      <td>1.500$</td>
-                      <td>750$</td>
+                      {comparisonsData?.map((item, idx) => (
+                        <td key={idx}>
+                          {item?.maxPrice
+                            ? `${item.maxPrice}$`
+                            : item?.rentalPrice
+                            ? `${item.rentalPrice}$`
+                            : "--"}
+                        </td>
+                      ))}
                     </tr>
                     <tr>
                       <td className="text-start">M2</td>
-                      <td>250m2</td>
-                      <td>210m2</td>
-                      <td>175m2</td>
-                      <td>80m2</td>
+                      {comparisonsData?.map((item, idx) => (
+                        <td key={idx}>
+                          {item?.maxSize
+                            ? `${item.maxSize} m²`
+                            : item?.propertySize
+                            ? `${item.propertySize} m²`
+                            : "--"}
+                        </td>
+                      ))}
                     </tr>
-                    <tr>
+                    {/* <tr>
                       <td className="text-start">Precio/m2</td>
                       <td>Status</td>
                       <td>Status</td>
                       <td>Status</td>
                       <td>Status</td>
-                    </tr>
+                    </tr> */}
                     <tr>
                       <td className="text-start">Habitaciones</td>
-                      <td>4</td>
-                      <td>3</td>
-                      <td>3</td>
-                      <td>2</td>
+                      {comparisonsData.map((item, index) => (
+                        <td key={index}>
+                          {item?.listingDetails?.Habitaciones}
+                        </td>
+                      ))}
                     </tr>
                     <tr>
                       <td className="text-start">Baños</td>
-                      <td>1</td>
-                      <td>2</td>
-                      <td>2</td>
-                      <td>1</td>
+                      {comparisonsData.map((item, index) => (
+                        <td key={index}>{item?.listingDetails?.Baños}</td>
+                      ))}
                     </tr>
                     <tr>
                       <td className="text-start">Estado</td>
-                      <td>Status</td>
-                      <td>A reformar</td>
-                      <td>Status</td>
-                      <td>Status</td>
+                      {comparisonsData.map((item, index) => (
+                        <td key={index}>{item?.state}</td>
+                      ))}
                     </tr>
                     <tr>
                       <td className="text-start">Publica</td>
-                      <td>Particular</td>
-                      <td>Inmobiliaria</td>
-                      <td>Particular</td>
-                      <td>Particular</td>
+                      {comparisonsData.map((item, index) => (
+                        <td key={index}>
+                          {item?.listingDetails?.Publicadopor}
+                        </td>
+                      ))}
                     </tr>
                     <tr>
                       <td className="text-start">Vistas</td>
-                      <td>Montaña</td>
-                      <td>Mar</td>
-                      <td>Montaña</td>
-                      <td>Montaña</td>
+                      {comparisonsData.map((item, index) => (
+                        <td key={index}>{item?.listingDetails?.Vistas}</td>
+                      ))}
                     </tr>
                     <tr>
                       <td className="text-start">Orientación</td>
-                      <td>Norte</td>
-                      <td>Sur</td>
-                      <td>Este</td>
-                      <td>Oeste</td>
+                      {comparisonsData.map((item, index) => (
+                        <td key={index}>{item?.listingDetails?.Orientación}</td>
+                      ))}
                     </tr>
                     <tr>
                       <td className="text-start">Tipo de suelo</td>
-                      <td>Madera</td>
-                      <td>Madera</td>
-                      <td>Cemento</td>
-                      <td>Madera</td>
+                      {comparisonsData.map((item, index) => (
+                        <td key={index}>{item?.listingDetails?.Tipodesuelo}</td>
+                      ))}
                     </tr>
                   </tbody>
                 </table>
               </div>
+
               <h6 className="table_heading">Seguridad</h6>
               <div className="table-container1 table-responsive mb-4">
                 <table className="table text-center">
                   <tbody>
                     <tr>
                       <td className="text-start">Cámaras de vigilancia</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>No</td>
-                      <td>No</td>
+                      {comparisonsData.map((item, index) => {
+                        const seguridad = item?.listingDetails?.Seguridad || "";
+                        const hasCCTV = seguridad.includes(
+                          "Cámaras de vigilancia (CCTV)"
+                        );
+                        return <td key={index}>{hasCCTV ? "Sí" : "No"}</td>;
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Alarma</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>No</td>
-                      <td>No</td>
+                      {comparisonsData.map((item, index) => {
+                        const seguridad = item?.listingDetails?.Seguridad || "";
+                        const includesAlarma = seguridad.includes("Alarma");
+                        return (
+                          <td key={index}>{includesAlarma ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Vigilancia</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>No</td>
-                      <td>No</td>
+                      {comparisonsData.map((item, index) => {
+                        const seguridad = item?.listingDetails?.Seguridad || "";
+                        const vigilancia = seguridad.includes("Vigilancia");
+                        return <td key={index}>{vigilancia ? "Sí" : "No"}</td>;
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">
                         Sistema de videocomunicador
                       </td>
-                      <td>Sí</td>
-                      <td>No</td>
-                      <td>No</td>
-                      <td>No</td>
+                      {comparisonsData.map((item, index) => {
+                        const seguridad = item?.listingDetails?.Seguridad || "";
+                        const sistema = seguridad.includes(
+                          "Sistema de videointercomunicador"
+                        );
+                        return <td key={index}>{sistema ? "Sí" : "No"}</td>;
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Cerco eléctrico</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const seguridad = item?.listingDetails?.Seguridad || "";
+                        const cercoEléctrico =
+                          seguridad.includes("Cerco eléctrico");
+                        return (
+                          <td key={index}>{cercoEléctrico ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Portón eléctrico</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>No</td>
-                      <td>No</td>
+                      {comparisonsData.map((item, index) => {
+                        const seguridad = item?.listingDetails?.Seguridad || "";
+                        const portónEléctrico =
+                          seguridad.includes("Portón eléctrico");
+                        return (
+                          <td key={index}>{portónEléctrico ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Cerco perimetral</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>No</td>
-                      <td>No</td>
+                      {comparisonsData.map((item, index) => {
+                        const seguridad = item?.listingDetails?.Seguridad || "";
+                        const cercoPerimetral =
+                          seguridad.includes("Cerco perimetral");
+                        return (
+                          <td key={index}>{cercoPerimetral ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                     <tr>
-                      <td className="text-start">(CCTV)</td>
-                      <td>Sí</td>
-                      <td>No</td>
-                      <td>No</td>
-                      <td>No</td>
+                      <td className="text-start">Sistema contra incendio</td>
+                      {comparisonsData.map((item, index) => {
+                        const seguridad = item?.listingDetails?.Seguridad || "";
+                        const sistemaContra = seguridad.includes(
+                          "Sistema contra incendio"
+                        );
+                        return (
+                          <td key={index}>{sistemaContra ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                   </tbody>
                 </table>
@@ -319,89 +373,125 @@ const MyComparisons = () => {
                   <tbody>
                     <tr>
                       <td className="text-start">Jardines o áreas verdes</td>
-                      <td>Sí</td>
-                      <td>No</td>
-                      <td>No</td>
-                      <td>No</td>
+                      {comparisonsData.map((item, index) => {
+                        const Ambientes = item?.listingDetails?.Ambientes || "";
+                        const jardines = Ambientes.includes(
+                          "Jardines o áreas verdes"
+                        );
+                        return <td key={index}>{jardines ? "Sí" : "No"}</td>;
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Terraza o solárium</td>
-                      <td>Sí</td>
-                      <td>No</td>
-                      <td>No</td>
-                      <td>No</td>
+                      {comparisonsData.map((item, index) => {
+                        const Ambientes = item?.listingDetails?.Ambientes || "";
+                        const terraza =
+                          Ambientes.includes("Terraza o solárium");
+                        return <td key={index}>{terraza ? "Sí" : "No"}</td>;
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">
                         Área de barbacoa/parrillera
                       </td>
-                      <td>Sí</td>
-                      <td>No</td>
-                      <td>No</td>
-                      <td>No</td>
+                      {comparisonsData.map((item, index) => {
+                        const Ambientes = item?.listingDetails?.Ambientes || "";
+                        const areaDeBarbacoa = Ambientes.includes(
+                          "Área de barbacoa/parrillera"
+                        );
+                        return (
+                          <td key={index}>{areaDeBarbacoa ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Cocina</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const Ambientes = item?.listingDetails?.Ambientes || "";
+                        const cocina = Ambientes.includes("Cocina");
+                        return <td key={index}>{cocina ? "Sí" : "No"}</td>;
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Estudio u oficina</td>
-                      <td>Sí</td>
-                      <td>No</td>
-                      <td>No</td>
-                      <td>No</td>
+                      {comparisonsData.map((item, index) => {
+                        const Ambientes = item?.listingDetails?.Ambientes || "";
+                        const estudio = Ambientes.includes("Estudio o oficina");
+                        return <td key={index}>{estudio ? "Sí" : "No"}</td>;
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Vestier</td>
-                      <td>-</td>
-                      <td>No</td>
-                      <td>-</td>
-                      <td>-</td>
+                      {comparisonsData.map((item, index) => {
+                        const Ambientes = item?.listingDetails?.Ambientes || "";
+                        const vestier = Ambientes.includes("Vestier");
+                        return <td key={index}>{vestier ? "Sí" : "No"}</td>;
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Armarios</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const Ambientes = item?.listingDetails?.Ambientes || "";
+                        const armarios = Ambientes.includes("Armarios");
+                        return <td key={index}>{armarios ? "Sí" : "No"}</td>;
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Cuarto de servicio</td>
-                      <td>-</td>
-                      <td>No</td>
-                      <td>No</td>
-                      <td>No</td>
+                      {comparisonsData.map((item, index) => {
+                        const Ambientes = item?.listingDetails?.Ambientes || "";
+                        const cuartoDeServicio =
+                          Ambientes.includes("Cuarto de servicio");
+                        return (
+                          <td key={index}>{cuartoDeServicio ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Cuarto de lavado</td>
-                      <td>Sí</td>
-                      <td>No</td>
-                      <td>No</td>
-                      <td>No</td>
+                      {comparisonsData.map((item, index) => {
+                        const Ambientes = item?.listingDetails?.Ambientes || "";
+                        const cuartoDeLavado =
+                          Ambientes.includes("Cuarto de lavado");
+                        return (
+                          <td key={index}>{cuartoDeLavado ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Área de comedor</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const Ambientes = item?.listingDetails?.Ambientes || "";
+                        const areaDeComedor =
+                          Ambientes.includes("Área de comedor");
+                        return (
+                          <td key={index}>{areaDeComedor ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Área para desayunar</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const Ambientes = item?.listingDetails?.Ambientes || "";
+                        const areaParaDesayunar = Ambientes.includes(
+                          "Área para desayunar"
+                        );
+                        return (
+                          <td key={index}>{areaParaDesayunar ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Canchas de usos múltiples</td>
-                      <td>No</td>
-                      <td>Sí</td>
-                      <td>-</td>
-                      <td>-</td>
+                      {comparisonsData.map((item, index) => {
+                        const Ambientes = item?.listingDetails?.Ambientes || "";
+                        const canchasMúltiples = Ambientes.includes(
+                          "Canchas de usos múltiples"
+                        );
+                        return (
+                          <td key={index}>{canchasMúltiples ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                   </tbody>
                 </table>
@@ -412,82 +502,130 @@ const MyComparisons = () => {
                   <tbody>
                     <tr>
                       <td className="text-start">Aire acondicionado</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const Equipamientos =
+                          item?.listingDetails?.Equipamientos || "";
+                        const aireAcondicionado =
+                          Equipamientos.includes("Aire acondicionado");
+                        return (
+                          <td key={index}>{aireAcondicionado ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Ascensor</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const Equipamientos =
+                          item?.listingDetails?.Equipamientos || "";
+                        const ascensor = Equipamientos.includes("Ascensor");
+                        return <td key={index}>{ascensor ? "Sí" : "No"}</td>;
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Ventilador</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const Equipamientos =
+                          item?.listingDetails?.Equipamientos || "";
+                        const ventilador = Equipamientos.includes("Ventilador");
+                        return <td key={index}>{ventilador ? "Sí" : "No"}</td>;
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Planta eléctrica</td>
-                      <td>Sí</td>
-                      <td>No</td>
-                      <td>-</td>
-                      <td>-</td>
+                      {comparisonsData.map((item, index) => {
+                        const Equipamientos =
+                          item?.listingDetails?.Equipamientos || "";
+                        const pantaEléctrica =
+                          Equipamientos.includes("Planta eléctrica");
+                        return (
+                          <td key={index}>{pantaEléctrica ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Calefacción</td>
-                      <td>Sí</td>
-                      <td>No</td>
-                      <td>-</td>
-                      <td>-</td>
+                      {comparisonsData.map((item, index) => {
+                        const Equipamientos =
+                          item?.listingDetails?.Equipamientos || "";
+                        const calefacción =
+                          Equipamientos.includes("Calefacción");
+                        return <td key={index}>{calefacción ? "Sí" : "No"}</td>;
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Acceso a internet</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const Equipamientos =
+                          item?.listingDetails?.Equipamientos || "";
+                        const accesoInternet =
+                          Equipamientos.includes("Acceso a internet");
+                        return (
+                          <td key={index}>{accesoInternet ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">
                         Calentador a gas / eléctrico
                       </td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const Equipamientos =
+                          item?.listingDetails?.Equipamientos || "";
+                        const calentadorEléctrico = Equipamientos.includes(
+                          "Calentador a gas/ eléctrico"
+                        );
+                        return (
+                          <td key={index}>
+                            {calentadorEléctrico ? "Sí" : "No"}
+                          </td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Electrodomésticos</td>
-                      <td>Sí</td>
-                      <td>Status</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const Equipamientos =
+                          item?.listingDetails?.Equipamientos || "";
+                        const electrodomésticos =
+                          Equipamientos.includes("Electrodomésticos");
+                        return (
+                          <td key={index}>{electrodomésticos ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">TV</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const Equipamientos =
+                          item?.listingDetails?.Equipamientos || "";
+                        const TV = Equipamientos.includes("TV");
+                        return <td key={index}>{TV ? "Sí" : "No"}</td>;
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Sistema de domótica</td>
-                      <td>No</td>
-                      <td>No</td>
-                      <td>-</td>
-                      <td>-</td>
+                      {comparisonsData.map((item, index) => {
+                        const Equipamientos =
+                          item?.listingDetails?.Equipamientos || "";
+                        const Sistemadedomótica = Equipamientos.includes(
+                          "Sistema de domótica"
+                        );
+                        return (
+                          <td key={index}>{Sistemadedomótica ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Cisterna de agua</td>
-                      <td>Sí</td>
-                      <td>Status</td>
-                      <td>-</td>
-                      <td>-</td>
+                      {comparisonsData.map((item, index) => {
+                        const Equipamientos =
+                          item?.listingDetails?.Equipamientos || "";
+                        const Cisternadeagua =
+                          Equipamientos.includes("Cisterna de agua");
+                        return (
+                          <td key={index}>{Cisternadeagua ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                   </tbody>
                 </table>
@@ -498,54 +636,91 @@ const MyComparisons = () => {
                   <tbody>
                     <tr>
                       <td className="text-start">Suministro de agua</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const serviciosArr = (
+                          item?.listingDetails?.Servicios || ""
+                        )
+                          .split(",")
+                          .map((s) => s.trim());
+
+                        const hasRegular =
+                          serviciosArr.includes("Suministro de agua");
+                        return <td key={index}>{hasRegular ? "Sí" : "No"}</td>;
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Línea telefónica</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const Servicios = item?.listingDetails?.Servicios || "";
+                        const Líneatelefónica =
+                          Servicios.includes("Línea telefónica");
+                        return (
+                          <td key={index}>{Líneatelefónica ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Red eléctrica</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const Servicios = item?.listingDetails?.Servicios || "";
+                        const Redeléctrica =
+                          Servicios.includes("Red eléctrica");
+                        return (
+                          <td key={index}>{Redeléctrica ? "Sí" : "No"}</td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Gas</td>
-                      <td>Sí</td>
-                      <td>No</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const Servicios = item?.listingDetails?.Servicios || "";
+                        const Gas = Servicios.includes("Gas");
+                        return <td key={index}>{Gas ? "Sí" : "No"}</td>;
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Recolección de basura</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const Servicios = item?.listingDetails?.Servicios || "";
+                        const Recoleccióndebasura = Servicios.includes(
+                          "Recolección de basura"
+                        );
+                        return (
+                          <td key={index}>
+                            {Recoleccióndebasura ? "Sí" : "No"}
+                          </td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">Alcantarillado y drenaje</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const Servicios = item?.listingDetails?.Servicios || "";
+                        const Alcantarilladoydrenaje = Servicios.includes(
+                          "Alcantarillado y drenaje"
+                        );
+                        return (
+                          <td key={index}>
+                            {Alcantarilladoydrenaje ? "Sí" : "No"}
+                          </td>
+                        );
+                      })}
                     </tr>
                     <tr>
                       <td className="text-start">
                         Suministros de agua potable
                       </td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
-                      <td>Sí</td>
+                      {comparisonsData.map((item, index) => {
+                        const serviciosArr = (
+                          item?.listingDetails?.Servicios || ""
+                        )
+                          .split(",")
+                          .map((s) => s.trim());
+                        const hasPotable = serviciosArr.includes(
+                          "Suministro de agua potable"
+                        );
+                        return <td key={index}>{hasPotable ? "Sí" : "No"}</td>;
+                      })}
                     </tr>
                   </tbody>
                 </table>
