@@ -209,7 +209,7 @@ console.log("rent", rentProperty);
   //   }
   // };
 
-    const handelReviewSubmit = async (e) => {
+  const handelReviewSubmit = async (e) => {
   e.preventDefault();
   try {
     const res = await axios.post(`${apiUrl}/profile-review/addReview`, {
@@ -225,17 +225,20 @@ console.log("rent", rentProperty);
     setReviewData(initialState);
     setEditorData("");
     setShowPopup(false);
-    toast.success(res.data.message);
+    toast.success(res?.data?.message);
   } catch (error) {
     console.log(error);
-    toast.error(error.response?.data?.message || "Something went wrong");
+    toast.error(error.res?.data?.message);
   }
 };
 
 
   // GET review
   const [getReviewData, setGetReviewData] = useState([]);
-  const [countReview, setCountReview] = useState(0);
+  const [countReview, setCountReview] = useState();
+  const [showAllReviews, setShowAllReviews] = useState(false);
+  const [expandedReviewIndex, setExpandedReviewIndex] = useState(null);
+
   const getReview = async () => {
     try {
       const res = await axios.get(`${apiUrl}/profile-review/getReview`, {
@@ -250,7 +253,13 @@ console.log("rent", rentProperty);
     }
   };
 
-  console.log("review", getReviewData);
+   const handleToggleContent = (index) => {
+    setExpandedReviewIndex(index === expandedReviewIndex ? null : index);
+  };
+
+  const visibleReviews = showAllReviews ? getReviewData : getReviewData.slice(0, 2);
+
+  console.log("review", countReview);
 
 
   useEffect(() => {
@@ -539,9 +548,9 @@ console.log("rent", rentProperty);
                         <li>
                           <i className="bi bi-circle-fill" /> Para alquilar
                         </li>
-                        <li>
+                        {/* <li>
                           <i className="bi bi-circle-fill" /> Compartir
-                        </li>
+                        </li> */}
                       </ul>
                       <div className="map_sec">
    
@@ -552,37 +561,38 @@ console.log("rent", rentProperty);
                       </div>
                     </div>
                     <div className="col-md-5">
-                      <div className="profile_box mb-4">
+                      <div className=" mb-4">
                         {agentData?.userDetails?.map((item, index) => (
                           <div key={index}>
-                            <div className="agent-detail position-relative">
+                            <div className="sidebar-det position-relative">
                               <div className="side-c text-center">
                                 <img src={item.photoUrl} className="img-r" />
-                                <div className="white_sec text-center">
-                                  <div className="agent_details">
+                                <div
+                              className="side-design text-center"
+                              style={{ marginTop: "15px" }}
+                            >
+                                  {/* <div className="agent_details"> */}
                                     <h6>{agentData?.name}</h6>
-                                    <p className="mb-0">
+                                    <p style={{ fontSize: 13 }}>
                                       <span className="primary-text">03</span>{" "}
                                       listados de inmuebles
                                     </p>
-                                  </div>
+                                  {/* </div> */}
                                 </div>
                               </div>
                             </div>
-                            <div className="p-3 ps-5 pe-5">
-                              <div className="row mb-3 align-items-center justify-content-center">
-                                <div className="col-auto text-warning">
-                                  <img
-                                    src={call}
-                                    style={{ width: 18 }}
-                                  />
-                                </div>
-                                <div className="col-lg-3 col-md-3">
-                                  Teléfono
-                                </div>
-                                <div className="col-lg-6 col-md-6 text-start">
-                                  {item.phone}
-                                </div>
+                            <div className="card-de">
+                              <div className="pr-det" style={{ marginTop: "10%" }}>
+                                <p >
+                                                            <img
+                                                              src={call}
+                                                              style={{ width: 18, marginRight: 9 }}
+                                                            />
+                                                            Teléfono
+                                                          </p>
+                                <p>
+                            <b>{item.phone}</b>
+                          </p>
                               </div>
                               <div className="row mb-3 align-items-center justify-content-center">
                                 <div className="col-auto text-warning">
@@ -1087,7 +1097,7 @@ console.log("rent", rentProperty);
                     </div>
                   )}
 
-                  <div className="row mb-3">
+                  {/* <div className="row mb-3">
                     <div className="col-lg-7 col-md-7">
                       <div className="d-flex justify-content-between">
                         <h5 className="fw-bold">Para Compartir ( 20 )</h5>
@@ -1256,7 +1266,7 @@ console.log("rent", rentProperty);
                         </Swiper>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="row">
                     
@@ -1303,7 +1313,7 @@ console.log("rent", rentProperty);
                           </div> */}
                         </div>
                       </form>
-                      {getReviewData.map((item, index) => (
+                      {/* {getReviewData.map((item, index) => (
                         <Fragment key={index}>
                       <div className="d-flex justify-content-between align-items-center">
                         <h5 className="fw-bold">
@@ -1318,23 +1328,14 @@ console.log("rent", rentProperty);
                         </Link>
                       </div>
                       <p className="text-capitalize ps-3">
-                        <span className="me-3">4/18/2024</span> Nombre de la
-                        persona que comenta
+                        <span className="me-3">{new Date(item.createdAt).toLocaleDateString("en-US")}</span> {item?.reviewer?.customer?.name}
                       </p>
                       <p
                         className={`agent-description ${
                           expanded ? "expanded" : ""
                         }`}
                       >
-                        Jhon Doe es un agente inmobiliario profesional y
-                        comprometido, con un profundo conocimiento del mercado y
-                        una excelente capacidad de negociación. Su enfoque
-                        transparente y personalizado garantiza una experiencia
-                        fluida en la compra, venta o alquiler de propiedades.
-                        Además, su dominio del marketing digital maximiza la
-                        visibilidad de los inmuebles, logrando resultados
-                        rápidos y eficientes. Si buscas un agente confiable y
-                        efectivo, Jhon Do{" "}
+                        {item.content}{" "}
                       </p>
                       
                       <Link
@@ -1347,7 +1348,53 @@ console.log("rent", rentProperty);
 
                       <hr className="mt-5 mb-5" />
                        </Fragment>
-                       ))}
+                       ))} */}
+                        {visibleReviews.map((item, index) => (
+        <Fragment key={index}>
+          <div className="d-flex justify-content-between align-items-center">
+            <h5 className="fw-bold">
+              {item.title}{" "}
+              <span style={{ color: "#eceaea", fontWeight: 300 }}>|</span>{" "}
+              {item.rating} <i className="fa fa-star primary-text" />
+            </h5>
+            <Link to="#" className="text-grey">
+              Reportar Problema
+            </Link>
+          </div>
+          <p className="text-capitalize ps-3">
+            <span className="me-3">
+              {new Date(item.createdAt).toLocaleDateString("en-US")}
+            </span>{" "}
+            {item?.reviewer?.customer?.name}
+          </p>
+          <p
+            className={`agent-description ${
+              expandedReviewIndex === index ? "expanded" : ""
+            }`}
+          >
+            {item.content}
+          </p>
+          <Link
+            to="#"
+            className="primary-text"
+            onClick={() => handleToggleContent(index)}
+          >
+            {expandedReviewIndex === index ? "Ver menos" : "Ver más"}
+          </Link>
+          <hr className="mt-5 mb-5" />
+        </Fragment>
+      ))}
+
+      {getReviewData.length > 2 && (
+        <div className="text-center mt-3">
+          <button
+            className="btn btn-outline-primary"
+            onClick={() => setShowAllReviews(!showAllReviews)}
+          >
+            {showAllReviews ? "Leer menos" : "Ver más"}
+          </button>
+        </div>
+      )}
                    
                      
                     </div>

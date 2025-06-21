@@ -142,29 +142,29 @@ const PropertyDetils = () => {
     }
   };
 
-//   let showData = [];
+  //   let showData = [];
 
-// if (propertyData?.Customer?.userDetails?.length > 0) {
-//   showData = propertyData.Customer.userDetails;
-// } else if (propertyData?.Customer?.agentDetails?.length > 0) {
-//   showData = propertyData.Customer.agentDetails;
-// } else if (propertyData?.Customer?.agencyDetails?.length > 0) {
-//   showData = propertyData.Customer.agencyDetails;
-// }
+  // if (propertyData?.Customer?.userDetails?.length > 0) {
+  //   showData = propertyData.Customer.userDetails;
+  // } else if (propertyData?.Customer?.agentDetails?.length > 0) {
+  //   showData = propertyData.Customer.agentDetails;
+  // } else if (propertyData?.Customer?.agencyDetails?.length > 0) {
+  //   showData = propertyData.Customer.agencyDetails;
+  // }
 
-let showData = [];
-let profileType = ""; // 👈 agent ya agency set karne ke liye
+  let showData = [];
+  let profileType = ""; // 👈 agent ya agency set karne ke liye
 
-if (propertyData?.Customer?.userDetails?.length > 0) {
-  showData = propertyData.Customer.userDetails;
-  profileType = "user";
-} else if (propertyData?.Customer?.agentDetails?.length > 0) {
-  showData = propertyData.Customer.agentDetails;
-  profileType = "agent";
-} else if (propertyData?.Customer?.agencyDetails?.length > 0) {
-  showData = propertyData.Customer.agencyDetails;
-  profileType = "agency";
-}
+  if (propertyData?.Customer?.userDetails?.length > 0) {
+    showData = propertyData.Customer.userDetails;
+    profileType = "user";
+  } else if (propertyData?.Customer?.agentDetails?.length > 0) {
+    showData = propertyData.Customer.agentDetails;
+    profileType = "agent";
+  } else if (propertyData?.Customer?.agencyDetails?.length > 0) {
+    showData = propertyData.Customer.agencyDetails;
+    profileType = "agency";
+  }
 
   console.log("propertyData", propertyData?.Customer);
 
@@ -172,7 +172,7 @@ if (propertyData?.Customer?.userDetails?.length > 0) {
     setActiveTab("agendar");
     getPropertyData();
   }, [id]);
-// ---------------------------------------------------
+  // ---------------------------------------------------
   const seguridadList = (propertyData?.listingDetails?.Seguridad ?? "")
     .split(",")
     .map((item) => item.trim());
@@ -1094,30 +1094,32 @@ if (propertyData?.Customer?.userDetails?.length > 0) {
                 <div className="col-md-5">
                   {showData?.map((item) => (
                     <div key={item.id}>
-                       <Link to={
-      profileType === "agent"
-        ? `/agentprofile/${item.customerId}`
-        : profileType === "agency"
-        ? `/agencyprofile/${item.customerId}`
-        : "#"
-    }>
-                      <div className="sidebar-det position-relative">
-                        {/* <div className="whatsapp">
+                      <Link
+                        to={
+                          profileType === "agent"
+                            ? `/agentprofile/${item.customerId}`
+                            : profileType === "agency"
+                            ? `/agencyprofile/${item.customerId}`
+                            : "#"
+                        }
+                      >
+                        <div className="sidebar-det position-relative">
+                          {/* <div className="whatsapp">
                           <img src={whatsapp} className="img-fluid what" />
                         </div> */}
-                        <div className="side-c text-center">
-                          <img src={item.photoUrl} className="img-r" />
-                          <div
-                            className="side-design text-center"
-                            style={{ marginTop: "15px" }}
-                          >
-                            <h6>{propertyData?.Customer?.name}</h6>
-                            <p style={{ fontSize: 13 }}>
-                              {count} listados de inmuebles
-                            </p>
+                          <div className="side-c text-center">
+                            <img src={item.photoUrl} className="img-r" />
+                            <div
+                              className="side-design text-center"
+                              style={{ marginTop: "15px" }}
+                            >
+                              <h6>{propertyData?.Customer?.name}</h6>
+                              <p style={{ fontSize: 13 }}>
+                                {count} listados de inmuebles
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
                       </Link>
 
                       <div className="card-de" key={item.id}>
@@ -1166,9 +1168,6 @@ if (propertyData?.Customer?.userDetails?.length > 0) {
                       </div>
                     </div>
                   ))}
-
-
-
 
                   <h5 className="mt-4 text-center" style={{ fontWeight: 700 }}>
                     Contacta con el anunciante
@@ -1509,7 +1508,8 @@ if (propertyData?.Customer?.userDetails?.length > 0) {
                                 </li>
                                 <li className="list-inline-item">
                                   <span>
-                                    <img src={img5} /> {e?.propertySize || e?.maxSize} m2
+                                    <img src={img5} />{" "}
+                                    {e?.propertySize || e?.maxSize} m2
                                   </span>
                                 </li>
                               </ul>
