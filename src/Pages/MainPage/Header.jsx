@@ -147,17 +147,17 @@ const Header = () => {
                         Index 3
                       </Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link className="dropdown-item" to="/dashboard">
                         Dashboard
                       </Link>
-                    </li>
-                    <li>
+                    </li> */}
+                    {/* <li>
                       <Link className="dropdown-item" to="/agentprofile">
-                        {/* Cerrar sesión */}
+                   
                         Agent Profile
                       </Link>
-                    </li>
+                    </li> */}
                     <li>
                       <Link className="dropdown-item" to="/agentmobiliario">
                         Agent Mobiliario
@@ -168,7 +168,7 @@ const Header = () => {
                         App Download
                       </Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link className="dropdown-item" to="/myads">
                         My Ads
                       </Link>
@@ -197,7 +197,7 @@ const Header = () => {
                       <Link className="dropdown-item" to="/myprofile">
                         My Profile
                       </Link>
-                    </li>
+                    </li> */}
                     <li>
                       <Link className="dropdown-item" to="/mycomparisons">
                         My Comparisons
@@ -208,7 +208,7 @@ const Header = () => {
                         Plans
                       </Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link className="dropdown-item" to="/propertysell">
                         Property Sell
                       </Link>
@@ -227,9 +227,9 @@ const Header = () => {
                       <Link className="dropdown-item" to="/real-state-agencies">
                         Agencies
                       </Link>
-                    </li>
+                    </li> */}
                     <li>
-                      <Link className="dropdown-item" to="/real-state-profile">
+                      <Link className="dropdown-item" to="/agencyprofile">
                         Agencies Details
                       </Link>
                     </li>

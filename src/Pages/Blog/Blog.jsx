@@ -20,6 +20,8 @@ const Blog = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
 
+  const [showAllBlogs, setShowAllBlogs] = useState(false);
+
   // get all blog
   const handelBlogData = async () => {
     setLoading(true);
@@ -305,7 +307,7 @@ const Blog = () => {
                 {/* <!-- End Section Title --> */}
                 <div className="container">
                   <div className="row gy-4">
-                    {blogsData4?.length > 0 && (
+                    {/* {blogsData4?.length > 0 && (
                       <div className="col-md-8">
                         <div className="row">
                           {blogsData4.map((blog) => (
@@ -360,7 +362,7 @@ const Blog = () => {
                                                   color: "#97989F",
                                                 }}
                                               >
-                                                Tracey Wilson
+                                                By Hauzzi
                                               </span>
                                             </span>
                                           </li>
@@ -382,7 +384,7 @@ const Blog = () => {
                               </Link>
                             </div>
                           ))}
-                          {/* <!-- End Feature Borx--> */}
+         
                           <div className="col-md-12">
                             <div className="text-center">
                               <button
@@ -394,10 +396,109 @@ const Blog = () => {
                               </button>
                             </div>
                           </div>
-                          {/* <!-- End Feature Borx--> */}
+                    
+                        </div>
+                      </div>
+                    )} */}
+                    {(showAllBlogs ? blogsData4.concat(blogsData5) : blogsData4)
+                      ?.length > 0 && (
+                      <div className="col-md-8">
+                        <div className="row">
+                          {(showAllBlogs
+                            ? blogsData4.concat(blogsData5)
+                            : blogsData4
+                          ).map((blog) => (
+                            <div className="col-xl-6 col-md-6" key={blog.id}>
+                              <Link to={`/blog-details/${blog.slug}`}>
+                                <div className="feat_property">
+                                  <div className="thumb">
+                                    {blog.photoUrl && (
+                                      <img
+                                        src={blog.photoUrl}
+                                        alt="Blog Image"
+                                        className="img-whp"
+                                      />
+                                    )}
+                                  </div>
+                                  <div className="details">
+                                    <div className="tc_content">
+                                      <p className="text-thm sub-t">
+                                        <span>Bienes raíces</span>
+                                      </p>
+                                      <div className="title-price">
+                                        <h4>{blog.title}</h4>
+                                      </div>
+                                      <h5
+                                        className="mt-2"
+                                        style={{
+                                          color: "#FFBD59",
+                                          fontSize: "18px",
+                                        }}
+                                      >
+                                        Seguir leyendo{" "}
+                                        <i
+                                          className="fa fa-long-arrow-right"
+                                          style={{ marginLeft: "10px" }}
+                                        ></i>
+                                      </h5>
+                                      <div
+                                        className="fp_footer"
+                                        style={{ border: "unset" }}
+                                      >
+                                        <ul className="fp_meta float-left mb0 mb-0 p-0">
+                                          <li className="list-inline-item">
+                                            <span>
+                                              <img
+                                                src="img/my-img/Image.png"
+                                                alt="pposter1.png"
+                                                width="30%"
+                                              />{" "}
+                                              <span
+                                                style={{
+                                                  marginLeft: "6px",
+                                                  color: "#97989F",
+                                                }}
+                                              >
+                                                By Hauzzi
+                                              </span>
+                                            </span>
+                                          </li>
+                                        </ul>
+                                        <div className="fp_pdate float-right">
+                                          {new Date(
+                                            blog.createdAt
+                                          ).toLocaleDateString("en-US", {
+                                            weekday: "short",
+                                            year: "numeric",
+                                            month: "short",
+                                            day: "numeric",
+                                          })}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </Link>
+                            </div>
+                          ))}
+
+                          {/* Toggle Button for See More / See Less */}
+                          <div className="col-md-12">
+                            <div className="text-center">
+                              <button
+                                type="button"
+                                className="btn"
+                                style={{ border: "1px solid #7c7c7c" }}
+                                onClick={() => setShowAllBlogs(!showAllBlogs)}
+                              >
+                                {showAllBlogs ? "Ver menos" : "Leer más"}
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     )}
+
                     {blogsData5?.length > 0 && (
                       <div className="col-md-4">
                         <h4 className="mb-3">Post populares</h4>
@@ -407,21 +508,17 @@ const Blog = () => {
                               <div className="col-md-4">
                                 <div className="img-v">
                                   <img
-                                    // src="img/my-img/blog1.png"
                                     src={e.photoUrl}
                                     alt=""
                                     width="100%"
                                     height="65px"
-                                    
-                                    style={{borderRadius:"5px"}}
+                                    style={{ borderRadius: "5px" }}
                                   />
                                 </div>
                               </div>
                               <div className="col-md-8 p-0">
                                 <div className="text-v1">
-                                  <p>
-                                    {e.title}
-                                  </p>
+                                  <p>{e.title}</p>
                                   <div className="mt-3">
                                     <div
                                       className="fp_footer"
@@ -441,7 +538,7 @@ const Blog = () => {
                                                 color: "#97989F",
                                               }}
                                             >
-                                              Tracey Wilson
+                                              By Hauzzi
                                             </span>
                                           </span>
                                         </li>
@@ -454,13 +551,13 @@ const Blog = () => {
                                         }}
                                       >
                                         {new Date(
-                                            e.createdAt
-                                          ).toLocaleDateString("en-US", {
-                                            weekday: "short",
-                                            year: "numeric",
-                                            month: "short",
-                                            day: "numeric",
-                                          })}
+                                          e.createdAt
+                                        ).toLocaleDateString("en-US", {
+                                          weekday: "short",
+                                          year: "numeric",
+                                          month: "short",
+                                          day: "numeric",
+                                        })}
                                       </div>
                                     </div>
                                   </div>

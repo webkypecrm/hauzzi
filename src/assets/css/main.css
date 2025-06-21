@@ -3065,6 +3065,9 @@ ul.lit {
   background-color: #ffbd59;
   padding: 24px 57px;
   border-radius: 19px;
+  background-image: url("../img/naam.png");
+  background-size: cover;
+  background-position: center;
 }
 .side-design.text-center {
   background-color: #fff;

@@ -3,7 +3,7 @@ import Header from "../MainPage/Header";
 import Footer from "../MainPage/Footer";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import Loading from "../../Loading";
 import AgentMap from "./AgentMap";
@@ -14,116 +14,32 @@ import Rating from "@mui/material/Rating";
 import Typography from "@mui/material/Typography";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
+import crown from "../../assets/img/my-img/crown.png";
+import start from "../../assets/img/my-img/start-small.png";
+import heart from "../../assets/img/my-img/heart.png";
+import global from "../../assets/img/my-img/global.png";
+import facebook from "../../assets/img/my-img/facebook.png";
+import insta from "../../assets/img/my-img/Instagram.png";
+import youtube from "../../assets/img/my-img/Youtube.png";
+import call from "../../assets/img/my-img/call12.png";
+import whats from "../../assets/img/my-img/whatsapp.png";
+import sms from "../../assets/img/my-img/sms.svg";
+import location from "../../assets/img/my-img/vector.png";
+import hab from "../../assets/img/my-img/icon.png";
+import bath from "../../assets/img/my-img/Vector_1.png";
+import area from "../../assets/img/my-img/icon_1.png";
+import mail from "../../assets/img/my-img/vector_2.png";
+import call2 from "../../assets/img/my-img/call.png";
+import img1 from "../../assets/img/my-img/discovery.png";
+import img2 from "../../assets/img/my-img/agent-rent-img.jpeg";
+import icon1 from "../../assets/img/my-img/ellipse.png";
+
 
 const AgentProfile = () => {
-  // Slider 1
-  // const slides = new Array(5).fill({
-  //   title: "Eaton Garth Penthouse",
-  //   price: "$180,000",
-  //   address: "7722 18th Ave, Brooklyn",
-  //   beds: "4 Hab.",
-  //   baths: "2 Baños",
-  //   area: "450 m2",
-  //   image: "img/my-img/discovery.png",
-  // });
-  // Slider 2
-  // const properties = [
-  //   {
-  //     image: "img/my-img/discovery.png",
-  //     title: "Eaton Garth Penthouse",
-  //     price: "$180,000",
-  //     address: "7722 18th Ave, Brooklyn",
-  //     hab: 4,
-  //     banos: 2,
-  //     size: "450 m2",
-  //     agentImage: "img/my-img/ellipse.png",
-  //     agentName: "Por Vectoria smith",
-  //   },
-  //   {
-  //     image: "img/my-img/agent-rent-img.jpeg",
-  //     title: "Diamond Manor Apartment",
-  //     price: "$259,000",
-  //     address: "7802 20th Ave, Brooklyn",
-  //     hab: 4,
-  //     banos: 2,
-  //     size: "500 m2",
-  //     agentImage: "img/my-img/ellipse_1.png",
-  //     agentName: "Por Jhon-smith",
-  //   },
-  //   {
-  //     image: "img/my-img/discovery.png",
-  //     title: "Eaton Garth Penthouse",
-  //     price: "$180,000",
-  //     address: "7722 18th Ave, Brooklyn",
-  //     hab: 4,
-  //     banos: 2,
-  //     size: "450 m2",
-  //     agentImage: "img/my-img/ellipse.png",
-  //     agentName: "Por Vectoria smith",
-  //   },
-  //   {
-  //     image: "img/my-img/agent-rent-img.jpeg",
-  //     title: "Diamond Manor Apartment",
-  //     price: "$259,000",
-  //     address: "7802 20th Ave, Brooklyn",
-  //     hab: 4,
-  //     banos: 2,
-  //     size: "500 m2",
-  //     agentImage: "img/my-img/ellipse_1.png",
-  //     agentName: "Por Jhon-smith",
-  //   },
-  // ];
-  // slider 3
-  // const properties2 = [
-  //   {
-  //     title: "Eaton Garth Penthouse",
-  //     price: "$180,000",
-  //     img: "img/my-img/discovery.png",
-  //     location: "7722 18th Ave, Brooklyn",
-  //     hab: "4 Hab.",
-  //     banos: "2 Baños",
-  //     size: "450 m2",
-  //     agentImg: "img/my-img/ellipse.png",
-  //     agentName: "Vectoria smith",
-  //   },
-  //   {
-  //     title: "Diamond Manor Apartment",
-  //     price: "$259,000",
-  //     img: "img/my-img/agent-rent-img.jpeg",
-  //     location: "7802 20th Ave, Brooklyn",
-  //     hab: "4 Hab.",
-  //     banos: "2 Baños",
-  //     size: "500 m2",
-  //     agentImg: "img/my-img/ellipse_1.png",
-  //     agentName: "Jhon-smith",
-  //   },
-  //   {
-  //     title: "Eaton Garth Penthouse",
-  //     price: "$180,000",
-  //     img: "img/my-img/discovery.png",
-  //     location: "7722 18th Ave, Brooklyn",
-  //     hab: "4 Hab.",
-  //     banos: "2 Baños",
-  //     size: "450 m2",
-  //     agentImg: "img/my-img/ellipse.png",
-  //     agentName: "Vectoria smith",
-  //   },
-  //   {
-  //     title: "Diamond Manor Apartment",
-  //     price: "$259,000",
-  //     img: "img/my-img/agent-rent-img.jpeg",
-  //     location: "7802 20th Ave, Brooklyn",
-  //     hab: "4 Hab.",
-  //     banos: "2 Baños",
-  //     size: "500 m2",
-  //     agentImg: "img/my-img/ellipse_1.png",
-  //     agentName: "Jhon-smith",
-  //   },
-  // ];
-  // Slider 4
+
   const toShareSlides = [
     {
-      image: "img/my-img/discovery.png",
+      image: img1,
       title: "Eaton Garth Penthouse",
       price: "$180,000",
       address: "7722 18th Ave, Brooklyn",
@@ -131,10 +47,10 @@ const AgentProfile = () => {
       bathrooms: "2 Baños",
       size: "450 m2",
       author: "Vectoria smith",
-      avatar: "img/my-img/ellipse.png",
+      avatar: icon1,
     },
     {
-      image: "img/my-img/agent-rent-img.jpeg",
+      image: img2,
       title: "Diamond Manor Apartment",
       price: "$259,000",
       address: "7802 20th Ave, Brooklyn",
@@ -142,10 +58,10 @@ const AgentProfile = () => {
       bathrooms: "2 Baños",
       size: "500 m2",
       author: "Jhon-smith",
-      avatar: "img/my-img/ellipse_1.png",
+      avatar: icon1,
     },
     {
-      image: "img/my-img/discovery.png",
+      image: img1,
       title: "Eaton Garth Penthouse",
       price: "$180,000",
       address: "7722 18th Ave, Brooklyn",
@@ -153,10 +69,10 @@ const AgentProfile = () => {
       bathrooms: "2 Baños",
       size: "450 m2",
       author: "Vectoria smith",
-      avatar: "img/my-img/ellipse.png",
+      avatar: icon1,
     },
     {
-      image: "img/my-img/agent-rent-img.jpeg",
+      image: img2,
       title: "Diamond Manor Apartment",
       price: "$259,000",
       address: "7802 20th Ave, Brooklyn",
@@ -164,7 +80,7 @@ const AgentProfile = () => {
       bathrooms: "2 Baños",
       size: "500 m2",
       author: "Jhon-smith",
-      avatar: "img/my-img/ellipse_1.png",
+      avatar: icon1,
     },
   ];
   // agent profile data GET
@@ -176,18 +92,21 @@ const AgentProfile = () => {
   const [rentProperty, setRentProperty] = useState([]);
   const [sellProperty, setSellProperty] = useState([]);
   const [value, setValue] = useState();
+  const [count1, setCount1] = useState();
+  const [count2, setCount2] = useState();
 
   const customerId = localStorage.getItem("tokenId") || "";
   const token = localStorage.getItem("token");
   console.log("tocken", token);
   const token2 = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
   const apiUrl = import.meta.env.VITE_API_URL;
+  const {id} = useParams();
 
   // Get All Property
   const getAgentData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${apiUrl}/profile/getById/${customerId}`, {
+      const res = await axios.get(`${apiUrl}/profile/getById/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -200,12 +119,14 @@ const AgentProfile = () => {
     }
   };
 
+  console.log("agentdata", agentData);
+
   // Get Sell Property
 
   const getSellProperty = async () => {
     try {
       const res = await axios.get(
-        `${apiUrl}/property/property?isDraft=false&purpose=Vender&customerId=${customerId}`,
+        `${apiUrl}/property/property?isDraft=false&purpose=Vender&customerId=${id}`,
         {
           headers: {
             Authorization: `Bearer ${token2}`,
@@ -213,17 +134,19 @@ const AgentProfile = () => {
         }
       );
       setSellProperty(res.data?.data || []);
+      setCount1(res?.data?.totalcount);
     } catch (error) {
       console.log(error);
     }
   };
+  console.log("sell", sellProperty);
 
-  // Get Sell Property
+  // Get Rent Property
 
   const getRentProperty = async () => {
     try {
       const res = await axios.get(
-        `${apiUrl}/property/property?isDraft=false&purpose=Alquilar&customerId=${customerId}`,
+        `${apiUrl}/property/property?isDraft=false&purpose=Alquilar&customerId=${id}`,
         {
           headers: {
             Authorization: `Bearer ${token2}`,
@@ -231,20 +154,108 @@ const AgentProfile = () => {
         }
       );
       setRentProperty(res.data?.data || []);
+      setCount2(res?.data?.totalcount);
     } catch (error) {
       console.log(error);
     }
   };
-
+console.log("rent", rentProperty);
   useEffect(() => {
     getAgentData();
     getSellProperty();
     getRentProperty();
   }, []);
 
-const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const handleToggle = () => setExpanded(!expanded);
+
+
+  // --------Review Apis----------
+  // post review
+  const initialState = {
+    customerId: id,
+    reviewerId: customerId,
+    content: "",
+    rating: "",
+    title: "",
+  }
+
+  const [reviewData, setReviewData] = useState(initialState);
+
+   const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setReviewData({ ...reviewData, [name]: value });
+  };
+
+  const handleRatingChange = (event, newValue) => {
+    setReviewData({ ...reviewData, rating: newValue });
+  };
+  
+  // const handelReviewSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const res = await axios.post(`${apiUrl}/profile-review/addReview`, reviewData, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     setReviewData(initialState);
+  //     console.log("response", res);
+  //     toast.success(res.data.message);
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error(error.response.data.message);
+  //   }
+  // };
+
+    const handelReviewSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await axios.post(`${apiUrl}/profile-review/addReview`, {
+      ...reviewData,
+      rating: reviewData.rating.toString(),
+      content: editorData,
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    setReviewData(initialState);
+    setEditorData("");
+    setShowPopup(false);
+    toast.success(res.data.message);
+  } catch (error) {
+    console.log(error);
+    toast.error(error.response?.data?.message || "Something went wrong");
+  }
+};
+
+
+  // GET review
+  const [getReviewData, setGetReviewData] = useState([]);
+  const [countReview, setCountReview] = useState(0);
+  const getReview = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/profile-review/getReview`, {
+        headers: {
+          Authorization: `Bearer ${token2}`,
+        },
+      });
+      setGetReviewData(res.data?.data || []);
+      setCountReview(res?.data?.totalCount);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log("review", getReviewData);
+
+
+  useEffect(() => {
+    getReview();
+  }, []);
 
   return (
     <Fragment>
@@ -273,7 +284,7 @@ const [expanded, setExpanded] = useState(false);
                             alt=""
                           />
                           <small className="toprated">
-                            <img src="img/my-img/crown.png" />
+                            <img src={crown} />
                             Top Rated
                           </small>
                         </div>
@@ -283,11 +294,11 @@ const [expanded, setExpanded] = useState(false);
                               <b>{agentData?.name}</b>
                             </li>
                             <li>
-                              <img src="img/my-img/start-small.png" />{" "}
+                              <img src={start} />{" "}
                               <span>( 112 ) Reseñas</span>
                             </li>
                             <li>
-                              <img src="img/my-img/heart.png" />{" "}
+                              <img src={heart} />{" "}
                               <span>Añadir a favoritos</span>
                             </li>
                           </ul>
@@ -377,7 +388,7 @@ const [expanded, setExpanded] = useState(false);
                                         </div>
                                         <p>
                                           <img
-                                            src="img/my-img/vector.png"
+                                            src={location}
                                             alt=""
                                           />
                                           <span style={{ marginLeft: "5px" }}>
@@ -388,7 +399,7 @@ const [expanded, setExpanded] = useState(false);
                                           <li className="list-inline-item">
                                             <span>
                                               <img
-                                                src="img/my-img/icon.png"
+                                                src={hab}
                                                 alt=""
                                               />{" "}
                                               {e?.listingDetails?.Habitaciones}{" "}
@@ -398,7 +409,7 @@ const [expanded, setExpanded] = useState(false);
                                           <li className="list-inline-item">
                                             <span>
                                               <img
-                                                src="img/my-img/Vector_1.png"
+                                                src={bath}
                                                 alt=""
                                               />{" "}
                                               {e?.listingDetails?.Baños} Baños
@@ -407,7 +418,7 @@ const [expanded, setExpanded] = useState(false);
                                           <li className="list-inline-item">
                                             <span>
                                               <img
-                                                src="img/my-img/icon_1.png"
+                                                src={area}
                                                 alt=""
                                               />{" "}
                                               {e?.propertySize || e?.maxSize} m2
@@ -486,7 +497,7 @@ const [expanded, setExpanded] = useState(false);
                       </ul>
                       <Link to="javascript:void(0)" className="primary-text">
                         <img
-                          src="img/my-img/global.png"
+                          src={global}
                           style={{ width: 20 }}
                         />{" "}
                         Visitar la página web del agente
@@ -497,7 +508,7 @@ const [expanded, setExpanded] = useState(false);
                             to={agentData?.userDetails?.[0]?.facebook}
                             target="_blank"
                           >
-                            <img src="img/my-img/facebook.png" />
+                            <img src={facebook} />
                           </Link>
                         </li>
                         <li>
@@ -505,7 +516,7 @@ const [expanded, setExpanded] = useState(false);
                             to={agentData?.userDetails?.[0]?.instagram}
                             target="_blank"
                           >
-                            <img src="img/my-img/Instagram.png" />
+                            <img src={insta} />
                           </Link>
                         </li>
                         <li>
@@ -513,7 +524,7 @@ const [expanded, setExpanded] = useState(false);
                             to={agentData?.userDetails?.[0]?.youtube}
                             target="_blank"
                           >
-                            <img src="img/my-img/Youtube.png" />
+                            <img src={youtube} />
                           </Link>
                         </li>
                       </ul>
@@ -533,10 +544,7 @@ const [expanded, setExpanded] = useState(false);
                         </li>
                       </ul>
                       <div className="map_sec">
-                        {/* <img
-                          src="img/my-img/agent-profile-map.png"
-                          style={{ width: "100%", borderRadius: 8 }}
-                        /> */}
+   
                         <AgentMap />
                         <p className="mt-1">
                           Este mapa puede mostrar los listados recientes{" "}
@@ -565,7 +573,7 @@ const [expanded, setExpanded] = useState(false);
                               <div className="row mb-3 align-items-center justify-content-center">
                                 <div className="col-auto text-warning">
                                   <img
-                                    src="img/my-img/call12.png"
+                                    src={call}
                                     style={{ width: 18 }}
                                   />
                                 </div>
@@ -579,7 +587,7 @@ const [expanded, setExpanded] = useState(false);
                               <div className="row mb-3 align-items-center justify-content-center">
                                 <div className="col-auto text-warning">
                                   <img
-                                    src="img/my-img/whatsapp.png"
+                                    src={whats}
                                     style={{ width: 18 }}
                                   />
                                 </div>
@@ -593,7 +601,7 @@ const [expanded, setExpanded] = useState(false);
                               <div className="row mb-3 align-items-center justify-content-center">
                                 <div className="col-auto text-warning">
                                   <img
-                                    src="img/my-img/sms.svg"
+                                    src={sms}
                                     style={{ width: 18 }}
                                   />
                                 </div>
@@ -605,7 +613,7 @@ const [expanded, setExpanded] = useState(false);
                               <div className="row align-items-center justify-content-center">
                                 <div className="col-auto text-warning">
                                   <img
-                                    src="img/my-img/global.png"
+                                    src={global}
                                     style={{ width: 18 }}
                                   />
                                 </div>
@@ -683,9 +691,9 @@ const [expanded, setExpanded] = useState(false);
                     <div className="row mb-3">
                       <div className="col-lg-7 col-md-7">
                         <div className="d-flex justify-content-between">
-                          <h5 className="fw-bold">Para Venta ( 20 )</h5>
+                          <h5 className="fw-bold">Para Venta ( {count1} )</h5>
                           <Link
-                            to="javascript:void(0)"
+                            to={`/propertysell?purpose=Vender&customerId=${id}`}
                             className="primary-text"
                           >
                             Ver Todos
@@ -766,7 +774,7 @@ const [expanded, setExpanded] = useState(false);
                                       </div>
                                       <p>
                                         <img
-                                          src="img/my-img/vector.png"
+                                          src={location}
                                           alt="location"
                                         />
                                         <span style={{ marginLeft: 5 }}>
@@ -777,7 +785,7 @@ const [expanded, setExpanded] = useState(false);
                                         <li className="list-inline-item">
                                           <span>
                                             <img
-                                              src="img/my-img/icon.png"
+                                              src={hab}
                                               alt=""
                                             />{" "}
                                             {
@@ -790,7 +798,7 @@ const [expanded, setExpanded] = useState(false);
                                         <li className="list-inline-item">
                                           <span>
                                             <img
-                                              src="img/my-img/Vector_1.png"
+                                              src={bath}
                                               alt=""
                                             />{" "}
                                             {property?.listingDetails?.Baños}{" "}
@@ -800,7 +808,7 @@ const [expanded, setExpanded] = useState(false);
                                         <li className="list-inline-item">
                                           <span>
                                             <img
-                                              src="img/my-img/icon_1.png"
+                                              src={area}
                                               alt=""
                                             />{" "}
                                             {property?.propertySize ||
@@ -831,9 +839,10 @@ const [expanded, setExpanded] = useState(false);
                                         <Link
                                           className="btn-getstarted gt"
                                           to="#"
+                                          state={{}}
                                         >
                                           <img
-                                            src="img/my-img/vector_2.png"
+                                            src={mail}
                                             width="25%"
                                             alt="email"
                                           />
@@ -844,7 +853,7 @@ const [expanded, setExpanded] = useState(false);
                                           to="#"
                                         >
                                           <img
-                                            src="img/my-img/call.png"
+                                            src={call2}
                                             width="25%"
                                             alt="call"
                                           />
@@ -898,9 +907,11 @@ const [expanded, setExpanded] = useState(false);
                     <div className="row mb-3">
                       <div className="col-lg-7 col-md-7">
                         <div className="d-flex justify-content-between">
-                          <h5 className="fw-bold">Para Alquilar ( 20 )</h5>
+                          <h5 className="fw-bold">
+                            Para Alquilar ( {count2} )
+                          </h5>
                           <Link
-                            to="javascript:void(0)"
+                            to={`/propertysell?purpose=Alquilar&customerId=${id}`}
                             className="primary-text"
                           >
                             Ver Todos
@@ -973,7 +984,7 @@ const [expanded, setExpanded] = useState(false);
                                       </div>
                                       <p>
                                         <img
-                                          src="img/my-img/vector.png"
+                                          src={location}
                                           alt="vector"
                                         />
                                         <span style={{ marginLeft: 5 }}>
@@ -984,7 +995,7 @@ const [expanded, setExpanded] = useState(false);
                                         <li className="list-inline-item">
                                           <span>
                                             <img
-                                              src="img/my-img/icon.png"
+                                              src={hab}
                                               alt="hab"
                                             />{" "}
                                             {prop?.listingDetails?.Habitaciones}{" "}
@@ -994,7 +1005,7 @@ const [expanded, setExpanded] = useState(false);
                                         <li className="list-inline-item">
                                           <span>
                                             <img
-                                              src="img/my-img/Vector_1.png"
+                                              src={bath}
                                               alt="baños"
                                             />{" "}
                                             {prop?.listingDetails?.Baños} Baños
@@ -1003,7 +1014,7 @@ const [expanded, setExpanded] = useState(false);
                                         <li className="list-inline-item">
                                           <span>
                                             <img
-                                              src="img/my-img/icon_1.png"
+                                              src={area}
                                               alt="size"
                                             />{" "}
                                             {prop?.propertySize ||
@@ -1036,7 +1047,7 @@ const [expanded, setExpanded] = useState(false);
                                           to="#"
                                         >
                                           <img
-                                            src="img/my-img/vector_2.png"
+                                            src={mail}
                                             width="25%"
                                             alt="email"
                                           />
@@ -1047,7 +1058,7 @@ const [expanded, setExpanded] = useState(false);
                                           to="#"
                                         >
                                           <img
-                                            src="img/my-img/call.png"
+                                            src={call2}
                                             width="25%"
                                             alt="call"
                                           />
@@ -1151,7 +1162,7 @@ const [expanded, setExpanded] = useState(false);
                                     </div>
                                     <p>
                                       <img
-                                        src="img/my-img/vector.png"
+                                        src={location}
                                         alt="location"
                                       />
                                       <span style={{ marginLeft: 5 }}>
@@ -1162,7 +1173,7 @@ const [expanded, setExpanded] = useState(false);
                                       <li className="list-inline-item">
                                         <span>
                                           <img
-                                            src="img/my-img/icon.png"
+                                            src={hab}
                                             alt=""
                                           />{" "}
                                           {item.bedrooms}
@@ -1171,7 +1182,7 @@ const [expanded, setExpanded] = useState(false);
                                       <li className="list-inline-item">
                                         <span>
                                           <img
-                                            src="img/my-img/Vector_1.png"
+                                            src={bath}
                                             alt=""
                                           />{" "}
                                           {item.bathrooms}
@@ -1180,7 +1191,7 @@ const [expanded, setExpanded] = useState(false);
                                       <li className="list-inline-item">
                                         <span>
                                           <img
-                                            src="img/my-img/icon_1.png"
+                                            src={area}
                                             alt=""
                                           />{" "}
                                           {item.size}
@@ -1209,7 +1220,7 @@ const [expanded, setExpanded] = useState(false);
                                         to="#"
                                       >
                                         <img
-                                          src="img/my-img/vector_2.png"
+                                          src={mail}
                                           width="25%"
                                           alt="email"
                                         />
@@ -1220,7 +1231,7 @@ const [expanded, setExpanded] = useState(false);
                                         to="#"
                                       >
                                         <img
-                                          src="img/my-img/call.png"
+                                          src={call2}
                                           width="25%"
                                           alt="call"
                                         />
@@ -1248,9 +1259,12 @@ const [expanded, setExpanded] = useState(false);
                   </div>
 
                   <div className="row">
+                    
+                      
+                   
                     <div className="col-lg-7 col-md-7">
                       <div className="d-flex justify-content-between align-items-center">
-                        <h5 className="fw-bold">Reseñas (77)</h5>
+                        <h5 className="fw-bold">Reseñas ({countReview})</h5>
                         <Link
                           to="javascript:void(0)"
                           className="reviewbtn btn"
@@ -1289,13 +1303,15 @@ const [expanded, setExpanded] = useState(false);
                           </div> */}
                         </div>
                       </form>
+                      {getReviewData.map((item, index) => (
+                        <Fragment key={index}>
                       <div className="d-flex justify-content-between align-items-center">
                         <h5 className="fw-bold">
-                          Titulo del comentario{" "}
+                          {item.title}{" "}
                           <span style={{ color: "#eceaea", fontWeight: 300 }}>
                             |
                           </span>{" "}
-                          5.0 <i className="fa fa-star primary-text" />
+                          {item.rating} <i className="fa fa-star primary-text" />
                         </h5>
                         <Link to="javascript:void(0)" className="text-grey">
                           Reportar Problema
@@ -1305,7 +1321,11 @@ const [expanded, setExpanded] = useState(false);
                         <span className="me-3">4/18/2024</span> Nombre de la
                         persona que comenta
                       </p>
-                      <p className={`agent-description ${expanded ? "expanded" : ""}`}>
+                      <p
+                        className={`agent-description ${
+                          expanded ? "expanded" : ""
+                        }`}
+                      >
                         Jhon Doe es un agente inmobiliario profesional y
                         comprometido, con un profundo conocimiento del mercado y
                         una excelente capacidad de negociación. Su enfoque
@@ -1315,43 +1335,23 @@ const [expanded, setExpanded] = useState(false);
                         visibilidad de los inmuebles, logrando resultados
                         rápidos y eficientes. Si buscas un agente confiable y
                         efectivo, Jhon Do{" "}
-                        </p>
-                        <Link to="#" className="primary-text" onClick={handleToggle}>
-        {expanded ? "Ver menos" : "Ver más"}
-      </Link>
+                      </p>
                       
+                      <Link
+                        to="#"
+                        className="primary-text"
+                        onClick={handleToggle}
+                      >
+                        {expanded ? "Ver menos" : "Ver más"}
+                      </Link>
+
                       <hr className="mt-5 mb-5" />
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h5 className="fw-bold">
-                          Titulo del comentario{" "}
-                          <span style={{ color: "#eceaea", fontWeight: 300 }}>
-                            |
-                          </span>{" "}
-                          5.0 <i className="fa fa-star primary-text" />
-                        </h5>
-                        <Link to="javascript:void(0)" className="text-grey">
-                          Reportar Problema
-                        </Link>
-                      </div>
-                      <p className="text-capitalize ps-3">
-                        <span className="me-3">4/18/2024</span> Nombre de la
-                        persona que comenta
-                      </p>
-                      <p>
-                        Jhon Doe es un agente inmobiliario profesional y
-                        comprometido, con un profundo conocimiento del mercado y
-                        una excelente capacidad de negociación. Su enfoque
-                        transparente y personalizado garantiza una experiencia
-                        fluida en la compra, venta o alquiler de propiedades.
-                        Además, su dominio del marketing digital maximiza la
-                        visibilidad de los inmuebles, logrando resultados
-                        rápidos y eficientes. Si buscas un agente confiable y
-                        efectivo, Jhon Do{" "}
-                        <Link to="javascript:void(0)" className="primary-text">
-                          Ver más
-                        </Link>
-                      </p>
+                       </Fragment>
+                       ))}
+                   
+                     
                     </div>
+                    
                   </div>
                 </div>
               </section>
@@ -1414,82 +1414,59 @@ const [expanded, setExpanded] = useState(false);
 
               {/* MODAL */}
               {showPopup && (
-                <div
-                  className="popup-overlay"
-                  onClick={() => setShowPopup(false)}
-                >
-                  <div
-                    className="popup-contentt"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <h4>Escribir reseña</h4>
-                    <form action="">
-                    <div>
-                      <Box>
-                        <Typography component="legend">Rating</Typography>
-                        <Rating
-                          name="simple-controlled"
-                          value={value}
-                          onChange={(event, newValue) => {
-                            setValue(newValue); // Update on user interaction
-                          }}
-                        />
-                      </Box>
-                    </div>
-                    <div className="col-md-12 mb-3">
-                        <label className="form-label">
-                          Name
-                        </label>
-                        <div className="d-flex align-items-center position-relative">
-                          <input
-                            type="text"
-                            className="form-control border bg-transparent"
-                            // placeholder=" pies cuadrados"
-                            // name="propertySize"
-                            // value={propertyData.propertySize}
-                            // onChange={handleInputChange}
-                          />
-                        </div>
-                      </div>
-                    <div className="col-md-12 mb-3">
-                        <label className="form-label">
-                          Title
-                        </label>
-                        <div className="d-flex align-items-center position-relative">
-                          <input
-                            type="text"
-                            className="form-control border bg-transparent"
-                            // placeholder=" pies cuadrados"
-                            // name="propertySize"
-                            // value={propertyData.propertySize}
-                            // onChange={handleInputChange}
-                          />
-                        </div>
-                      </div>
+      <div className="popup-overlay" onClick={() => setShowPopup(false)}>
+        <div className="popup-contentt" onClick={(e) => e.stopPropagation()}>
+          <h4>Escribir reseña</h4>
+          <form onSubmit={handelReviewSubmit}>
+            <div>
+              <Box>
+                <Typography component="legend">Rating</Typography>
+                <Rating
+                  name="simple-controlled"
+                  value={reviewData.rating}
+                  onChange={handleRatingChange}
+                />
+              </Box>
+            </div>
 
-                    <div className="col-md-12 mb-3">
-                      <SimpleMDE value={editorData} onChange={setEditorData} options={{
-          status: false
-        }} />
-                    </div>
-                        
+            <div className="col-md-12 mb-3">
+              <label className="form-label">Title</label>
+              <div className="d-flex align-items-center position-relative">
+                <input
+                  type="text"
+                  className="form-control border bg-transparent"
+                  name="title"
+                  value={reviewData.title}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
 
-                    <button
-                      className="close-btn"
-                      onClick={() => setShowPopup(false)}
-                    >
-                      Cerrar
-                    </button>
-                    <button
-                      className="close-btn ms-2"
-                      type="submit"
-                    >
-                      Submit
-                    </button>
-                    </form>
-                  </div>
-                </div>
-              )}
+            <div className="col-md-12 mb-3">
+              <label className="form-label">Review Content</label>
+              <SimpleMDE
+                value={editorData}
+                onChange={setEditorData}
+                options={{ status: false }}
+              />
+            </div>
+
+            <div className="d-flex justify-content-end">
+              <button
+                className="close-btn me-2"
+                type="button"
+                onClick={() => setShowPopup(false)}
+              >
+                Cerrar
+              </button>
+              <button className="close-btn ms-2" type="submit">
+                Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )}
 
               <Footer />
             </div>

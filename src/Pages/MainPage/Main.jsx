@@ -60,7 +60,6 @@ const handleLookingForChange = (e) => {
   // console.log("looking", lookingFor);
 
   // category GET
-
   const getCategory = async () => {
     try {
       const res = await axios.get(`${apiUrl}/category/getAllCategory`, {
@@ -75,8 +74,6 @@ const handleLookingForChange = (e) => {
   };
 
   // property subCategory GET
-  
-
   const getSubCategory = async (categoryId) => {
     try {
       const res = await axios.get(
@@ -110,17 +107,43 @@ const handleLookingForChange = (e) => {
     setselectCategory(selected?.name || "");
   };
 
-  useEffect(() => {
-    getMainData();
-    getCategory();
-  }, []);
+
 
 
 // Search get api 
- 
   const handelSearchInput = (e) => {
     setSearch(e.target.value)
   }
+
+  
+    // get blogs api
+      const [blogsData, setBlogsData] = useState([]);
+
+    const handelBlogData = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get(`${apiUrl}/blog/getAll?limit=3`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        const allBlogs = res.data?.data || [];
+        setBlogsData(allBlogs);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    console.log("blogdata", blogsData);
+
+      useEffect(() => {
+    getMainData();
+    getCategory();
+    handelBlogData();
+  }, []);
 
   return (
     <Fragment>
@@ -673,15 +696,17 @@ const handleLookingForChange = (e) => {
                   </h4>
                 </div>
                 {/* End Section Title */}
+                {blogsData.length > 0 ? (            
                 <div className="container">
                   <div className="row gy-4">
-                    <div className="col-xl-4 col-md-4">
-                      <Link to="#">
+                    {blogsData.map((blog) => (
+                      <div className="col-xl-4 col-md-4" key={blog.id}>
+                      <Link to={`/blog-details/${blog.slug}`}>
                         <div className="feat_property">
                           <div className="thumb">
                             <img
                               className="img-whp"
-                              src="img/my-img/discovery.png"
+                              src={blog.photoUrl}
                               alt="fp1.jpg"
                             />
                           </div>
@@ -692,8 +717,7 @@ const handleLookingForChange = (e) => {
                               </p>
                               <div className="title-price">
                                 <h4>
-                                  Investing in Your Future: Tips for Buying the
-                                  Perfect Property
+                                  {blog.title}
                                 </h4>
                               </div>
                               <h5
@@ -724,13 +748,20 @@ const handleLookingForChange = (e) => {
                                           color: "#97989F",
                                         }}
                                       >
-                                        Tracey Wilson
+                                        By Hauzzi
                                       </span>
                                     </span>
                                   </li>
                                 </ul>
                                 <div className="fp_pdate float-right">
-                                  August 20, 2022
+                                  {new Date(
+                                            blog.createdAt
+                                          ).toLocaleDateString("en-US", {
+                                            weekday: "short",
+                                            year: "numeric",
+                                            month: "short",
+                                            day: "numeric",
+                                          })}
                                 </div>
                               </div>
                             </div>
@@ -738,147 +769,13 @@ const handleLookingForChange = (e) => {
                         </div>
                       </Link>
                     </div>
-                    {/* End Feature Borx*/}
-                    <div
-                      className="col-xl-4 col-md-4 aos-init aos-animate"
-                      data-aos="zoom-in"
-                      data-aos-delay={200}
-                    >
-                      <Link to="#">
-                        <div className="feat_property">
-                          <div className="thumb">
-                            <img
-                              className="img-whp"
-                              src="img/my-img/discovery.png"
-                              alt="fp1.jpg"
-                            />
-                          </div>
-                          <div className="details">
-                            <div className="tc_content">
-                              <p className="text-thm sub-t">
-                                <span>Bienes raíces</span>
-                              </p>
-                              <div className="title-price">
-                                <h4>
-                                  Investing in Your Future: Tips for Buying the
-                                  Perfect Property
-                                </h4>
-                              </div>
-                              <h5
-                                className="mt-2"
-                                style={{ color: "#FFBD59", fontSize: 18 }}
-                              >
-                                Seguir leyendo{" "}
-                                <i
-                                  className="fa fa-long-arrow-right"
-                                  style={{ marginLeft: 10 }}
-                                />
-                              </h5>
-                              <div
-                                className="fp_footer"
-                                style={{ border: "unset" }}
-                              >
-                                <ul className="fp_meta float-left mb0 mb-0 p-0">
-                                  <li className="list-inline-item">
-                                    <span to="#">
-                                      <img
-                                        src="img/my-img/Image.png"
-                                        alt="pposter1.png"
-                                        width="30%"
-                                      />
-                                      <span
-                                        style={{
-                                          marginLeft: 6,
-                                          color: "#97989F",
-                                        }}
-                                      >
-                                        Tracey Wilson
-                                      </span>
-                                    </span>
-                                  </li>
-                                </ul>
-                                <div className="fp_pdate float-right">
-                                  August 20, 2022
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
-                    {/* End Feature Borx*/}
-                    <div
-                      className="col-xl-4 col-md-4 aos-init aos-animate"
-                      data-aos="zoom-in"
-                      data-aos-delay={200}
-                    >
-                      <Link to="#">
-                        <div className="feat_property">
-                          <div className="thumb">
-                            <img
-                              className="img-whp"
-                              src="img/my-img/discovery.png"
-                              alt="fp1.jpg"
-                            />
-                          </div>
-                          <div className="details">
-                            <div className="tc_content">
-                              <p className="text-thm sub-t">
-                                <span>Bienes raíces</span>
-                              </p>
-                              <div className="title-price">
-                                <h4>
-                                  Investing in Your Future: Tips for Buying the
-                                  Perfect Property
-                                </h4>
-                              </div>
-                              <h5
-                                className="mt-2"
-                                style={{ color: "#FFBD59", fontSize: 18 }}
-                              >
-                                Seguir leyendo{" "}
-                                <i
-                                  className="fa fa-long-arrow-right"
-                                  style={{ marginLeft: 10 }}
-                                />
-                              </h5>
-                              <div
-                                className="fp_footer"
-                                style={{ border: "unset" }}
-                              >
-                                <ul className="fp_meta float-left mb0 mb-0 p-0">
-                                  <li className="list-inline-item">
-                                    <span to="#">
-                                      <img
-                                        src="img/my-img/Image.png"
-                                        alt="pposter1.png"
-                                        width="30%"
-                                      />
-                                      <span
-                                        style={{
-                                          marginLeft: 6,
-                                          color: "#97989F",
-                                        }}
-                                      >
-                                        Tracey Wilson
-                                      </span>
-                                    </span>
-                                  </li>
-                                </ul>
-                                <div className="fp_pdate float-right">
-                                  August 20, 2022
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    </div>
+                    ))}
+                    
                     {/* End Feature Borx*/}
                     <div className="col-md-12" style={{ textAlign: "center" }}>
                       <Link
                         className="btn-getstarted"
-                        to="#"
+                        to="/blog"
                         style={{ padding: 16 }}
                       >
                         Descubrir más
@@ -886,6 +783,9 @@ const handleLookingForChange = (e) => {
                     </div>
                   </div>
                 </div>
+                ):(
+                  <p>No Data</p>
+                )}
               </section>
               <section
                 id="about"

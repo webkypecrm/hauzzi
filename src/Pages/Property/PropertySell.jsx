@@ -16,8 +16,6 @@ const PropertySell = () => {
   const [count, setCount] = useState("");
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
-  // const token2 = localStorage.getItem("token");
-  // const customerId = localStorage.getItem("tokenId") || "";
 
   // const { search } = useParams();
   const [searchParams] = useSearchParams();
@@ -25,6 +23,7 @@ const PropertySell = () => {
   const type = searchParams.get("type");
   const category = searchParams.get("category");
   const purpose = searchParams.get("purpose");
+  const customerId = searchParams.get("customerId");
 
   const getAllData = async () => {
     setLoading(true);
@@ -34,6 +33,7 @@ const PropertySell = () => {
       if (type) url += `&type=${type}`;
       if (category) url += `&category=${category}`;
       if (purpose) url += `&purpose=${purpose}`;
+      if (customerId) url += `&customerId=${customerId}`;
 
       // category=Hotels
       const response = await axios.get(url, {

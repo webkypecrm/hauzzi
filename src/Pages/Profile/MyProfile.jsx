@@ -365,7 +365,7 @@ const MyProfile = () => {
                           <i className="bi bi-globe primary-text" />
                         </span>
                         <input
-                          type="url"
+                          type="text"
                           className="form-control"
                           placeholder="www.dominio.com"
                           name="website"

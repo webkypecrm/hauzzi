@@ -41,7 +41,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/index2" element={<Index2 />} />
         <Route path="/index3" element={<Index3 />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/agentprofile" element={<AgentProfile />} />
+        <Route path="/agentprofile/:id" element={<AgentProfile />} />
         <Route path="/agentmobiliario" element={<AgentMobiliario />} />
         <Route path="/appdownload" element={<AppDownloading />} />
         <Route path="/myads" element={<MyAds />} />
@@ -56,10 +56,10 @@ createRoot(document.getElementById("root")).render(
         <Route path="/publish-propert" element={<PublishProperty />} />
         <Route path="/propert-details/:id" element={<PropertyDetils />} />
         <Route path="/real-state-agencies" element={<Agencies />} />
-        <Route path="/real-state-profile" element={<Profile />} />
+        <Route path="/agencyprofile/:id" element={<Profile />} />
         <Route path="/sellforrent" element={<SellForRent />} />
         <Route path="/blog" element={<Blog />} />
-        <Route path="/blog-details/:id" element={<BlogDetails/>} />
+        <Route path="/blog-details/:slug" element={<BlogDetails/>} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<SignIn />} />

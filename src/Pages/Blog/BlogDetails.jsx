@@ -1,17 +1,18 @@
 import React, { Fragment, useEffect, useState } from "react";
 import Header from "../MainPage/Header";
 import Footer from "../MainPage/Footer";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import Loading from "../../Loading";
 import blogImg from "../../assets/img/blog.jpg";
 
 const BlogDetails = () => {
-     const [blogsData, setBlogsData] = useState([]);
+     const [blogData, setBlogData] = useState([]);
       const [blogsData5, setBlogsData5] = useState([]);
       const [loading, setLoading] = useState(false);
       const apiUrl = import.meta.env.VITE_API_URL;
       const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
+      const {slug} = useParams();
     
       // get all blog
       const handelBlogData = async () => {
@@ -24,8 +25,7 @@ const BlogDetails = () => {
           });
     
           const allBlogs = res.data?.data || [];
-          setBlogsData(allBlogs);
-          setBlogsData5(allBlogs.slice(2, 12));
+          setBlogsData5(allBlogs.slice(0, 10));
         } catch (error) {
           console.log(error);
         } finally {
@@ -33,10 +33,32 @@ const BlogDetails = () => {
         }
       };
     
-      console.log("blogdata", blogsData);
+      console.log("blogdata", blogData);
+
+      // get blog data
+      const getBlogData = async () => {
+        setLoading(true);
+        try {
+          const res = await axios.get(`${apiUrl}/blog/blogBySlug/${slug}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+    
+          setBlogData(res.data?.data || []);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      console.log("first", blogData);
+
+
     
        useEffect(() => {
         handelBlogData();
+        getBlogData();
       }, []);
  
   return (
@@ -93,94 +115,21 @@ const BlogDetails = () => {
                       <div className="row gy-4">
 
                           <div className="col-md-8">
-                            <div className="row">
-                              {/* {blogsData4.map((blog) => (
-                                <div className="col-xl-6 col-md-6" key={blog.id}>
-                                  <Link to="#">
-                                    <div className="feat_property">
-                                      <div className="thumb">
-                                        {blog.photoUrl && (
-                                          <img
-                                            src={blog.photoUrl}
-                                            alt="Blog Image"
-                                            className="img-whp"
-                                          />
-                                        )}
-                                      </div>
-                                      <div className="details">
-                                        <div className="tc_content">
-                                          <p className="text-thm sub-t">
-                                            <span>Bienes raíces</span>
-                                          </p>
-                                          <div className="title-price">
-                                            <h4>{blog.title}</h4>
-                                          </div>
-                                          <h5
-                                            className="mt-2"
-                                            style={{
-                                              color: "#FFBD59",
-                                              fontSize: "18px",
-                                            }}
-                                          >
-                                            Seguir leyendo{" "}
-                                            <i
-                                              className="fa fa-long-arrow-right"
-                                              style={{ marginLeft: "10px" }}
-                                            ></i>
-                                          </h5>
-                                          <div
-                                            className="fp_footer"
-                                            style={{ border: "unset" }}
-                                          >
-                                            <ul className="fp_meta float-left mb0 mb-0 p-0">
-                                              <li className="list-inline-item">
-                                                <span to="#">
-                                                  <img
-                                                    src="img/my-img/Image.png"
-                                                    alt="pposter1.png"
-                                                    width="30%"
-                                                  />{" "}
-                                                  <span
-                                                    style={{
-                                                      marginLeft: "6px",
-                                                      color: "#97989F",
-                                                    }}
-                                                  >
-                                                    Tracey Wilson
-                                                  </span>
-                                                </span>
-                                              </li>
-                                            </ul>
-                                            <div className="fp_pdate float-right">
-                                              {new Date(
-                                                blog.createdAt
-                                              ).toLocaleDateString("en-US", {
-                                                weekday: "short",
-                                                year: "numeric",
-                                                month: "short",
-                                                day: "numeric",
-                                              })}
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </Link>
-                                </div>
-                              ))} */}
-                              {/* <!-- End Feature Borx--> */}
-                              {/* <div className="col-md-12">
-                                <div className="text-center">
-                                  <button
-                                    type="button"
-                                    className="btn"
-                                    style={{ border: "1px solid #7c7c7c" }}
-                                  >
-                                    Leer más
-                                  </button>
-                                </div>
-                              </div> */}
-                              {/* <!-- End Feature Borx--> */}
+                            <div className="row" style={{padding:"0 10px"}}>
+
+                                {/* <div className="col-xl-6 col-md-6" > */}
+                                  {/* <Link to="#"> */}
+                                    {/* <div className="feat_property"> */}
+                                      
+                                      {/* <div className="details"> */}
+                                         <div dangerouslySetInnerHTML={{__html: blogData.content}}/>
+                                          
+                                        
+                                      {/* </div> */}
+                                    {/* </div> */}
+                                  {/* </Link> */}
+                                {/* </div> */}
+
                             </div>
                           </div>
 
@@ -227,7 +176,7 @@ const BlogDetails = () => {
                                                     color: "#97989F",
                                                   }}
                                                 >
-                                                  Tracey Wilson
+                                                  By Hauzzi
                                                 </span>
                                               </span>
                                             </li>

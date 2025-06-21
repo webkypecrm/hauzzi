@@ -142,13 +142,37 @@ const PropertyDetils = () => {
     }
   };
 
-  console.log("propertyData", propertyData);
+//   let showData = [];
+
+// if (propertyData?.Customer?.userDetails?.length > 0) {
+//   showData = propertyData.Customer.userDetails;
+// } else if (propertyData?.Customer?.agentDetails?.length > 0) {
+//   showData = propertyData.Customer.agentDetails;
+// } else if (propertyData?.Customer?.agencyDetails?.length > 0) {
+//   showData = propertyData.Customer.agencyDetails;
+// }
+
+let showData = [];
+let profileType = ""; // 👈 agent ya agency set karne ke liye
+
+if (propertyData?.Customer?.userDetails?.length > 0) {
+  showData = propertyData.Customer.userDetails;
+  profileType = "user";
+} else if (propertyData?.Customer?.agentDetails?.length > 0) {
+  showData = propertyData.Customer.agentDetails;
+  profileType = "agent";
+} else if (propertyData?.Customer?.agencyDetails?.length > 0) {
+  showData = propertyData.Customer.agencyDetails;
+  profileType = "agency";
+}
+
+  console.log("propertyData", propertyData?.Customer);
 
   useEffect(() => {
     setActiveTab("agendar");
     getPropertyData();
   }, [id]);
-
+// ---------------------------------------------------
   const seguridadList = (propertyData?.listingDetails?.Seguridad ?? "")
     .split(",")
     .map((item) => item.trim());
@@ -423,8 +447,6 @@ const PropertyDetils = () => {
     type: "En persona",
     date: "",
     time: "",
-    // forBookTour: "true",
-    // customerId: localStorage.getItem("tokenId") || "",
     propertyId: id || "",
     userId: localStorage.getItem("tokenId") || "",
   };
@@ -484,12 +506,6 @@ const PropertyDetils = () => {
   return (
     <Fragment>
       <div className="index-page">
-        {/* {loading ? (
-          <div style={{ marginTop: "20%" }}>
-            <Loading />
-          </div>
-        ) : (
-          <Fragment> */}
         <Header />
         <main className="main">
           <section className="top-btn12">
@@ -1076,12 +1092,19 @@ const PropertyDetils = () => {
                   </div>
                 </div>
                 <div className="col-md-5">
-                  {propertyData?.Customer?.userDetails?.map((item) => (
+                  {showData?.map((item) => (
                     <div key={item.id}>
+                       <Link to={
+      profileType === "agent"
+        ? `/agentprofile/${item.customerId}`
+        : profileType === "agency"
+        ? `/agencyprofile/${item.customerId}`
+        : "#"
+    }>
                       <div className="sidebar-det position-relative">
-                        <div className="whatsapp">
+                        {/* <div className="whatsapp">
                           <img src={whatsapp} className="img-fluid what" />
-                        </div>
+                        </div> */}
                         <div className="side-c text-center">
                           <img src={item.photoUrl} className="img-r" />
                           <div
@@ -1095,6 +1118,7 @@ const PropertyDetils = () => {
                           </div>
                         </div>
                       </div>
+                      </Link>
 
                       <div className="card-de" key={item.id}>
                         <div className="pr-det" style={{ marginTop: "10%" }}>
@@ -1121,7 +1145,7 @@ const PropertyDetils = () => {
                             Correo
                           </p>
                           <p>
-                            <b>loremipsum@gmail.com</b>
+                            <b>{propertyData?.Customer.email}</b>
                           </p>
                           <p />
                         </div>
@@ -1142,6 +1166,10 @@ const PropertyDetils = () => {
                       </div>
                     </div>
                   ))}
+
+
+
+
                   <h5 className="mt-4 text-center" style={{ fontWeight: 700 }}>
                     Contacta con el anunciante
                   </h5>
