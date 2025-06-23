@@ -13,7 +13,6 @@ const Header = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = localStorage.getItem("token");
   const customerId = localStorage.getItem("tokenId") || "";
-  const token2 = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
 
   const getAllData = async () => {
     try {
@@ -30,7 +29,7 @@ const Header = () => {
       setLoading(false);
     }
   };
-
+console.log("nav", allData);
   const profileImg = allData?.userDetails?.map((item) => item.photoUrl);
   const photo = allData?.userDetails?.map((item) => item.photo);
 
@@ -222,12 +221,12 @@ const Header = () => {
                       <Link className="dropdown-item" to="/propert-details">
                         Property Details
                       </Link>
-                    </li>
+                    </li> */}
                     <li>
                       <Link className="dropdown-item" to="/real-state-agencies">
                         Agencies
                       </Link>
-                    </li> */}
+                    </li>
                     <li>
                       <Link className="dropdown-item" to="/agencyprofile">
                         Agencies Details
@@ -242,14 +241,14 @@ const Header = () => {
                 </div>
               </div>
               <div className="d-flex align-items-center ms-3">
-                <button className="h-icon-btn">
+                <Link to="/myfavoriets" className="h-icon-btn" style={{ color: "black" }}>
                   <i className="bi bi-heart-fill" />
-                </button>
-                <button className="h-icon-btn">
+                </Link>
+                <Link to="/mycomparisons" className="h-icon-btn">
                   <img src={arrow} alt="arrow" />
-                </button>
+                </Link>
                 <button className="h-icon-btn">
-                  <i className="bi bi-bell-fill" />
+                  <i className="bi bi-bell-fill" /> 
                 </button>
                 <Link
                   to={"/publish-propert"}
@@ -259,19 +258,8 @@ const Header = () => {
                   <i className="bi bi-plus-circle me-1" />
                   Publica tu anuncio gratis
                 </Link>
-                {/* {profileImg ? (
-                  <Link to={"/login"}>
-                    <img
-                  src={profileImg}
-                  // alt="Perfil"
-                  className="profile-pic "
-                />
-                </Link>
-                ):(<Link to="/login" className="h-icon-btn" style={{ color: "black",fontSize: "20px",marginRight: "0px" }}>
-                   <FontAwesomeIcon icon={faCircleUser} />
-                </Link>)} */}
 
-                {profileImg == null ? (
+                {photo == "" || photo == null ? (
                   <Link
                     to="/login"
                     className="h-icon-btn"

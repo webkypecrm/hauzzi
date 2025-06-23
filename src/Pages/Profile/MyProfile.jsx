@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Footer from "../MainPage/Footer";
 import Header from "../MainPage/Header";
 import axios from "axios";
@@ -6,16 +6,51 @@ import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
 const MyProfile = () => {
+    const [allData, setAllData] = useState([]);
+
+  const customerId = localStorage.getItem("tokenId") || "";
   const token = localStorage.getItem("token");
   const apiUrl = import.meta.env.VITE_API_URL;
   const [previewImage, setPreviewImage] = useState(
     "img/my-img/pp-textarea.png"
   );
 
+    // get Data
+
+  const getAllData = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/profile/getById/${customerId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setAllData(res?.data?.data || []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (allData?.email) {
+      setProfileData((prev) => ({
+        ...prev,
+        email: allData.email,
+      }));
+    }
+  }, [allData]);
+
+  useEffect(() => {
+    getAllData();
+  }, []);
+
+  const name = allData?.name;
+  const phn = allData?.userDetails?.map((item) => item.phone);
+
+  // post Api
   const initialData = {
     whatsApp: "",
     name: "",
-    email: "",
+    email: allData?.email || "",
     phone: "",
     address: "",
     website: "",
@@ -140,14 +175,14 @@ const MyProfile = () => {
       });
       toast.success("Social Media Updated", {
         autoClose: 1000,
-      })
+      });
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
     }
   };
 
-    // Social Media
+  // Specialties
   const initialSpecialtiesState = {
     customerId: localStorage.getItem("tokenId") || "",
     specialities: "",
@@ -161,6 +196,7 @@ const MyProfile = () => {
       [e.target.name]: e.target.value,
     }));
   };
+
   const handleSubmitSpecialties = async (e) => {
     e.preventDefault();
     try {
@@ -171,14 +207,12 @@ const MyProfile = () => {
       });
       toast.success("Specialities Updated", {
         autoClose: 1000,
-      })
+      });
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
     }
   };
-
-
 
   // usertype GET
   const getUserTypeLabel = () => {
@@ -187,6 +221,8 @@ const MyProfile = () => {
     if (type === "2") return "Real Estate";
     return "User";
   };
+
+
 
   return (
     <Fragment>
@@ -282,7 +318,7 @@ const MyProfile = () => {
                           type="text"
                           className="form-control"
                           // defaultValue="VictorIA"
-                          placeholder="Nombre(s)"
+                          placeholder={name ? name : "Nombre"}
                           name="name"
                           value={profileData.name}
                           onChange={handelInputChange}
@@ -302,7 +338,8 @@ const MyProfile = () => {
                           placeholder="nombre@gmail.com"
                           name="email"
                           value={profileData.email}
-                          onChange={handelInputChange}
+                          // onChange={handelInputChange}
+                          disabled
                         />
                       </div>
                     </div>
@@ -316,7 +353,7 @@ const MyProfile = () => {
                         <input
                           type="tel"
                           className="form-control"
-                          placeholder="+58 123 456 789"
+                          placeholder={phn ? phn : "+58 123 456 789"}
                           name="phone"
                           value={profileData.phone}
                           onChange={handelInputChange}
@@ -602,25 +639,28 @@ const MyProfile = () => {
                   </button>
                   <h4 className="mb-4">Especialidades</h4>
                   <form onSubmit={handleSubmitSpecialties}>
-                  <div className="mb-4">
-                    <label className="form-label">Especialidades</label>
-                    <div className="input-group">
-                      <span className="input-group-text bg-light border-0">
-                        <i className="bi bi-houses-fill primary-text" />
-                      </span>
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="#Apartamentos #Casas de lujo #Locales # Galpones"
-                        name="specialities"
-                        value={specialties.specialities}
-                        onChange={handelSpecialtiesInputChange}
-                      />
+                    <div className="mb-4">
+                      <label className="form-label">Especialidades</label>
+                      <div className="input-group">
+                        <span className="input-group-text bg-light border-0">
+                          <i className="bi bi-houses-fill primary-text" />
+                        </span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="#Apartamentos #Casas de lujo #Locales # Galpones"
+                          name="specialities"
+                          value={specialties.specialities}
+                          onChange={handelSpecialtiesInputChange}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <button type="submit" className="btn btn-primary w-100 p-2 mb-4">
-                    Guardar cambios
-                  </button>
+                    <button
+                      type="submit"
+                      className="btn btn-primary w-100 p-2 mb-4"
+                    >
+                      Guardar cambios
+                    </button>
                   </form>
 
                   <h4 className="mb-4">Seguridad</h4>

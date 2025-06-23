@@ -33,54 +33,55 @@ import call2 from "../../assets/img/my-img/call.png";
 import img1 from "../../assets/img/my-img/discovery.png";
 import img2 from "../../assets/img/my-img/agent-rent-img.jpeg";
 import icon1 from "../../assets/img/my-img/ellipse.png";
+import { toast } from "react-toastify";
 
 const AgentProfile = () => {
-  const toShareSlides = [
-    {
-      image: img1,
-      title: "Eaton Garth Penthouse",
-      price: "$180,000",
-      address: "7722 18th Ave, Brooklyn",
-      bedrooms: "4 Hab.",
-      bathrooms: "2 Baños",
-      size: "450 m2",
-      author: "Vectoria smith",
-      avatar: icon1,
-    },
-    {
-      image: img2,
-      title: "Diamond Manor Apartment",
-      price: "$259,000",
-      address: "7802 20th Ave, Brooklyn",
-      bedrooms: "4 Hab.",
-      bathrooms: "2 Baños",
-      size: "500 m2",
-      author: "Jhon-smith",
-      avatar: icon1,
-    },
-    {
-      image: img1,
-      title: "Eaton Garth Penthouse",
-      price: "$180,000",
-      address: "7722 18th Ave, Brooklyn",
-      bedrooms: "4 Hab.",
-      bathrooms: "2 Baños",
-      size: "450 m2",
-      author: "Vectoria smith",
-      avatar: icon1,
-    },
-    {
-      image: img2,
-      title: "Diamond Manor Apartment",
-      price: "$259,000",
-      address: "7802 20th Ave, Brooklyn",
-      bedrooms: "4 Hab.",
-      bathrooms: "2 Baños",
-      size: "500 m2",
-      author: "Jhon-smith",
-      avatar: icon1,
-    },
-  ];
+  // const toShareSlides = [
+  //   {
+  //     image: img1,
+  //     title: "Eaton Garth Penthouse",
+  //     price: "$180,000",
+  //     address: "7722 18th Ave, Brooklyn",
+  //     bedrooms: "4 Hab.",
+  //     bathrooms: "2 Baños",
+  //     size: "450 m2",
+  //     author: "Vectoria smith",
+  //     avatar: icon1,
+  //   },
+  //   {
+  //     image: img2,
+  //     title: "Diamond Manor Apartment",
+  //     price: "$259,000",
+  //     address: "7802 20th Ave, Brooklyn",
+  //     bedrooms: "4 Hab.",
+  //     bathrooms: "2 Baños",
+  //     size: "500 m2",
+  //     author: "Jhon-smith",
+  //     avatar: icon1,
+  //   },
+  //   {
+  //     image: img1,
+  //     title: "Eaton Garth Penthouse",
+  //     price: "$180,000",
+  //     address: "7722 18th Ave, Brooklyn",
+  //     bedrooms: "4 Hab.",
+  //     bathrooms: "2 Baños",
+  //     size: "450 m2",
+  //     author: "Vectoria smith",
+  //     avatar: icon1,
+  //   },
+  //   {
+  //     image: img2,
+  //     title: "Diamond Manor Apartment",
+  //     price: "$259,000",
+  //     address: "7802 20th Ave, Brooklyn",
+  //     bedrooms: "4 Hab.",
+  //     bathrooms: "2 Baños",
+  //     size: "500 m2",
+  //     author: "Jhon-smith",
+  //     avatar: icon1,
+  //   },
+  // ];
   // agent profile data GET
   const [agentData, setAgentData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -92,10 +93,11 @@ const AgentProfile = () => {
   const [value, setValue] = useState();
   const [count1, setCount1] = useState();
   const [count2, setCount2] = useState();
+  const [followedAgentIds, setFollowedAgentIds] = useState([]);
+  const [agentListLoaded, setAgentListLoaded] = useState(false);
 
   const customerId = localStorage.getItem("tokenId") || "";
   const token = localStorage.getItem("token");
-  console.log("tocken", token);
   const token2 = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
   const apiUrl = import.meta.env.VITE_API_URL;
   const { id } = useParams();
@@ -117,8 +119,6 @@ const AgentProfile = () => {
     }
   };
 
-  console.log("agentdata", agentData);
-
   // Get Sell Property
 
   const getSellProperty = async () => {
@@ -137,7 +137,6 @@ const AgentProfile = () => {
       console.log(error);
     }
   };
-  console.log("sell", sellProperty);
 
   // Get Rent Property
 
@@ -157,7 +156,7 @@ const AgentProfile = () => {
       console.log(error);
     }
   };
-  console.log("rent", rentProperty);
+
   useEffect(() => {
     getAgentData();
     getSellProperty();
@@ -241,11 +240,14 @@ const AgentProfile = () => {
 
   const getReview = async () => {
     try {
-      const res = await axios.get(`${apiUrl}/profile-review/getReviewBycustomerId/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token2}`,
-        },
-      });
+      const res = await axios.get(
+        `${apiUrl}/profile-review/getReviewBycustomerId/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token2}`,
+          },
+        }
+      );
       setGetReviewData(res.data?.data || []);
       setCountReview(res?.data?.totalCount);
     } catch (error) {
@@ -261,11 +263,65 @@ const AgentProfile = () => {
     ? getReviewData
     : getReviewData.slice(0, 2);
 
-  console.log("review", countReview);
-
   useEffect(() => {
     getReview();
   }, []);
+
+  // add My agent
+  useEffect(() => {
+    const fetchFollowedAgents = async () => {
+      try {
+        const res = await axios.get(
+          `${apiUrl}/profile/savedAgent/${customerId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const data = res?.data?.data;
+        const ids = Array.isArray(data)
+          ? data.map((item) =>
+              typeof item === "object" && item !== null
+                ? Number(item.id)
+                : Number(item)
+            )
+          : [];
+
+        console.log("Followed Agent IDs", ids);
+        setFollowedAgentIds(ids);
+      } catch (err) {
+        setFollowedAgentIds([]);
+      } finally {
+        setAgentListLoaded(true);
+      }
+    };
+
+    if (customerId) fetchFollowedAgents();
+  }, [customerId]);
+
+  const handleAddAgent = async () => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}/profile/addAgent/${customerId}-${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success(response.data.message);
+
+      setFollowedAgentIds((prev) =>
+        prev.includes(id)
+          ? prev.filter((agentId) => agentId !== Number(id))
+          : [...prev, id]
+      );
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  };
 
   return (
     <Fragment>
@@ -914,11 +970,12 @@ const AgentProfile = () => {
                           </p>
                           <div className="mt-3">
                             <button
-                              type="submit"
+                              // type="submit"
                               className="btn btn-primary ps-4 pe-4 w-100 text-capitalize"
                               data-bs-toggle="modal"
                               data-bs-target="#addagent_modal"
                             >
+                              {/* {followedAgentIds.includes(agent.id) ? "Unfollow" : "Follow"} */}
                               Añadir como mi agente
                             </button>
                           </div>
@@ -1408,6 +1465,7 @@ const AgentProfile = () => {
                 </div>
               </section>
 
+              {/* Add Agent Modal */}
               <div
                 className="modal fade"
                 id="addagent_modal"
@@ -1449,9 +1507,30 @@ const AgentProfile = () => {
                       </p>
                     </div>
                     <div className="modal-footer flex-nowrap justify-content-center">
-                      <button type="button" className="btn btn-primary w-50">
-                        Añadir Agente
-                      </button>
+                      {/* <button
+                        type="button"
+                        className="btn btn-primary w-50"
+                        aria-label="Close"
+                        data-bs-dismiss="modal"
+                        onClick={() => handleAddAgent(id)}
+                      >
+                        {followedAgentIds.includes(id)
+                          ? "Agregada"
+                          : "Añadir Agente"}
+                      </button> */}
+                      {agentListLoaded && (
+                        <button
+                          type="button"
+                          className="btn btn-primary w-50"
+                          aria-label="Close"
+                          data-bs-dismiss="modal"
+                          onClick={handleAddAgent}
+                        >
+                          {followedAgentIds.includes(Number(id))
+                            ? "Agregada"
+                            : "Añadir Agente"}
+                        </button>
+                      )}
                       <button
                         type="button"
                         className="btn btn-outline-light w-50"
@@ -1464,7 +1543,7 @@ const AgentProfile = () => {
                 </div>
               </div>
 
-              {/* MODAL */}
+              {/*Add Review MODAL */}
               {showPopup && (
                 <div
                   className="popup-overlay"
