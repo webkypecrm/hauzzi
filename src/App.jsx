@@ -14,6 +14,8 @@ import 'swiper/css/navigation';
 import Main from "./Pages/MainPage/Main";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "easymde/dist/easymde.min.css";
+import 'react-quill/dist/quill.snow.css'
 
 function App() {
   return (

@@ -29,7 +29,6 @@ const Header = () => {
       setLoading(false);
     }
   };
-console.log("nav", allData);
   const profileImg = allData?.userDetails?.map((item) => item.photoUrl);
   const photo = allData?.userDetails?.map((item) => item.photo);
 

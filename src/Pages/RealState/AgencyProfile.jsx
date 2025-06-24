@@ -1,95 +1,182 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, use, useEffect, useState } from "react";
 import Header from "../MainPage/Header";
 import Footer from "../MainPage/Footer";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
-import Loading from "../../Loading";
-import AgentMap from "./AgentMap";
-import Box from "@mui/material/Box";
-import Rating from "@mui/material/Rating";
-import Typography from "@mui/material/Typography";
-import SimpleMDE from "react-simplemde-editor";
 import crown from "../../assets/img/my-img/crown.png";
 import start from "../../assets/img/my-img/start-small.png";
 import heart from "../../assets/img/my-img/heart.png";
+import location from "../../assets/img/my-img/vector.png";
+import hab from "../../assets/img/my-img/icon.png";
+import bath from "../../assets/img/my-img/Vector_1.png";
+import area from "../../assets/img/my-img/icon_1.png";
 import global from "../../assets/img/my-img/global.png";
 import facebook from "../../assets/img/my-img/facebook.png";
 import insta from "../../assets/img/my-img/Instagram.png";
 import youtube from "../../assets/img/my-img/Youtube.png";
 import call from "../../assets/img/my-img/call12.png";
-import sms from "../../assets/img/my-img/sms.svg";
-import location from "../../assets/img/my-img/vector.png";
-import hab from "../../assets/img/my-img/icon.png";
-import bath from "../../assets/img/my-img/Vector_1.png";
-import area from "../../assets/img/my-img/icon_1.png";
-import mail from "../../assets/img/my-img/vector_2.png";
 import call2 from "../../assets/img/my-img/call.png";
-import img1 from "../../assets/img/my-img/discovery.png";
-import img2 from "../../assets/img/my-img/agent-rent-img.jpeg";
-import icon1 from "../../assets/img/my-img/ellipse.png";
-import { toast } from "react-toastify";
+import sms from "../../assets/img/my-img/sms.svg";
+import mail from "../../assets/img/my-img/vector_2.png";
+import Box from "@mui/material/Box";
+import Rating from "@mui/material/Rating";
+import Typography from "@mui/material/Typography";
+import ReactQuill from "react-quill";
+import Loading from "../../Loading";
+import AgencyMap from "./AgencyMap";
 
-const AgentProfile = () => {
-  // const toShareSlides = [
+const AgencyProfile = () => {
+  // Slider 2
+  // const properties = [
   //   {
-  //     image: img1,
+  //     image: "img/my-img/discovery.png",
   //     title: "Eaton Garth Penthouse",
   //     price: "$180,000",
   //     address: "7722 18th Ave, Brooklyn",
-  //     bedrooms: "4 Hab.",
-  //     bathrooms: "2 Baños",
+  //     hab: 4,
+  //     banos: 2,
   //     size: "450 m2",
-  //     author: "Vectoria smith",
-  //     avatar: icon1,
+  //     agentImage: "img/my-img/ellipse.png",
+  //     agentName: "Por Vectoria smith",
   //   },
   //   {
-  //     image: img2,
+  //     image: "img/my-img/agent-rent-img.jpeg",
   //     title: "Diamond Manor Apartment",
   //     price: "$259,000",
   //     address: "7802 20th Ave, Brooklyn",
-  //     bedrooms: "4 Hab.",
-  //     bathrooms: "2 Baños",
+  //     hab: 4,
+  //     banos: 2,
   //     size: "500 m2",
-  //     author: "Jhon-smith",
-  //     avatar: icon1,
+  //     agentImage: "img/my-img/ellipse_1.png",
+  //     agentName: "Por Jhon-smith",
   //   },
   //   {
-  //     image: img1,
+  //     image: "img/my-img/discovery.png",
   //     title: "Eaton Garth Penthouse",
   //     price: "$180,000",
   //     address: "7722 18th Ave, Brooklyn",
-  //     bedrooms: "4 Hab.",
-  //     bathrooms: "2 Baños",
+  //     hab: 4,
+  //     banos: 2,
   //     size: "450 m2",
-  //     author: "Vectoria smith",
-  //     avatar: icon1,
+  //     agentImage: "img/my-img/ellipse.png",
+  //     agentName: "Por Vectoria smith",
   //   },
   //   {
-  //     image: img2,
+  //     image: "img/my-img/agent-rent-img.jpeg",
   //     title: "Diamond Manor Apartment",
   //     price: "$259,000",
   //     address: "7802 20th Ave, Brooklyn",
-  //     bedrooms: "4 Hab.",
-  //     bathrooms: "2 Baños",
+  //     hab: 4,
+  //     banos: 2,
   //     size: "500 m2",
-  //     author: "Jhon-smith",
-  //     avatar: icon1,
+  //     agentImage: "img/my-img/ellipse_1.png",
+  //     agentName: "Por Jhon-smith",
   //   },
   // ];
-  // agent profile data GET
-  const [agentData, setAgentData] = useState({});
+  // slider 3
+  // const properties2 = [
+  //   {
+  //     title: "Eaton Garth Penthouse",
+  //     price: "$180,000",
+  //     img: "img/my-img/discovery.png",
+  //     location: "7722 18th Ave, Brooklyn",
+  //     hab: "4 Hab.",
+  //     banos: "2 Baños",
+  //     size: "450 m2",
+  //     agentImg: "img/my-img/ellipse.png",
+  //     agentName: "Vectoria smith",
+  //   },
+  //   {
+  //     title: "Diamond Manor Apartment",
+  //     price: "$259,000",
+  //     img: "img/my-img/agent-rent-img.jpeg",
+  //     location: "7802 20th Ave, Brooklyn",
+  //     hab: "4 Hab.",
+  //     banos: "2 Baños",
+  //     size: "500 m2",
+  //     agentImg: "img/my-img/ellipse_1.png",
+  //     agentName: "Jhon-smith",
+  //   },
+  //   {
+  //     title: "Eaton Garth Penthouse",
+  //     price: "$180,000",
+  //     img: "img/my-img/discovery.png",
+  //     location: "7722 18th Ave, Brooklyn",
+  //     hab: "4 Hab.",
+  //     banos: "2 Baños",
+  //     size: "450 m2",
+  //     agentImg: "img/my-img/ellipse.png",
+  //     agentName: "Vectoria smith",
+  //   },
+  //   {
+  //     title: "Diamond Manor Apartment",
+  //     price: "$259,000",
+  //     img: "img/my-img/agent-rent-img.jpeg",
+  //     location: "7802 20th Ave, Brooklyn",
+  //     hab: "4 Hab.",
+  //     banos: "2 Baños",
+  //     size: "500 m2",
+  //     agentImg: "img/my-img/ellipse_1.png",
+  //     agentName: "Jhon-smith",
+  //   },
+  // ];
+  // Slider 4
+  const toShareSlides = [
+    {
+      image: "img/my-img/discovery.png",
+      title: "Eaton Garth Penthouse",
+      price: "$180,000",
+      address: "7722 18th Ave, Brooklyn",
+      bedrooms: "4 Hab.",
+      bathrooms: "2 Baños",
+      size: "450 m2",
+      author: "Vectoria smith",
+      avatar: "img/my-img/ellipse.png",
+    },
+    {
+      image: "img/my-img/agent-rent-img.jpeg",
+      title: "Diamond Manor Apartment",
+      price: "$259,000",
+      address: "7802 20th Ave, Brooklyn",
+      bedrooms: "4 Hab.",
+      bathrooms: "2 Baños",
+      size: "500 m2",
+      author: "Jhon-smith",
+      avatar: "img/my-img/ellipse_1.png",
+    },
+    {
+      image: "img/my-img/discovery.png",
+      title: "Eaton Garth Penthouse",
+      price: "$180,000",
+      address: "7722 18th Ave, Brooklyn",
+      bedrooms: "4 Hab.",
+      bathrooms: "2 Baños",
+      size: "450 m2",
+      author: "Vectoria smith",
+      avatar: "img/my-img/ellipse.png",
+    },
+    {
+      image: "img/my-img/agent-rent-img.jpeg",
+      title: "Diamond Manor Apartment",
+      price: "$259,000",
+      address: "7802 20th Ave, Brooklyn",
+      bedrooms: "4 Hab.",
+      bathrooms: "2 Baños",
+      size: "500 m2",
+      author: "Jhon-smith",
+      avatar: "img/my-img/ellipse_1.png",
+    },
+  ];
+
+  const [agencyData, setAgencyData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [showPopup, setShowPopup] = useState(false);
   const [rentProperty, setRentProperty] = useState([]);
   const [sellProperty, setSellProperty] = useState([]);
-  const [value, setValue] = useState();
   const [count1, setCount1] = useState();
   const [count2, setCount2] = useState();
-  const [followedAgentIds, setFollowedAgentIds] = useState([]);
-  const [agentListLoaded, setAgentListLoaded] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   const customerId = localStorage.getItem("tokenId") || "";
   const token = localStorage.getItem("token");
@@ -97,8 +184,8 @@ const AgentProfile = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const { id } = useParams();
 
-  // Get agent Data
-  const getAgentData = async () => {
+  // get agency data
+  const getAgencyData = async () => {
     setLoading(true);
     try {
       const res = await axios.get(`${apiUrl}/profile/getById/${id}`, {
@@ -106,7 +193,7 @@ const AgentProfile = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setAgentData(res.data?.data || {});
+      setAgencyData(res.data?.data || {});
     } catch (error) {
       console.log(error);
     } finally {
@@ -153,14 +240,10 @@ const AgentProfile = () => {
   };
 
   useEffect(() => {
-    getAgentData();
+    getAgencyData();
     getSellProperty();
     getRentProperty();
   }, []);
-
-  // const [expanded, setExpanded] = useState(false);
-
-  // const handleToggle = () => setExpanded(!expanded);
 
   // --------Review Apis----------
   // post review
@@ -244,62 +327,6 @@ const AgentProfile = () => {
     getReview();
   }, []);
 
-  // add My agent
-  useEffect(() => {
-    const fetchFollowedAgents = async () => {
-      try {
-        const res = await axios.get(
-          `${apiUrl}/profile/savedAgent/${customerId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        const data = res?.data?.data;
-        const ids = Array.isArray(data)
-          ? data.map((item) =>
-              typeof item === "object" && item !== null
-                ? Number(item.id)
-                : Number(item)
-            )
-          : [];
-
-        console.log("Followed Agent IDs", ids);
-        setFollowedAgentIds(ids);
-      } catch (err) {
-        setFollowedAgentIds([]);
-      } finally {
-        setAgentListLoaded(true);
-      }
-    };
-
-    if (customerId) fetchFollowedAgents();
-  }, [customerId]);
-
-  const handleAddAgent = async () => {
-    try {
-      const response = await axios.get(
-        `${apiUrl}/profile/addAgent/${customerId}-${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      toast.success(response.data.message);
-
-      setFollowedAgentIds((prev) =>
-        prev.includes(id)
-          ? prev.filter((agentId) => agentId !== Number(id))
-          : [...prev, id]
-      );
-    } catch (error) {
-      console.log(error);
-      toast.error(error.response?.data?.message || "Something went wrong");
-    }
-  };
-
   return (
     <Fragment>
       <div className="index-page">
@@ -310,10 +337,10 @@ const AgentProfile = () => {
         ) : (
           <Fragment>
             <Header />
-            <div className="main">
+            <main className="main">
               <section className="top-btn12">
                 <div className="container">
-                  {agentData?.property?.length > 0 && (
+                  {agencyData?.property?.length > 0 && (
                     <div className="row mb-5">
                       <div className="col-xl-2 col-lg-2 col-md-2 align-content-center">
                         <div
@@ -321,7 +348,7 @@ const AgentProfile = () => {
                           style={{ width: "150px", height: "150px" }}
                         >
                           <img
-                            src={agentData?.userDetails?.map(
+                            src={agencyData?.userDetails?.map(
                               (item) => item.photoUrl
                             )}
                             alt=""
@@ -334,7 +361,7 @@ const AgentProfile = () => {
                         <div className="agent-profile">
                           <ul className="list-inline">
                             <li>
-                              <b>{agentData?.name}</b>
+                              <b>{agencyData?.name}</b>
                             </li>
                             <li>
                               <img src={start} /> <span>( 112 ) Reseñas</span>
@@ -347,22 +374,17 @@ const AgentProfile = () => {
                         </div>
                       </div>
                       <div className="col-xl-10 col-lg-10 col-md-10">
-                        {/* Section Title */}
                         <div className="section-title text-start">
                           <h2 className="mb-0">Recientes</h2>
                         </div>
 
-                        {/* Slider main container */}
                         <div className="swiper" id="swiper1">
-                          {/* Navigation Buttons - Keep them in place */}
                           <div className="swiper-button-prev">
-                            <i className="bi bi-arrow-left me-1"></i> Anterior
+                            <i className="bi bi-arrow-left me-1" /> Anterior
                           </div>
                           <div className="swiper-button-next">
-                            Siguiente <i className="bi bi-arrow-right ms-1"></i>
+                            Siguiente <i className="bi bi-arrow-right ms-1" />
                           </div>
-
-                          {/* Swiper wrapper */}
                           <Swiper
                             modules={[Navigation, Autoplay]}
                             navigation={{
@@ -378,8 +400,8 @@ const AgentProfile = () => {
                             autoplay={{ delay: 3000 }}
                             loop={true}
                           >
-                            {agentData?.property?.map((e) => (
-                              <SwiperSlide key={e.id}>
+                            {agencyData?.property?.map((e, idx) => (
+                              <SwiperSlide key={idx}>
                                 <Link to="javascript:void(0)">
                                   <div className="feat_property">
                                     <div className="thumb">
@@ -456,10 +478,10 @@ const AgentProfile = () => {
                                           </li>
                                         </ul>
                                         {/* <p>
-                                        <i className="bi bi-circle-fill"></i>{" "}
-                                        <b>Vendido</b>
-                                        &nbsp; hace 6 días
-                                      </p> */}
+                                    <i className="bi bi-circle-fill"></i>{" "}
+                                    <b>Vendido</b>
+                                    &nbsp; hace 6 días
+                                  </p> */}
                                       </div>
                                     </div>
                                   </div>
@@ -467,63 +489,61 @@ const AgentProfile = () => {
                               </SwiperSlide>
                             ))}
                           </Swiper>
-                          {/* Bottom Counter Boxes */}
-                          <div className="row">
-                            <div className="col-lg-3">
-                              <div className="counter-box">
-                                <p>
-                                  <b>37</b> Ventas en los últimos 12 meses
-                                </p>
-                              </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-lg-3">
+                            <div className="counter-box">
+                              <p>
+                                <b>37</b> Ventas en los últimos 12 meses
+                              </p>
                             </div>
-                            <div className="col-lg-3">
-                              <div className="counter-box">
-                                <p>
-                                  <b>367</b> Total ventas
-                                </p>
-                              </div>
+                          </div>
+                          <div className="col-lg-3">
+                            <div className="counter-box">
+                              <p>
+                                <b>367</b> Total ventas
+                              </p>
                             </div>
-                            <div className="col-lg-3">
-                              <div className="counter-box">
-                                <p>
-                                  <b>155k-750k</b> Rango de precio
-                                </p>
-                              </div>
+                          </div>
+                          <div className="col-lg-3">
+                            <div className="counter-box">
+                              <p>
+                                <b>155k-750k</b> Rango de precio
+                              </p>
                             </div>
-                            <div className="col-lg-3">
-                              <div className="counter-box">
-                                <p>
-                                  <b>257k</b> Precio promedio
-                                </p>
-                              </div>
+                          </div>
+                          <div className="col-lg-3">
+                            <div className="counter-box">
+                              <p>
+                                <b>257k</b> Precio promedio
+                              </p>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   )}
-
                   <div className="row mb-3">
                     <div className="col-md-7">
-                      <h4 className="fw-bold">Sobre {agentData?.name}</h4>
+                      <h4 className="fw-bold">Sobre {agencyData?.name}</h4>
                       <p className="m-0">
-                        {agentData?.userDetails?.map((item) => item.notes)}
+                        {agencyData?.userDetails?.map((item) => item.notes)}
                       </p>
-                      <h5 className="fw-bold mt-3">Especialidades</h5>
+                      <h5 className="fw-bold">Especialidades</h5>
                       <ul className="list-inline speciality_sec ">
-                        {agentData?.userDetails?.[0]?.specialities?.map(
+                        {agencyData?.userDetails?.[0]?.specialities?.map(
                           (item, id) => (
                             <li key={id}> {item}</li>
                           )
                         )}
-                        {/* <li>Galpones</li>
-                        <li>Administración de fincas</li> */}
                       </ul>
                       <h5 className="fw-bold">Idiomas</h5>
                       <ul className="list-inline language_sec">
                         <li>Español</li>
                         <li>Ingles</li>
                         <li>Italiano</li>
+                        <li>Portugues</li>
+                        <li>Aleman</li>
                       </ul>
                       <Link to="javascript:void(0)" className="primary-text">
                         <img src={global} style={{ width: 20 }} /> Visitar la
@@ -532,7 +552,7 @@ const AgentProfile = () => {
                       <ul className="list-inline socailicon_sec">
                         <li>
                           <Link
-                            to={agentData?.userDetails?.[0]?.facebook}
+                            to={agencyData?.userDetails?.[0]?.facebook}
                             target="_blank"
                           >
                             <img src={facebook} />
@@ -540,7 +560,7 @@ const AgentProfile = () => {
                         </li>
                         <li>
                           <Link
-                            to={agentData?.userDetails?.[0]?.instagram}
+                            to={agencyData?.userDetails?.[0]?.facebook}
                             target="_blank"
                           >
                             <img src={insta} />
@@ -548,10 +568,50 @@ const AgentProfile = () => {
                         </li>
                         <li>
                           <Link
-                            to={agentData?.userDetails?.[0]?.youtube}
+                            to={agencyData?.userDetails?.[0]?.facebook}
                             target="_blank"
                           >
                             <img src={youtube} />
+                          </Link>
+                        </li>
+                      </ul>
+                      <div className="d-flex align-items-center justify-content-between">
+                        <h5 className="mb-0 fw-bold">
+                          Agentes de Engel Volkers{" "}
+                        </h5>
+                        <Link to="javascript:void(0)" className="primary-text">
+                          Ver todos
+                        </Link>
+                      </div>
+                      <ul className="list-inline agent_sec">
+                        <li>
+                          <Link to="javascript:void(0)" target="_blank">
+                            <img src="img/my-img/agent-img-2.jpeg" />
+                            <p>Amanda</p>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="javascript:void(0)" target="_blank">
+                            <img src="img/my-img/agent-img-2.jpeg" />
+                            <p>Amanda</p>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="javascript:void(0)" target="_blank">
+                            <img src="img/my-img/agent-img-2.jpeg" />
+                            <p>Amanda</p>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="javascript:void(0)" target="_blank">
+                            <img src="img/my-img/agent-img-2.jpeg" />
+                            <p>Amanda</p>
+                          </Link>
+                        </li>
+                        <li>
+                          <Link to="javascript:void(0)" target="_blank">
+                            <img src="img/my-img/agent-img-2.jpeg" />
+                            <p>Amanda</p>
                           </Link>
                         </li>
                       </ul>
@@ -571,15 +631,15 @@ const AgentProfile = () => {
                         </li> */}
                       </ul>
                       <div className="map_sec">
-                        <AgentMap />
+                        <AgencyMap />
                         <p className="mt-1">
                           Este mapa puede mostrar los listados recientes{" "}
                         </p>
                       </div>
                     </div>
                     <div className="col-md-5">
-                      <div className=" mb-4">
-                        {agentData?.userDetails?.map((item, index) => (
+                      <div className="mb-4">
+                        {agencyData?.userDetails?.map((item, index) => (
                           <div key={index}>
                             <div className="sidebar-det position-relative">
                               <div className="side-c text-center">
@@ -589,7 +649,7 @@ const AgentProfile = () => {
                                   style={{ marginTop: "15px" }}
                                 >
                                   {/* <div className="agent_details"> */}
-                                  <h6>{agentData?.name}</h6>
+                                  <h6>{agencyData?.name}</h6>
                                   <p style={{ fontSize: 13 }}>
                                     <span className="primary-text">03</span>{" "}
                                     listados de inmuebles
@@ -598,55 +658,7 @@ const AgentProfile = () => {
                                 </div>
                               </div>
                             </div>
-                            {/* <div className="card-de">
-                              <p className="de-i"></p>
-                              <div
-                                className="pr-det"
-                                style={{ marginTop: "10%", }}
-                              >
-                                <p style={{ marginLeft: "-22px" }}>
-                                  <img
-                                    src={call}
-                                    style={{ width: 18, marginRight: 9 }}
-                                  />
-                                  Teléfono
-                                </p>
-                                <p>
-                                  <b>{item.phone}</b>
-                                </p>
-                              </div>
-                              <div className="pr-det">
-                                <p className="de-i"></p>
-                                <p className="">
-                                  <img src={whats} style={{ width: 18 }} />
-                                  Whatsapp
-                                </p>
-                           
-                                <p className="col-lg-6 col-md-6 text-start">
-                                  <b>{item.whatsApp}</b>
-                                </p>
-                              </div>
-                              <div className="row mb-3 align-items-center justify-content-center">
-                                <div className="col-auto text-warning">
-                                  <img src={sms} style={{ width: 18 }} />
-                                </div>
-                                <div className="col-lg-3 col-md-3">Correo</div>
-                                <div className="col-lg-6 col-md-6 text-start">
-                                  {agentData.email}
-                                </div>
-                              </div>
-                              <div className="row align-items-center justify-content-center">
-                                <div className="col-auto text-warning">
-                                  <img src={global} style={{ width: 18 }} />
-                                </div>
-                                <div className="col-lg-3 col-md-3">
-                                  Página web
-                                </div>
-                                <div className="col-lg-6 col-md-6 text-start">
-                                  {item.website}
-                                </div>
-                              </div>
-                            </div> */}
+
                             <div className="card-de" key={item.id}>
                               <div
                                 className="pr-det"
@@ -675,7 +687,7 @@ const AgentProfile = () => {
                                   Correo
                                 </p>
                                 <p>
-                                  <b>{agentData.email}</b>
+                                  <b>{agencyData.email}</b>
                                 </p>
                                 <p />
                               </div>
@@ -697,9 +709,9 @@ const AgentProfile = () => {
                           </div>
                         ))}
                       </div>
-                      <div className="form-box p-3">
+                      <div className="form-box p-3 mb-4">
                         <h5 className="text-center mb-3">
-                          Contacta con el {agentData?.name}
+                          Contacta con el Jhon Doe
                         </h5>
                         <form>
                           <div className="mb-3 inputWithIcon">
@@ -711,7 +723,10 @@ const AgentProfile = () => {
                               id=""
                               aria-describedby=""
                             />
-                            <i className="bi bi-person fa-lg fa-fw" />
+                            <i
+                              className="bi bi-person fa-lg fa-fw"
+                              aria-hidden="true"
+                            />
                           </div>
                           <div className="mb-3 inputWithIcon">
                             <label>Tu Correo</label>
@@ -753,9 +768,29 @@ const AgentProfile = () => {
                           </div>
                         </form>
                       </div>
+                      <div className="workagent-box p-3">
+                        <h5 className="text-center mb-3">
+                          Trabaja con este agente en Hauzzi
+                        </h5>
+                        <p>
+                          Conéctate directamente, agenda visitas al instante y
+                          recibe ayuda personalizada según tus búsquedas.
+                        </p>
+                        <div className="mt-3">
+                          <button
+                            type="submit"
+                            className="btn btn-primary ps-4 pe-4 w-100 text-capitalize"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addagency_modal"
+                          >
+                            Añadir como mi agencia
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
+                  {/* Sale Slider Section */}
                   {sellProperty?.length > 0 && (
                     <div className="row mb-3">
                       <div className="col-lg-7 col-md-7">
@@ -768,7 +803,7 @@ const AgentProfile = () => {
                             Ver Todos
                           </Link>
                         </div>
-                        <div className="swiper-container" id="salecarousel">
+                        <div className="swiper" id="salecarousel">
                           <Swiper
                             modules={[Navigation, Autoplay]}
                             autoplay={{
@@ -870,7 +905,7 @@ const AgentProfile = () => {
                                             <img src={area} alt="" />{" "}
                                             {property?.propertySize ||
                                               property?.maxSize}{" "}
-                                            m2{" "}
+                                            m2
                                           </span>
                                         </li>
                                       </ul>
@@ -881,7 +916,7 @@ const AgentProfile = () => {
                                           <li className="list-inline-item d-flex justify-content-around">
                                             <span>
                                               <img
-                                                src={property?.Customer?.agentDetails?.map(
+                                                src={property?.Customer?.agencyDetails?.map(
                                                   (e) => e.photoUrl
                                                 )}
                                                 alt="agent"
@@ -896,7 +931,6 @@ const AgentProfile = () => {
                                         <Link
                                           className="btn-getstarted gt"
                                           to="#"
-                                          // state={{}}
                                         >
                                           <img
                                             src={mail}
@@ -936,31 +970,10 @@ const AgentProfile = () => {
                           </Swiper>
                         </div>
                       </div>
-                      <div className="col-lg-5 col-md-5">
-                        <div className="workagent-box p-3">
-                          <h5 className="text-center mb-3">
-                            Trabaja con este agente en Hauzzi
-                          </h5>
-                          <p>
-                            Conéctate directamente, agenda visitas al instante y
-                            recibe ayuda personalizada según tus búsquedas.
-                          </p>
-                          <div className="mt-3">
-                            <button
-                              // type="submit"
-                              className="btn btn-primary ps-4 pe-4 w-100 text-capitalize"
-                              data-bs-toggle="modal"
-                              data-bs-target="#addagent_modal"
-                            >
-                              {/* {followedAgentIds.includes(agent.id) ? "Unfollow" : "Follow"} */}
-                              Añadir como mi agente
-                            </button>
-                          </div>
-                        </div>
-                      </div>
                     </div>
                   )}
 
+                  {/* Rent Slider Section */}
                   {rentProperty?.length > 0 && (
                     <div className="row mb-3">
                       <div className="col-lg-7 col-md-7">
@@ -1072,7 +1085,7 @@ const AgentProfile = () => {
                                           <li className="list-inline-item">
                                             <span>
                                               <img
-                                                src={prop?.Customer?.agentDetails?.map(
+                                                src={prop?.Customer?.agencyDetails?.map(
                                                   (e) => e.photoUrl
                                                 )}
                                                 alt="poster"
@@ -1129,6 +1142,7 @@ const AgentProfile = () => {
                     </div>
                   )}
 
+                  {/* To Share Slider Section */}
                   {/* <div className="row mb-3">
                     <div className="col-lg-7 col-md-7">
                       <div className="d-flex justify-content-between">
@@ -1204,7 +1218,7 @@ const AgentProfile = () => {
                                     </div>
                                     <p>
                                       <img
-                                        src={location}
+                                        src="img/my-img/vector.png"
                                         alt="location"
                                       />
                                       <span style={{ marginLeft: 5 }}>
@@ -1215,7 +1229,7 @@ const AgentProfile = () => {
                                       <li className="list-inline-item">
                                         <span>
                                           <img
-                                            src={hab}
+                                            src="img/my-img/icon.png"
                                             alt=""
                                           />{" "}
                                           {item.bedrooms}
@@ -1224,7 +1238,7 @@ const AgentProfile = () => {
                                       <li className="list-inline-item">
                                         <span>
                                           <img
-                                            src={bath}
+                                            src="img/my-img/Vector_1.png"
                                             alt=""
                                           />{" "}
                                           {item.bathrooms}
@@ -1233,7 +1247,7 @@ const AgentProfile = () => {
                                       <li className="list-inline-item">
                                         <span>
                                           <img
-                                            src={area}
+                                            src="img/my-img/icon_1.png"
                                             alt=""
                                           />{" "}
                                           {item.size}
@@ -1262,7 +1276,7 @@ const AgentProfile = () => {
                                         to="#"
                                       >
                                         <img
-                                          src={mail}
+                                          src="img/my-img/vector_2.png"
                                           width="25%"
                                           alt="email"
                                         />
@@ -1273,7 +1287,7 @@ const AgentProfile = () => {
                                         to="#"
                                       >
                                         <img
-                                          src={call2}
+                                          src="img/my-img/call.png"
                                           width="25%"
                                           alt="call"
                                         />
@@ -1300,12 +1314,13 @@ const AgentProfile = () => {
                     </div>
                   </div> */}
 
+                  {/* Review Section */}
                   <div className="row">
                     <div className="col-lg-7 col-md-7">
                       <div className="d-flex justify-content-between align-items-center">
                         <h5 className="fw-bold">Reseñas ({countReview})</h5>
                         <Link
-                          to="javascript:void(0)"
+                          to="#"
                           className="reviewbtn btn"
                           onClick={() => setShowPopup(true)}
                         >
@@ -1321,11 +1336,10 @@ const AgentProfile = () => {
                               className="form-select form-select-lg"
                               aria-label=".form-select-lg example"
                             >
-                              <option>Todas las reseñas</option>
+                              <option selected="">Todas las reseñas</option>
                               <option value={1}>One</option>
                               <option value={2}>Two</option>
                               <option value={3}>Three</option>
-                              <option value={4}>Four</option>
                             </select>
                           </div>
                           {/* <div className="col-xl-6 col-lg-6 col-md-6">
@@ -1334,7 +1348,7 @@ const AgentProfile = () => {
                               className="form-select form-select-lg"
                               aria-label=".form-select-lg example"
                             >
-                              <option>Nuevas reseñas</option>
+                              <option selected="">Nuevas reseñas</option>
                               <option value={1}>One</option>
                               <option value={2}>Two</option>
                               <option value={3}>Three</option>
@@ -1342,42 +1356,6 @@ const AgentProfile = () => {
                           </div> */}
                         </div>
                       </form>
-                      {/* {getReviewData.map((item, index) => (
-                        <Fragment key={index}>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h5 className="fw-bold">
-                          {item.title}{" "}
-                          <span style={{ color: "#eceaea", fontWeight: 300 }}>
-                            |
-                          </span>{" "}
-                          {item.rating} <i className="fa fa-star primary-text" />
-                        </h5>
-                        <Link to="javascript:void(0)" className="text-grey">
-                          Reportar Problema
-                        </Link>
-                      </div>
-                      <p className="text-capitalize ps-3">
-                        <span className="me-3">{new Date(item.createdAt).toLocaleDateString("en-US")}</span> {item?.reviewer?.customer?.name}
-                      </p>
-                      <p
-                        className={`agent-description ${
-                          expanded ? "expanded" : ""
-                        }`}
-                      >
-                        {item.content}{" "}
-                      </p>
-                      
-                      <Link
-                        to="#"
-                        className="primary-text"
-                        onClick={handleToggle}
-                      >
-                        {expanded ? "Ver menos" : "Ver más"}
-                      </Link>
-
-                      <hr className="mt-5 mb-5" />
-                       </Fragment>
-                       ))} */}
                       {visibleReviews.map((item, index) => (
                         <Fragment key={index}>
                           <div className="d-flex justify-content-between align-items-center">
@@ -1438,10 +1416,10 @@ const AgentProfile = () => {
                 </div>
               </section>
 
-              {/* Add Agent Modal */}
+              {/* Modal Popup */}
               <div
                 className="modal fade"
-                id="addagent_modal"
+                id="addagency_modal"
                 tabIndex={-1}
                 aria-labelledby="addagent_modalLabel"
                 aria-hidden="true"
@@ -1460,50 +1438,29 @@ const AgentProfile = () => {
                     </div>
                     <div className="modal-body">
                       <h5 className="fw-bold text-center">
-                        Conéctate con tu agente en Hauzzi
+                        Conéctate con tu agencia en Hauzzi
                       </h5>
                       <p>
-                        Al trabajar con un agente en Hauzzi, puedes contactarlo
-                        fácilmente y solicitar visitas a propiedades
-                        directamente desde los listados.{" "}
+                        Al trabajar con una agencia en Hauzzi, puedes
+                        contactarla fácilmente y solicitar visitas a propiedades
+                        directamente desde los listados.
                       </p>
                       <p>
-                        Además, tu agente podrá ofrecerte recomendaciones más
+                        Además, tu agencia podrá ofrecerte recomendaciones más
                         precisas al conocer tus búsquedas guardadas y las
                         propiedades que te interesan.
                       </p>
                       <p>
-                        Al añadir un agente, Hauzzi compartirá información sobre
-                        tu actividad reciente y futura en la plataforma para que
-                        tu agente comprenda mejor tus necesidades y te ayude a
-                        encontrar la casa ideal.
+                        Al añadir una agencia, Hauzzi compartirá información
+                        sobre tu actividad reciente y futura en la plataforma
+                        para que tu agencia comprenda mejor tus necesidades y te
+                        ayude a encontrar la casa ideal.
                       </p>
                     </div>
                     <div className="modal-footer flex-nowrap justify-content-center">
-                      {/* <button
-                        type="button"
-                        className="btn btn-primary w-50"
-                        aria-label="Close"
-                        data-bs-dismiss="modal"
-                        onClick={() => handleAddAgent(id)}
-                      >
-                        {followedAgentIds.includes(id)
-                          ? "Agregada"
-                          : "Añadir Agente"}
-                      </button> */}
-                      {agentListLoaded && (
-                        <button
-                          type="button"
-                          className="btn btn-primary w-50"
-                          aria-label="Close"
-                          data-bs-dismiss="modal"
-                          onClick={handleAddAgent}
-                        >
-                          {followedAgentIds.includes(Number(id))
-                            ? "Agregada"
-                            : "Añadir Agente"}
-                        </button>
-                      )}
+                      <button type="button" className="btn btn-primary w-50">
+                        Añadir Agencia
+                      </button>
                       <button
                         type="button"
                         className="btn btn-outline-light w-50"
@@ -1515,7 +1472,6 @@ const AgentProfile = () => {
                   </div>
                 </div>
               </div>
-
               {/*Add Review MODAL */}
               {showPopup && (
                 <div
@@ -1554,7 +1510,7 @@ const AgentProfile = () => {
 
                       <div className="col-md-12 mb-3">
                         <label className="form-label">Review Content</label>
-                         <textarea
+                        <textarea
                           name="content"
                           value={reviewData.content}
                           onChange={handleInputChange}
@@ -1580,9 +1536,8 @@ const AgentProfile = () => {
                   </div>
                 </div>
               )}
-
               <Footer />
-            </div>
+            </main>
           </Fragment>
         )}
       </div>
@@ -1590,4 +1545,4 @@ const AgentProfile = () => {
   );
 };
 
-export default AgentProfile;
+export default AgencyProfile;

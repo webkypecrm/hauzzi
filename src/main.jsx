@@ -18,7 +18,7 @@ import PropertySell from "./Pages/Property/PropertySell.jsx";
 import Messages from "./Pages/Messages/Messages.jsx";
 import MyAlert from "./Pages/Alert/MyAlert.jsx";
 import Agencies from "./Pages/RealState/Agencies.jsx";
-import Profile from "./Pages/RealState/Profile.jsx";
+import Profile from "./Pages/RealState/AgencyProfile.jsx";
 import PublishProperty from "./Pages/Property/PublishProperty.jsx";
 import PropertyDetils from "./Pages/Property/PropertyDetils.jsx";
 import SellForRent from "./Pages/Sell/SellForRent.jsx";
