@@ -9,14 +9,18 @@ import Slider from "react-slick";
 const MyFavorites = () => {
   const [favPropertys, setFavProperties] = useState([]);
   const [agentData, setAgentData] = useState([]);
+  const [agencyData, setAgencyData] = useState([]);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
   const customerId = localStorage.getItem("tokenId") || "";
   const apiUrl = import.meta.env.VITE_API_URL;
- const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const handelNavigate = (id) => {
+  const handelNavigate1 = (id) => {
     navigate(`/agentprofile/${id}`);
+  };
+  const handelNavigate2 = (id) => {
+    navigate(`/agencyprofile/${id}`);
   };
   // get all favorite properties
   const handelFavProperty = async () => {
@@ -55,12 +59,33 @@ const MyFavorites = () => {
     }
   };
 
+  console.log("agentData", agentData);
+
+  // get Agency Data
+  const getAgencyData = async () => {
+    try {
+      const res = await axios.get(
+        `${apiUrl}/profile/savedAgency/${customerId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setAgencyData(res.data?.data || {});
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     handelFavProperty();
     getAgentData();
+    getAgencyData();
   }, []);
-  console.log("allData", agentData);
+  console.log("allData", agencyData);
 
+  // slider
   const getSliderSettings = (count) => ({
     dots: true,
     infinite: count > 3,
@@ -97,6 +122,24 @@ const MyFavorites = () => {
           centerMode: false,
           centerPadding: "0px",
         },
+      },
+    ],
+  });
+
+  const getSliderSettings2 = (count) => ({
+    dots: false,
+    infinite: false,
+    speed: 500,
+    slidesToShow: count >= 4 ? 4 : count,
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 992,
+        settings: { slidesToShow: 2 },
+      },
+      {
+        breakpoint: 576,
+        settings: { slidesToShow: 1 },
       },
     ],
   });
@@ -260,372 +303,262 @@ const MyFavorites = () => {
                       Quiero visitar
                     </button>
                   </div>
-                  <h5 className="mt-5 mb-3">
-                    Mis inmobiliarias y agentes favoritos
-                  </h5>
-                  <div className="row gy-4 mb-5">
-                    {agentData?.length > 0 && (
-                      <div className="col-lg-3">
+                  {agentData?.length > 0 && (
+                    <Fragment>
+                      <h5 className="mt-5 mb-3">
+                        Mis inmobiliarias y agentes favoritos
+                      </h5>
+
+                      <div className="row gy-4 mb-5">
+                        {/* <Slider {...getSliderSettings2(agentData.length)}> */}
                         {agentData.map((item, index) => (
-                          <div
-                            className="card bg-light border-0 myfav rounded-md"
-                            key={index}
-                          >
-                            <div className="card-body">
-                              <div className="d-flex justify-content-end align-items-center">
-                                <ul className="list-inline d-flex align-items-center mb-0">
-                                  <li>
-                                    <img src="img/my-img/swap.png" />
-                                  </li>
-                                  <li>
-                                    <div className="dropdown">
-                                      <button
-                                        className="btn btn-link p-0 border-0 text-muted"
-                                        type="button"
-                                        id="dropdownMenuButton"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false"
-                                      >
-                                        <i
-                                          className="bi bi-three-dots-vertical"
-                                          style={{ fontSize: 24 }}
-                                        />
-                                      </button>
-                                      <ul
-                                        className="dropdown-menu"
-                                        aria-labelledby="dropdownMenuButton"
-                                      >
-                                        <li>
-                                          <Link
-                                            className="dropdown-item"
-                                            to="#"
-                                          >
-                                            <img
-                                              src="img/my-img/share-icon.png"
-                                              className="me-2"
-                                            />{" "}
-                                            Compartir
-                                          </Link>
-                                        </li>
-                                        <li>
-                                          <Link
-                                            className="dropdown-item"
-                                            to="#"
-                                          >
-                                            <img
-                                              src="img/my-img/print-icon.png"
-                                              className="me-2"
-                                            />{" "}
-                                            Imprimir cartel
-                                          </Link>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </li>
-                                </ul>
-                              </div>
-                              <div className="profile-container" style={{marginTop: 0}}>
-                              <div className="profile-pic-wrapper">
-                                <img src={item.agentDetails?.map((item) => item.photoUrl)} alt="" />
+                          <div className="col-lg-3" key={index}>
+                            <div
+                              className="card bg-light border-0 myfav rounded-md"
+                              
+                            >
+                              <div className="card-body">
+                                <div className="d-flex justify-content-end align-items-center">
+                                  <ul className="list-inline d-flex align-items-center mb-0">
+                                    <li>
+                                      <img src="img/my-img/swap.png" />
+                                    </li>
+                                    <li>
+                                      <div className="dropdown">
+                                        <button
+                                          className="btn btn-link p-0 border-0 text-muted"
+                                          type="button"
+                                          id="dropdownMenuButton"
+                                          data-bs-toggle="dropdown"
+                                          aria-expanded="false"
+                                        >
+                                          <i
+                                            className="bi bi-three-dots-vertical"
+                                            style={{ fontSize: 24 }}
+                                          />
+                                        </button>
+                                        <ul
+                                          className="dropdown-menu"
+                                          aria-labelledby="dropdownMenuButton"
+                                        >
+                                          <li>
+                                            <Link
+                                              className="dropdown-item"
+                                              to="#"
+                                            >
+                                              <img
+                                                src="img/my-img/share-icon.png"
+                                                className="me-2"
+                                              />{" "}
+                                              Compartir
+                                            </Link>
+                                          </li>
+                                          <li>
+                                            <Link
+                                              className="dropdown-item"
+                                              to="#"
+                                            >
+                                              <img
+                                                src="img/my-img/print-icon.png"
+                                                className="me-2"
+                                              />{" "}
+                                              Imprimir cartel
+                                            </Link>
+                                          </li>
+                                        </ul>
+                                      </div>
+                                    </li>
+                                  </ul>
                                 </div>
-                                <small className="toprated">
-                                  <img src="img/my-img/crown.png" />
-                                  Top Rated
-                                </small>
-                              </div>
-                              <div className="agent-profile text-center">
-                                <ul className="list-inline">
-                                  <li>
-                                    <b>{item.name}</b>
-                                  </li>
-                                  <li>
-                                    <img src="img/my-img/start-small.png" />{" "}
-                                    <span>@properties</span>
-                                  </li>
-                                  <li className="fw-bold">( {item?.profileReviewCount} )</li>
-                                </ul>
-                                <p>
-                                  <span className="fw-bold">{item?.propertyCount}</span>{" "}
-                                  Inmuebles publicados
-                                </p>
-                              </div>
-                              <div className="d-flex justify-content-between">
-                                <button
-                                  className="btn btn-primary me-3 w-50 btn-sm"
-                                  onClick={() => handelNavigate(item.id)}
+                                <div
+                                  className="profile-container"
+                                  style={{ marginTop: 0 }}
                                 >
-                                  {" "}
-                                  Ver Perfil
-                                </button>
-                                <button
-                                  className="btn btn-outline-primary w-50 btn-sm"
-                                  onClick={() => handelNavigate(item.id)}
-                                >
-                                  {" "}
-                                  Contactar
-                                </button>
+                                  <div className="profile-pic-wrapper">
+                                    <img
+                                      src={item.agentDetails?.map(
+                                        (item) => item.photoUrl
+                                      )}
+                                      alt=""
+                                    />
+                                  </div>
+                                  <small className="toprated">
+                                    <img src="img/my-img/crown.png" />
+                                    Top Rated
+                                  </small>
+                                </div>
+                                <div className="agent-profile text-center">
+                                  <ul className="list-inline">
+                                    <li>
+                                      <b>{item.name}</b>
+                                    </li>
+                                    <li>
+                                      <img src="img/my-img/start-small.png" />{" "}
+                                      <span>@properties</span>
+                                    </li>
+                                    <li className="fw-bold">
+                                      ( {item?.profileReviewCount} )
+                                    </li>
+                                  </ul>
+                                  <p>
+                                    <span className="fw-bold">
+                                      {item?.propertyCount}
+                                    </span>{" "}
+                                    Inmuebles publicados
+                                  </p>
+                                </div>
+                                <div className="d-flex justify-content-between">
+                                  <button
+                                    className="btn btn-primary me-3 w-50 btn-sm"
+                                    onClick={() => handelNavigate1(item.id)}
+                                  >
+                                    {" "}
+                                    Ver Perfil
+                                  </button>
+                                  <button
+                                    className="btn btn-outline-primary w-50 btn-sm"
+                                    onClick={() => handelNavigate1(item.id)}
+                                  >
+                                    {" "}
+                                    Contactar
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </div>
                         ))}
+                        {/* </Slider> */}
                       </div>
-                    )}
-                    {/* <div className="col-lg-3">
-                      <div className="card bg-light border-0 myfav rounded-md">
-                        <div className="card-body">
-                          <div className="d-flex justify-content-end align-items-center">
-                            <ul className="list-inline d-flex align-items-center mb-0">
-                              <li>
-                                <img src="img/my-img/swap.png" />
-                              </li>
-                              <li>
-                                <div className="dropdown">
-                                  <button
-                                    className="btn btn-link p-0 border-0 text-muted"
-                                    type="button"
-                                    id="dropdownMenuButton"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                  >
-                                    <i
-                                      className="bi bi-three-dots-vertical"
-                                      style={{ fontSize: 24 }}
-                                    />
-                                  </button>
-                                  <ul
-                                    className="dropdown-menu"
-                                    aria-labelledby="dropdownMenuButton"
-                                  >
+                    </Fragment>
+                  )}
+                  {agencyData?.length > 0 && (
+                    <Fragment>
+                      <h5 className="mt-5 mb-3">
+                        Mis inmobiliarias y agencyes favoritos
+                      </h5>
+
+                      <div className="row gy-4 mb-5">
+                        {/* <Slider {...getSliderSettings2(agentData.length)}> */}
+                        {agencyData.map((item, index) => (
+                          <div className="col-lg-3" key={index}>
+                            <div
+                              className="card bg-light border-0 myfav rounded-md"
+                              
+                            >
+                              <div className="card-body">
+                                <div className="d-flex justify-content-end align-items-center">
+                                  <ul className="list-inline d-flex align-items-center mb-0">
                                     <li>
-                                      <Link className="dropdown-item" to="#">
-                                        <img
-                                          src="img/my-img/share-icon.png"
-                                          className="me-2"
-                                        />{" "}
-                                        Compartir
-                                      </Link>
+                                      <img src="img/my-img/swap.png" />
                                     </li>
                                     <li>
-                                      <Link className="dropdown-item" to="#">
-                                        <img
-                                          src="img/my-img/print-icon.png"
-                                          className="me-2"
-                                        />{" "}
-                                        Imprimir cartel
-                                      </Link>
+                                      <div className="dropdown">
+                                        <button
+                                          className="btn btn-link p-0 border-0 text-muted"
+                                          type="button"
+                                          id="dropdownMenuButton"
+                                          data-bs-toggle="dropdown"
+                                          aria-expanded="false"
+                                        >
+                                          <i
+                                            className="bi bi-three-dots-vertical"
+                                            style={{ fontSize: 24 }}
+                                          />
+                                        </button>
+                                        <ul
+                                          className="dropdown-menu"
+                                          aria-labelledby="dropdownMenuButton"
+                                        >
+                                          <li>
+                                            <Link
+                                              className="dropdown-item"
+                                              to="#"
+                                            >
+                                              <img
+                                                src="img/my-img/share-icon.png"
+                                                className="me-2"
+                                              />{" "}
+                                              Compartir
+                                            </Link>
+                                          </li>
+                                          <li>
+                                            <Link
+                                              className="dropdown-item"
+                                              to="#"
+                                            >
+                                              <img
+                                                src="img/my-img/print-icon.png"
+                                                className="me-2"
+                                              />{" "}
+                                              Imprimir cartel
+                                            </Link>
+                                          </li>
+                                        </ul>
+                                      </div>
                                     </li>
                                   </ul>
                                 </div>
-                              </li>
-                            </ul>
-                          </div>
-                          <div className="agent-img">
-                            <img src="img/my-img/agent-img.jpeg" alt="" />
-                            <small className="toprated">
-                              <img src="img/my-img/crown.png" />
-                              Top Rated
-                            </small>
-                          </div>
-                          <div className="agent-profile text-center">
-                            <ul className="list-inline">
-                              <li>
-                                <b>John Doe</b>
-                              </li>
-                              <li>
-                                <img src="img/my-img/start-small.png" />{" "}
-                                <span>@properties</span>
-                              </li>
-                              <li className="fw-bold">( 112 )</li>
-                            </ul>
-                            <p>
-                              <span className="fw-bold">1230</span> Inmuebles
-                              publicados
-                            </p>
-                          </div>
-                          <div className="d-flex justify-content-between">
-                            <button className="btn btn-primary me-3 w-50 btn-sm">
-                              {" "}
-                              Ver Perfil
-                            </button>
-                            <button className="btn btn-outline-primary w-50 btn-sm">
-                              {" "}
-                              Contactar
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div> */}
-                    {/* <div className="col-lg-3">
-                      <div className="card bg-light border-0 myfav rounded-md">
-                        <div className="card-body">
-                          <div className="d-flex justify-content-end align-items-center">
-                            <ul className="list-inline d-flex align-items-center mb-0">
-                              <li>
-                                <img src="img/my-img/swap.png" />
-                              </li>
-                              <li>
-                                <div className="dropdown">
-                                  <button
-                                    className="btn btn-link p-0 border-0 text-muted"
-                                    type="button"
-                                    id="dropdownMenuButton"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                  >
-                                    <i
-                                      className="bi bi-three-dots-vertical"
-                                      style={{ fontSize: 24 }}
+                                <div
+                                  className="profile-container"
+                                  style={{ marginTop: 0 }}
+                                >
+                                  <div className="profile-pic-wrapper">
+                                    <img
+                                      src={item.agencyDetails?.map(
+                                        (item) => item.photoUrl
+                                      )}
+                                      alt=""
                                     />
-                                  </button>
-                                  <ul
-                                    className="dropdown-menu"
-                                    aria-labelledby="dropdownMenuButton"
-                                  >
+                                  </div>
+                                  <small className="toprated">
+                                    <img src="img/my-img/crown.png" />
+                                    Top Rated
+                                  </small>
+                                </div>
+                                <div className="agent-profile text-center">
+                                  <ul className="list-inline">
                                     <li>
-                                      <Link className="dropdown-item" to="#">
-                                        <img
-                                          src="img/my-img/share-icon.png"
-                                          className="me-2"
-                                        />{" "}
-                                        Compartir
-                                      </Link>
+                                      <b>{item.name}</b>
                                     </li>
                                     <li>
-                                      <Link className="dropdown-item" to="#">
-                                        <img
-                                          src="img/my-img/print-icon.png"
-                                          className="me-2"
-                                        />{" "}
-                                        Imprimir cartel
-                                      </Link>
+                                      <img src="img/my-img/start-small.png" />{" "}
+                                      <span>@properties</span>
+                                    </li>
+                                    <li className="fw-bold">
+                                      ( {item?.profileReviewCount} )
                                     </li>
                                   </ul>
+                                  <p>
+                                    <span className="fw-bold">
+                                      {item?.propertyCount}
+                                    </span>{" "}
+                                    Inmuebles publicados
+                                  </p>
                                 </div>
-                              </li>
-                            </ul>
-                          </div>
-                          <div className="agent-img">
-                            <img src="img/my-img/agent-img.jpeg" alt="" />
-                            <small className="toprated">
-                              <img src="img/my-img/crown.png" />
-                              Top Rated
-                            </small>
-                          </div>
-                          <div className="agent-profile text-center">
-                            <ul className="list-inline">
-                              <li>
-                                <b>John Doe</b>
-                              </li>
-                              <li>
-                                <img src="img/my-img/start-small.png" />{" "}
-                                <span>@properties</span>
-                              </li>
-                              <li className="fw-bold">( 112 )</li>
-                            </ul>
-                            <p>
-                              <span className="fw-bold">1230</span> Inmuebles
-                              publicados
-                            </p>
-                          </div>
-                          <div className="d-flex justify-content-between">
-                            <button className="btn btn-primary me-3 w-50 btn-sm">
-                              {" "}
-                              Ver Perfil
-                            </button>
-                            <button className="btn btn-outline-primary w-50 btn-sm">
-                              {" "}
-                              Contactar
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div> */}
-                    {/* <div className="col-lg-3">
-                      <div className="card bg-light border-0 myfav rounded-md">
-                        <div className="card-body">
-                          <div className="d-flex justify-content-end align-items-center">
-                            <ul className="list-inline d-flex align-items-center mb-0">
-                              <li>
-                                <img src="img/my-img/swap.png" />
-                              </li>
-                              <li>
-                                <div className="dropdown">
+                                <div className="d-flex justify-content-between">
                                   <button
-                                    className="btn btn-link p-0 border-0 text-muted"
-                                    type="button"
-                                    id="dropdownMenuButton"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
+                                    className="btn btn-primary me-3 w-50 btn-sm"
+                                    onClick={() => handelNavigate2(item.id)}
                                   >
-                                    <i
-                                      className="bi bi-three-dots-vertical"
-                                      style={{ fontSize: 24 }}
-                                    />
+                                    {" "}
+                                    Ver Perfil
                                   </button>
-                                  <ul
-                                    className="dropdown-menu"
-                                    aria-labelledby="dropdownMenuButton"
+                                  <button
+                                    className="btn btn-outline-primary w-50 btn-sm"
+                                    onClick={() => handelNavigate2(item.id)}
                                   >
-                                    <li>
-                                      <Link className="dropdown-item" to="#">
-                                        <img
-                                          src="img/my-img/share-icon.png"
-                                          className="me-2"
-                                        />{" "}
-                                        Compartir
-                                      </Link>
-                                    </li>
-                                    <li>
-                                      <Link className="dropdown-item" to="#">
-                                        <img
-                                          src="img/my-img/print-icon.png"
-                                          className="me-2"
-                                        />{" "}
-                                        Imprimir cartel
-                                      </Link>
-                                    </li>
-                                  </ul>
+                                    {" "}
+                                    Contactar
+                                  </button>
                                 </div>
-                              </li>
-                            </ul>
+                              </div>
+                            </div>
                           </div>
-                          <div className="agent-img">
-                            <img src="img/my-img/agent-img.jpeg" alt="" />
-                            <small className="toprated">
-                              <img src="img/my-img/crown.png" />
-                              Top Rated
-                            </small>
-                          </div>
-                          <div className="agent-profile text-center">
-                            <ul className="list-inline">
-                              <li>
-                                <b>John Doe</b>
-                              </li>
-                              <li>
-                                <img src="img/my-img/start-small.png" />{" "}
-                                <span>@properties</span>
-                              </li>
-                              <li className="fw-bold">( 112 )</li>
-                            </ul>
-                            <p>
-                              <span className="fw-bold">1230</span> Inmuebles
-                              publicados
-                            </p>
-                          </div>
-                          <div className="d-flex justify-content-between">
-                            <button className="btn btn-primary me-3 w-50 btn-sm">
-                              {" "}
-                              Ver Perfil
-                            </button>
-                            <button className="btn btn-outline-primary w-50 btn-sm">
-                              {" "}
-                              Contactar
-                            </button>
-                          </div>
-                        </div>
+                        ))}
+                        {/* </Slider> */}
                       </div>
-                    </div> */}
-                  </div>
+                    </Fragment>
+                  )}
                   <div className="text-center">
                     <h6 className="fw-bold mb-3">
                       Busca tu agencia o agente favorito

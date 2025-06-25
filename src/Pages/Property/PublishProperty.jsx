@@ -548,6 +548,9 @@ const PublishProperty = () => {
                             value={propertyData.maxSize}
                             onChange={handleInputChange}
                           />
+                          <button className="dollar-btn">
+                            m<sup>2</sup>
+                          </button>
                         </div>
                       </div>
 
@@ -1496,6 +1499,100 @@ const PublishProperty = () => {
                     </div>
                   </>
                 )}
+
+                <h5 className="fw-bold mb-3">Etiquetas para tu anuncio</h5>
+                <div className="row g-2 mb-4">
+                          <div className="col-md-auto">
+                            <input
+                              // id={`sec181-a${item.id}`}
+                              className="asButton"
+                              type="checkbox"
+                              name="meldungLageCondicion"
+                              // value={item.name}
+                              // onChange={() =>
+                              //   handleCheckboxGroupChange(
+                              //     "Formadelterreno",
+                              //     "meldungLageCondicion"
+                              //   )
+                              // }
+                            />
+                            <label >
+                              Negociable
+                            </label>
+                          </div>
+                          <div className="col-md-auto">
+                            <input
+                              // id={`sec181-a${item.id}`}
+                              className="asButton"
+                              type="checkbox"
+                              name="meldungLageCondicion"
+                              // value={item.name}
+                              // onChange={() =>
+                              //   handleCheckboxGroupChange(
+                              //     "Formadelterreno",
+                              //     "meldungLageCondicion"
+                              //   )
+                              // }
+                            />
+                            <label >
+                              A estrenar
+                            </label>
+                          </div>
+                          <div className="col-md-auto">
+                            <input
+                              // id={`sec181-a${item.id}`}
+                              className="asButton"
+                              type="checkbox"
+                              name="meldungLageCondicion"
+                              // value={item.name}
+                              // onChange={() =>
+                              //   handleCheckboxGroupChange(
+                              //     "Formadelterreno",
+                              //     "meldungLageCondicion"
+                              //   )
+                              // }
+                            />
+                            <label >
+                              Acepta financiamiento
+                            </label>
+                          </div>
+                          <div className="col-md-auto">
+                            <input
+                              // id={`sec181-a${item.id}`}
+                              className="asButton"
+                              type="checkbox"
+                              name="meldungLageCondicion"
+                              // value={item.name}
+                              // onChange={() =>
+                              //   handleCheckboxGroupChange(
+                              //     "Formadelterreno",
+                              //     "meldungLageCondicion"
+                              //   )
+                              // }
+                            />
+                            <label >
+                              Opción de compra
+                            </label>
+                          </div>
+                          <div className="col-md-auto">
+                            <input
+                              // id={`sec181-a${item.id}`}
+                              className="asButton"
+                              type="checkbox"
+                              name="meldungLageCondicion"
+                              // value={item.name}
+                              // onChange={() =>
+                              //   handleCheckboxGroupChange(
+                              //     "Formadelterreno",
+                              //     "meldungLageCondicion"
+                              //   )
+                              // }
+                            />
+                            <label >
+                              Opción de intercambio
+                            </label>
+                          </div>
+                    </div>
 
                 <h5 className="fw-bold mb-3">Tus datos de contacto</h5>
                 <div className="row g-2">

@@ -157,7 +157,7 @@ const SignUp = () => {
                 </div>
               </div>
              
-                <h1 className="header-text">Nos da gusto volver a verte</h1>
+                {/* <h1 className="header-text">Nos da gusto volver a verte</h1> */}
                 <div className="mb-3">
                   <label htmlFor="name" className="form-label">
                     Nombre completo
@@ -270,7 +270,7 @@ const SignUp = () => {
                   <p>Continuar con Google</p>
                 </div>
               </div>
-              <div className="mt-3">
+              {/* <div className="mt-3">
                 <div className="text-end">
                   <p className="mb-0 dont-have-acount">
                     <a className="me-2" href="">
@@ -279,7 +279,7 @@ const SignUp = () => {
                     Crear cuenta
                   </p>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

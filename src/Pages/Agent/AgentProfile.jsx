@@ -85,7 +85,7 @@ const AgentProfile = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [rentProperty, setRentProperty] = useState([]);
   const [sellProperty, setSellProperty] = useState([]);
-  const [value, setValue] = useState();
+  // const [value, setValue] = useState();
   const [count1, setCount1] = useState();
   const [count2, setCount2] = useState();
   const [followedAgentIds, setFollowedAgentIds] = useState([]);
@@ -290,9 +290,9 @@ const AgentProfile = () => {
       toast.success(response.data.message);
 
       setFollowedAgentIds((prev) =>
-        prev.includes(id)
+        prev.includes(Number(id))
           ? prev.filter((agentId) => agentId !== Number(id))
-          : [...prev, id]
+          : [...prev, Number(id)]
       );
     } catch (error) {
       console.log(error);

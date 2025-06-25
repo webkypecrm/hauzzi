@@ -1,8 +1,8 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/img/my-img/white-logo.png";
-import apple from "../../assets/img/my-img/applestore.png";
-import google from "../../assets/img/my-img/googlestore.png";
+import apple from "../../assets/img/yapple.png";
+import google from "../../assets/img/ygoogle.png";
 
 const Footer = () => {
   return (
@@ -56,20 +56,51 @@ const Footer = () => {
               </div>
             </div>
             <div className="col-lg-2 col-md-3 footer-links link-left">
-              <h4>Discover</h4>
-              <ul>
+              <h4>Sobre Hauzzi</h4>
+              <ul style={{fontSize: 13}}>
                 <li>
-                  <Link to="#">Privacy policy&nbsp;</Link>
+                  <Link to="#">Sobre nosotros&nbsp;</Link>
                 </li>
                 <li>
-                  <Link to="#">Terms of use&nbsp;</Link>
+                  <Link to="#">Contacta con Hauzz&nbsp;</Link>
                 </li>
                 <li>
-                  <Link to="/contact">Contact&nbsp;</Link>
+                  <Link to="#">Preguntas frecuentes&nbsp;</Link>
+                </li>
+                <li>
+                  <Link to="#">Blog&nbsp;</Link>
                 </li>
               </ul>
             </div>
             <div className="col-lg-2 col-md-3 footer-links">
+              <h4>Particulares</h4>
+              <ul style={{fontSize: 13}}>
+                <li>
+                  <Link to="#">Anuncia tu propiedad</Link>
+                </li>
+                <li>
+                  <Link to="#">Vende con un profesional</Link>
+                </li>
+              </ul>
+            </div>
+            <div className="col-lg-2 col-md-3 footer-links">
+              <h4>Profesionales</h4>
+              <ul style={{fontSize: 13}}>
+                <li>
+                  <Link to="#">Regístrate</Link>
+                </li>
+                <li>
+                  <Link to="#">Anuncia tu propiedad</Link>
+                </li>
+                <li>
+                  <Link to="#">Planes y precios</Link>
+                </li>
+                <li>
+                  <Link to="#">CRM Inmobiliario</Link>
+                </li>
+              </ul>
+            </div>
+            {/* <div className="col-lg-2 col-md-3 footer-links">
               <h4>Quick Links</h4>
               <ul>
                 <li>
@@ -85,7 +116,7 @@ const Footer = () => {
                   <Link to="/blog">Blog</Link>
                 </li>
               </ul>
-            </div>
+            </div> */}
             <div className="col-lg-2 col-md-3 footer-links link-left1">
               <h4>
                 Lleva la experiencia de Hauzzi contigo, donde sea que estés
@@ -93,12 +124,12 @@ const Footer = () => {
               <ul>
                 <li>
                   <Link to="#">
-                    <img src={apple} />
+                    <img src={apple} style={{width: 180}}/>
                   </Link>
                 </li>
                 <li>
                   <Link to="#">
-                    <img src={google} />
+                    <img src={google} style={{width: 180}}/>
                   </Link>
                 </li>
               </ul>

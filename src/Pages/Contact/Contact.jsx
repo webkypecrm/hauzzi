@@ -5,95 +5,92 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 const Contact = () => {
-   const [loading, setLoading] = useState(false);
-       const [lookingFor, setLookingFor] = useState("");
-       const [category, setCategory] = useState([]);
-       const [subCategory, setSubCategory] = useState([]);
-       const [selectedCategoryId, setSelectedCategoryId] = useState("");
-       const [selectType, setselectType] = useState("");
-       const [selectedSubCategoryId, setSelectedSubCategoryId] = useState("");
-       const [selectCategory, setselectCategory] = useState("");
-       const [search, setSearch] = useState("")
-       const apiUrl = import.meta.env.VITE_API_URL;
-       const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
-  
-  
-       const handleLookingForChange = (e) => {
+  const [loading, setLoading] = useState(false);
+  const [lookingFor, setLookingFor] = useState("");
+  const [category, setCategory] = useState([]);
+  const [subCategory, setSubCategory] = useState([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
+  const [selectType, setselectType] = useState("");
+  const [selectedSubCategoryId, setSelectedSubCategoryId] = useState("");
+  const [selectCategory, setselectCategory] = useState("");
+  const [search, setSearch] = useState("");
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
+
+  const handleLookingForChange = (e) => {
     const selectedText = e.target.options[e.target.selectedIndex].text.trim();
-  
+
     const purposeMap = {
       "For Rent": "wantToRent",
       "For Sale": "wantToSell",
       "For Both": "bothSellRent",
     };
-  
+
     const mappedValue = purposeMap[selectedText] || "";
     setLookingFor(mappedValue);
   };
-  
-    // console.log("looking", lookingFor);
-  
-    // category GET
-  
-    const getCategory = async () => {
-      try {
-        const res = await axios.get(`${apiUrl}/category/getAllCategory`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setCategory(res.data?.data || []);
-      } catch (error) {
-        console.error("Error fetching property types:", error);
-      }
-    };
-  
-    // property subCategory GET
-    
-  
-    const getSubCategory = async (categoryId) => {
-      try {
-        const res = await axios.get(
-          `${apiUrl}/category/getAllCategoryData/${categoryId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setSubCategory(res.data?.data || []);
-        console.log("subcat", subCategory);
-      } catch (error) {}
-    };
-  
-    const handleCategoryChange = (e) => {
-      const catId = e.target.value;
-      const selected = category.find((cat) => cat.id.toString() === catId);
-      setSelectedCategoryId(catId);
-      setselectType(selected?.name || "");
-      setSubCategory([]);
-      setSelectedSubCategoryId("");
-      setselectCategory("");
-      getSubCategory(catId);
-    };
-  
-    const handleSubCategoryChange = (e) => {
-      const subId = e.target.value;
-      const selected = subCategory.find((sub) => sub.id.toString() === subId);
-      setSelectedSubCategoryId(subId);
-      setselectCategory(selected?.name || "");
-    };
-  
-    useEffect(() => {
-      getCategory();
-    }, []);
-  
-  
-  // Search get api 
-   
-    const handelSearchInput = (e) => {
-      setSearch(e.target.value)
+
+  // console.log("looking", lookingFor);
+
+  // category GET
+
+  const getCategory = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/category/getAllCategory`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setCategory(res.data?.data || []);
+    } catch (error) {
+      console.error("Error fetching property types:", error);
     }
+  };
+
+  // property subCategory GET
+
+  // const getSubCategory = async (categoryId) => {
+  //   try {
+  //     const res = await axios.get(
+  //       `${apiUrl}/category/getAllCategoryData/${categoryId}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     setSubCategory(res.data?.data || []);
+  //     console.log("subcat", subCategory);
+  //   } catch (error) {}
+  // };
+
+  const handleCategoryChange = (e) => {
+    const catId = e.target.value;
+    const selected = category.find((cat) => cat.id.toString() === catId);
+    setSelectedCategoryId(catId);
+    setselectType(selected?.name || "");
+    setSubCategory([]);
+    setSelectedSubCategoryId("");
+    setselectCategory("");
+    // getSubCategory(catId);
+  };
+
+  // const handleSubCategoryChange = (e) => {
+  //   const subId = e.target.value;
+  //   const selected = subCategory.find((sub) => sub.id.toString() === subId);
+  //   setSelectedSubCategoryId(subId);
+  //   setselectCategory(selected?.name || "");
+  // };
+
+  useEffect(() => {
+    getCategory();
+  }, []);
+
+  // Search get api
+
+  const handelSearchInput = (e) => {
+    setSearch(e.target.value);
+  };
   return (
     <Fragment>
       <div className="index-page">
@@ -133,51 +130,51 @@ const Contact = () => {
                         >
                           {/* single input */}
                           <div className="query__input">
-                                <select
-                                  name="adult"
-                                  id="adult"
-                                  className="form-select border-s"
-                                  onChange={handleLookingForChange}
-                                >
-                                  <option value={1}>Looking For</option>
-                                  <option value={2}>For Rent</option>
-                                  <option value={3}>For Sale</option>
-                                  <option value={4}>For Both</option>
-                                </select>
-                                <div
-                                  className="query__input__icon"
-                                  style={{ pointerEvents: "none" }}
-                                >
-                                  <i className="flaticon-user" />
-                                </div>
-                              </div>
+                            <select
+                              name="adult"
+                              id="adult"
+                              className="form-select border-s"
+                              onChange={handleLookingForChange}
+                            >
+                              <option value={1}>Looking For</option>
+                              <option value={2}>For Rent</option>
+                              <option value={3}>For Sale</option>
+                              <option value={4}>For Both</option>
+                            </select>
+                            <div
+                              className="query__input__icon"
+                              style={{ pointerEvents: "none" }}
+                            >
+                              <i className="flaticon-user" />
+                            </div>
+                          </div>
                           {/* single input end */}
                           {/* single input */}
-                         <div className="query__input">
-                                <select
-                                  name="category"
-                                  id="category"
-                                  className="form-select border-s"
-                                  value={selectedCategoryId}
-                                  onChange={handleCategoryChange}
-                                >
-                                  <option value="">All Categories</option>
-                                  {category.map((cat) => (
-                                    <option key={cat.id} value={cat.id}>
-                                      {cat.name}
-                                    </option>
-                                  ))}
-                                </select>
-                                <div
-                                  className="query__input__icon"
-                                  style={{ pointerEvents: "none" }}
-                                >
-                                  <i className="flaticon-user" />
-                                </div>
-                              </div>
+                          <div className="query__input">
+                            <select
+                              name="category"
+                              id="category"
+                              className="form-select border-s"
+                              value={selectedCategoryId}
+                              onChange={handleCategoryChange}
+                            >
+                              <option value="">All Categories</option>
+                              {category.map((cat) => (
+                                <option key={cat.id} value={cat.id}>
+                                  {cat.name}
+                                </option>
+                              ))}
+                            </select>
+                            <div
+                              className="query__input__icon"
+                              style={{ pointerEvents: "none" }}
+                            >
+                              <i className="flaticon-user" />
+                            </div>
+                          </div>
                           {/* single input end */}
                           {/* single input */}
-                              <div className="query__input">
+                          {/* <div className="query__input">
                                 <select
                                   name="subCategory"
                                   id="subCategory"
@@ -198,8 +195,8 @@ const Contact = () => {
                                 >
                                   <i className="flaticon-user" />
                                 </div>
-                              </div>
-                              {/* single input end */}
+                              </div> */}
+                          {/* single input end */}
                           {/* submit button */}
                           <div className="search">
                             <input
@@ -210,13 +207,32 @@ const Contact = () => {
                               onChange={handelSearchInput}
                               value={search}
                             />
-                            <Link className="" to={`/propertysell?purpose=${lookingFor}&type=${selectType}&category=${selectCategory}&search=${(search)}`}>
-                              <span className="search-icon-content">
-                                Buscar
+                            <Link
+                              className=""
+                              to={`/propertysell?purpose=${lookingFor}&type=${selectType}&category=${selectCategory}&search=${search}`}
+                              style={{
+                                backgroundColor: "#ffbd59",
+                                borderRadius: "15px",
+                                padding: "3px",
+                              }}
+                            >
+                              <span
+                                className="search-icon-content"
+                                style={{
+                                  color: "black",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                BUSCAR
                               </span>{" "}
+                              {/* <img
+                                                                                          src={serchIcon}
+                                                                                            className="fa fa-search search-c slider-search"
+                                                                                            // style={{ color: "black" }}
+                                                                                          /> */}
                               <i
                                 className="fa fa-search search-c slider-search"
-                                style={{ color: "#FFBD59" }}
+                                style={{ color: "black" }}
                               />
                             </Link>
                           </div>
@@ -227,7 +243,10 @@ const Contact = () => {
                     <div className="contentslider" style={{ fontWeight: 700 }}>
                       {" "}
                       ¿Necesita más opciones de búsqueda?{" "}
-                      <Link to="#" className="btn btn-primary me-0 me-sm-2 mx-1">
+                      <Link
+                        to="#"
+                        className="btn btn-primary me-0 me-sm-2 mx-1"
+                      >
                         Búsqueda avanzada
                       </Link>
                     </div>

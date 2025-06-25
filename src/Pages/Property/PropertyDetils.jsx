@@ -614,8 +614,8 @@ const PropertyDetils = () => {
             <section className="gallery">
               <section className="p-0 container">
                 <div className="row d-flex">
-                  <div className="col-md-6 p-3 position-relative">
-                    <div className="lightbox_img_wrap">
+                  <div className="col-md-6 position-relative" style={{padding: 2.5}}>
+                    <div className="lightbox_img_wrap" style={{height: "99%"}}>
                       <img
                         className="lightbox-enabled"
                         src={images[0]}
@@ -640,7 +640,7 @@ const PropertyDetils = () => {
                   <div className="col-md-6">
                     <div className="row">
                       {images.slice(1, 5).map((img, index) => (
-                        <div className="col-md-6 p-3" key={index + 1}>
+                        <div className="col-md-6" key={index + 1} style={{padding: 2.5}}>
                           <div className="lightbox_img_wrap position-relative">
                             <img
                               loading="lazy"

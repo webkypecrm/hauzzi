@@ -23,9 +23,10 @@ import mail from "../../assets/img/my-img/vector_2.png";
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import Typography from "@mui/material/Typography";
-import ReactQuill from "react-quill";
+// import ReactQuill from "react-quill";
 import Loading from "../../Loading";
 import AgencyMap from "./AgencyMap";
+import { toast } from "react-toastify";
 
 const AgencyProfile = () => {
   // Slider 2
@@ -123,52 +124,52 @@ const AgencyProfile = () => {
   //   },
   // ];
   // Slider 4
-  const toShareSlides = [
-    {
-      image: "img/my-img/discovery.png",
-      title: "Eaton Garth Penthouse",
-      price: "$180,000",
-      address: "7722 18th Ave, Brooklyn",
-      bedrooms: "4 Hab.",
-      bathrooms: "2 Baños",
-      size: "450 m2",
-      author: "Vectoria smith",
-      avatar: "img/my-img/ellipse.png",
-    },
-    {
-      image: "img/my-img/agent-rent-img.jpeg",
-      title: "Diamond Manor Apartment",
-      price: "$259,000",
-      address: "7802 20th Ave, Brooklyn",
-      bedrooms: "4 Hab.",
-      bathrooms: "2 Baños",
-      size: "500 m2",
-      author: "Jhon-smith",
-      avatar: "img/my-img/ellipse_1.png",
-    },
-    {
-      image: "img/my-img/discovery.png",
-      title: "Eaton Garth Penthouse",
-      price: "$180,000",
-      address: "7722 18th Ave, Brooklyn",
-      bedrooms: "4 Hab.",
-      bathrooms: "2 Baños",
-      size: "450 m2",
-      author: "Vectoria smith",
-      avatar: "img/my-img/ellipse.png",
-    },
-    {
-      image: "img/my-img/agent-rent-img.jpeg",
-      title: "Diamond Manor Apartment",
-      price: "$259,000",
-      address: "7802 20th Ave, Brooklyn",
-      bedrooms: "4 Hab.",
-      bathrooms: "2 Baños",
-      size: "500 m2",
-      author: "Jhon-smith",
-      avatar: "img/my-img/ellipse_1.png",
-    },
-  ];
+  // const toShareSlides = [
+  //   {
+  //     image: "img/my-img/discovery.png",
+  //     title: "Eaton Garth Penthouse",
+  //     price: "$180,000",
+  //     address: "7722 18th Ave, Brooklyn",
+  //     bedrooms: "4 Hab.",
+  //     bathrooms: "2 Baños",
+  //     size: "450 m2",
+  //     author: "Vectoria smith",
+  //     avatar: "img/my-img/ellipse.png",
+  //   },
+  //   {
+  //     image: "img/my-img/agent-rent-img.jpeg",
+  //     title: "Diamond Manor Apartment",
+  //     price: "$259,000",
+  //     address: "7802 20th Ave, Brooklyn",
+  //     bedrooms: "4 Hab.",
+  //     bathrooms: "2 Baños",
+  //     size: "500 m2",
+  //     author: "Jhon-smith",
+  //     avatar: "img/my-img/ellipse_1.png",
+  //   },
+  //   {
+  //     image: "img/my-img/discovery.png",
+  //     title: "Eaton Garth Penthouse",
+  //     price: "$180,000",
+  //     address: "7722 18th Ave, Brooklyn",
+  //     bedrooms: "4 Hab.",
+  //     bathrooms: "2 Baños",
+  //     size: "450 m2",
+  //     author: "Vectoria smith",
+  //     avatar: "img/my-img/ellipse.png",
+  //   },
+  //   {
+  //     image: "img/my-img/agent-rent-img.jpeg",
+  //     title: "Diamond Manor Apartment",
+  //     price: "$259,000",
+  //     address: "7802 20th Ave, Brooklyn",
+  //     bedrooms: "4 Hab.",
+  //     bathrooms: "2 Baños",
+  //     size: "500 m2",
+  //     author: "Jhon-smith",
+  //     avatar: "img/my-img/ellipse_1.png",
+  //   },
+  // ];
 
   const [agencyData, setAgencyData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -177,6 +178,12 @@ const AgencyProfile = () => {
   const [count1, setCount1] = useState();
   const [count2, setCount2] = useState();
   const [showPopup, setShowPopup] = useState(false);
+  const [getReviewData, setGetReviewData] = useState([]);
+  const [countReview, setCountReview] = useState();
+  const [showAllReviews, setShowAllReviews] = useState(false);
+  const [expandedReviewIndex, setExpandedReviewIndex] = useState(null);
+  const [followedAgencyIds, setFollowedAgencyIds] = useState([]);
+  const [agencyListLoaded, setAgencyListLoaded] = useState(false);
 
   const customerId = localStorage.getItem("tokenId") || "";
   const token = localStorage.getItem("token");
@@ -293,10 +300,6 @@ const AgencyProfile = () => {
   };
 
   // GET review
-  const [getReviewData, setGetReviewData] = useState([]);
-  const [countReview, setCountReview] = useState();
-  const [showAllReviews, setShowAllReviews] = useState(false);
-  const [expandedReviewIndex, setExpandedReviewIndex] = useState(null);
 
   const getReview = async () => {
     try {
@@ -326,6 +329,64 @@ const AgencyProfile = () => {
   useEffect(() => {
     getReview();
   }, []);
+
+
+   // add My agency
+
+  useEffect(() => {
+    const fetchFollowedAgencys = async () => {
+      try {
+        const res = await axios.get(
+          `${apiUrl}/profile/savedAgency/${customerId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const data = res?.data?.data;
+        const ids = Array.isArray(data)
+          ? data.map((item) =>
+              typeof item === "object" && item !== null
+                ? Number(item.id)
+                : Number(item)
+            )
+          : [];
+
+        console.log("Followed Agency IDs", ids);
+        setFollowedAgencyIds(ids);
+      } catch (err) {
+        setFollowedAgencyIds([]);
+      } finally {
+        setAgencyListLoaded(true);
+      }
+    };
+
+    if (customerId) fetchFollowedAgencys();
+  }, [customerId]);
+
+  const handleAddAgency = async () => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}/profile/addAgency/${customerId}-${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success(response.data.message);
+
+      setFollowedAgencyIds((prev) =>
+        prev.includes(Number(id))
+          ? prev.filter((agencyId) => agencyId !== Number(id))
+          : [...prev, Number(id)]
+      );
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  };
 
   return (
     <Fragment>
@@ -1458,9 +1519,22 @@ const AgencyProfile = () => {
                       </p>
                     </div>
                     <div className="modal-footer flex-nowrap justify-content-center">
-                      <button type="button" className="btn btn-primary w-50">
+                      {/* <button type="button" className="btn btn-primary w-50">
                         Añadir Agencia
-                      </button>
+                      </button> */}
+                      {agencyListLoaded && (
+                        <button
+                          type="button"
+                          className="btn btn-primary w-50"
+                          aria-label="Close"
+                          data-bs-dismiss="modal"
+                          onClick={handleAddAgency}
+                        >
+                          {followedAgencyIds.includes(Number(id))
+                            ? "Agregada"
+                            : "Añadir Agente"}
+                        </button>
+                      )}
                       <button
                         type="button"
                         className="btn btn-outline-light w-50"
@@ -1468,6 +1542,7 @@ const AgencyProfile = () => {
                       >
                         Cancelar
                       </button>
+                      
                     </div>
                   </div>
                 </div>

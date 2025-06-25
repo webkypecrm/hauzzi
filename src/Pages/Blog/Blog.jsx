@@ -75,20 +75,20 @@ const Blog = () => {
 
   // property subCategory GET
 
-  const getSubCategory = async (categoryId) => {
-    try {
-      const res = await axios.get(
-        `${apiUrl}/category/getAllCategoryData/${categoryId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setSubCategory(res.data?.data || []);
-      console.log("subcat", subCategory);
-    } catch (error) {}
-  };
+  // const getSubCategory = async (categoryId) => {
+  //   try {
+  //     const res = await axios.get(
+  //       `${apiUrl}/category/getAllCategoryData/${categoryId}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     setSubCategory(res.data?.data || []);
+  //     console.log("subcat", subCategory);
+  //   } catch (error) {}
+  // };
 
   const handleCategoryChange = (e) => {
     const catId = e.target.value;
@@ -98,15 +98,15 @@ const Blog = () => {
     setSubCategory([]);
     setSelectedSubCategoryId("");
     setselectCategory("");
-    getSubCategory(catId);
+    // getSubCategory(catId);
   };
 
-  const handleSubCategoryChange = (e) => {
-    const subId = e.target.value;
-    const selected = subCategory.find((sub) => sub.id.toString() === subId);
-    setSelectedSubCategoryId(subId);
-    setselectCategory(selected?.name || "");
-  };
+  // const handleSubCategoryChange = (e) => {
+  //   const subId = e.target.value;
+  //   const selected = subCategory.find((sub) => sub.id.toString() === subId);
+  //   setSelectedSubCategoryId(subId);
+  //   setselectCategory(selected?.name || "");
+  // };
 
   useEffect(() => {
     handelBlogData();
@@ -214,7 +214,7 @@ const Blog = () => {
                               </div>
                               {/* <!-- single input end --> */}
                               {/* single input */}
-                              <div className="query__input">
+                              {/* <div className="query__input">
                                 <select
                                   name="subCategory"
                                   id="subCategory"
@@ -235,7 +235,7 @@ const Blog = () => {
                                 >
                                   <i className="flaticon-user" />
                                 </div>
-                              </div>
+                              </div> */}
                               {/* single input end */}
                               {/* <!-- submit button --> */}
                               <div className="search">
@@ -250,14 +250,30 @@ const Blog = () => {
                                 <Link
                                   className=""
                                   to={`/propertysell?purpose=${lookingFor}&type=${selectType}&category=${selectCategory}&search=${search}`}
+                                  style={{
+                                    backgroundColor: "#ffbd59",
+                                    borderRadius: "15px",
+                                    padding: "3px",
+                                  }}
                                 >
-                                  <span className="search-icon-content">
-                                    Buscar
+                                  <span
+                                    className="search-icon-content"
+                                    style={{
+                                      color: "black",
+                                      fontWeight: "500",
+                                    }}
+                                  >
+                                    BUSCAR
                                   </span>{" "}
+                                  {/* <img
+                                                                src={serchIcon}
+                                                                  className="fa fa-search search-c slider-search"
+                                                                  // style={{ color: "black" }}
+                                                                /> */}
                                   <i
                                     className="fa fa-search search-c slider-search"
-                                    style={{ color: " #FFBD59 " }}
-                                  ></i>
+                                    style={{ color: "black" }}
+                                  />
                                 </Link>
                               </div>
                               {/* <!-- submit button end --> */}

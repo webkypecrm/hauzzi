@@ -5,6 +5,9 @@ import Header from "./Header";
 import Footer from "./Footer";
 import axios from "axios";
 import Loading from "../../Loading";
+import serchIcon from "../../assets/img/searchIcon.png"
+import apple from "../../assets/img/apple.png";
+import google from "../../assets/img/google.png";
 
 const Main = () => {
   const [mainData, setMainData] = useState([]);
@@ -16,7 +19,7 @@ const Main = () => {
   const [selectType, setselectType] = useState("");
   const [selectedSubCategoryId, setSelectedSubCategoryId] = useState("");
   const [selectCategory, setselectCategory] = useState("");
-  const [search, setSearch] = useState("")
+  const [search, setSearch] = useState("");
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
   // const token2 = localStorage.getItem("token");
@@ -42,20 +45,18 @@ const Main = () => {
     }
   };
 
-  
+  const handleLookingForChange = (e) => {
+    const selectedText = e.target.options[e.target.selectedIndex].text.trim();
 
-const handleLookingForChange = (e) => {
-  const selectedText = e.target.options[e.target.selectedIndex].text.trim();
+    const purposeMap = {
+      "For Rent": "wantToRent",
+      "For Sale": "wantToSell",
+      "For Both": "bothSellRent",
+    };
 
-  const purposeMap = {
-    "For Rent": "wantToRent",
-    "For Sale": "wantToSell",
-    "For Both": "bothSellRent",
+    const mappedValue = purposeMap[selectedText] || "";
+    setLookingFor(mappedValue);
   };
-
-  const mappedValue = purposeMap[selectedText] || "";
-  setLookingFor(mappedValue);
-};
 
   // console.log("looking", lookingFor);
 
@@ -74,20 +75,20 @@ const handleLookingForChange = (e) => {
   };
 
   // property subCategory GET
-  const getSubCategory = async (categoryId) => {
-    try {
-      const res = await axios.get(
-        `${apiUrl}/category/getAllCategoryData/${categoryId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setSubCategory(res.data?.data || []);
-      console.log("subcat", subCategory);
-    } catch (error) {}
-  };
+  // const getSubCategory = async (categoryId) => {
+  //   try {
+  //     const res = await axios.get(
+  //       `${apiUrl}/category/getAllCategoryData/${categoryId}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     setSubCategory(res.data?.data || []);
+  //     console.log("subcat", subCategory);
+  //   } catch (error) {}
+  // };
 
   const handleCategoryChange = (e) => {
     const catId = e.target.value;
@@ -97,49 +98,45 @@ const handleLookingForChange = (e) => {
     setSubCategory([]);
     setSelectedSubCategoryId("");
     setselectCategory("");
-    getSubCategory(catId);
+    // getSubCategory(catId);
   };
 
-  const handleSubCategoryChange = (e) => {
-    const subId = e.target.value;
-    const selected = subCategory.find((sub) => sub.id.toString() === subId);
-    setSelectedSubCategoryId(subId);
-    setselectCategory(selected?.name || "");
-  };
+  // const handleSubCategoryChange = (e) => {
+  //   const subId = e.target.value;
+  //   const selected = subCategory.find((sub) => sub.id.toString() === subId);
+  //   setSelectedSubCategoryId(subId);
+  //   setselectCategory(selected?.name || "");
+  // };
 
-
-
-
-// Search get api 
+  // Search get api
   const handelSearchInput = (e) => {
-    setSearch(e.target.value)
-  }
+    setSearch(e.target.value);
+  };
 
-  
-    // get blogs api
-      const [blogsData, setBlogsData] = useState([]);
+  // get blogs api
+  const [blogsData, setBlogsData] = useState([]);
 
-    const handelBlogData = async () => {
-      setLoading(true);
-      try {
-        const res = await axios.get(`${apiUrl}/blog/getAll?limit=3`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-  
-        const allBlogs = res.data?.data || [];
-        setBlogsData(allBlogs);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    console.log("blogdata", blogsData);
+  const handelBlogData = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`${apiUrl}/blog/getAll?limit=3`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      useEffect(() => {
+      const allBlogs = res.data?.data || [];
+      setBlogsData(allBlogs);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  console.log("blogdata", blogsData);
+
+  useEffect(() => {
     getMainData();
     getCategory();
     handelBlogData();
@@ -241,7 +238,7 @@ const handleLookingForChange = (e) => {
                               </div>
                               {/* single input end */}
                               {/* single input */}
-                              <div className="query__input">
+                              {/* <div className="query__input">
                                 <select
                                   name="subCategory"
                                   id="subCategory"
@@ -262,7 +259,7 @@ const handleLookingForChange = (e) => {
                                 >
                                   <i className="flaticon-user" />
                                 </div>
-                              </div>
+                              </div> */}
                               {/* single input end */}
                               {/* submit button */}
                               <div className="search">
@@ -276,15 +273,18 @@ const handleLookingForChange = (e) => {
                                 />
                                 <Link
                                   className=""
-                                  to={`/propertysell?purpose=${lookingFor}&type=${selectType}&category=${selectCategory}&search=${(search)}`}
+                                  to={`/propertysell?purpose=${lookingFor}&type=${selectType}&category=${selectCategory}&search=${search}`}
+                                  style={{backgroundColor:"#ffbd59", borderRadius:"15px",padding:"3px"}}
                                 >
-                                  <span className="search-icon-content">
-                                    Buscar
+                                  <span className="search-icon-content" style={{color:"black",fontWeight:"500"}}>
+                                    BUSCAR
                                   </span>{" "}
-                                  <i
+                                  {/* <img
+                                  src={serchIcon}
                                     className="fa fa-search search-c slider-search"
-                                    style={{ color: "#FFBD59" }}
-                                  />
+                                    // style={{ color: "black" }}
+                                  /> */}
+                                  <i className="fa fa-search search-c slider-search" style={{ color: "black" }}/>
                                 </Link>
                               </div>
                               {/* submit button end */}
@@ -403,8 +403,8 @@ const handleLookingForChange = (e) => {
                                   <div className="title-price">
                                     <h4>{e.name}</h4>
                                     <span className="fp_price">
-                                      {/* ${e.maxPrice} */}
-                                      ${e.maxPrice ? e.maxPrice : e.rentalPrice}
+                                      {/* ${e.maxPrice} */}$
+                                      {e.maxPrice ? e.maxPrice : e.rentalPrice}
                                     </span>
                                   </div>
                                   <p>
@@ -473,25 +473,24 @@ const handleLookingForChange = (e) => {
                                           className="profile-pic"
                                         /> */}
                                         <img
-                                              src={
-                                                e.Customer?.userDetails
+                                          src={
+                                            e.Customer?.userDetails?.length > 0
+                                              ? e.Customer.userDetails[0]
+                                                  .photoUrl
+                                              : e.Customer?.agentDetails
                                                   ?.length > 0
-                                                  ? e.Customer.userDetails[0]
-                                                      .photoUrl
-                                                  : e.Customer?.agentDetails
-                                                      ?.length > 0
-                                                  ? e.Customer.agentDetails[0]
-                                                      .photoUrl
-                                                  : e.Customer?.agencyDetails
-                                                      ?.length > 0
-                                                  ? e.Customer.agencyDetails[0]
-                                                      .photoUrl
-                                                  : "default.jpg" // fallback image if none exists
-                                              }
-                                              alt="poster"
-                                              className="profile-pic"
-                                              style={{ width: "40px" }}
-                                            />
+                                              ? e.Customer.agentDetails[0]
+                                                  .photoUrl
+                                              : e.Customer?.agencyDetails
+                                                  ?.length > 0
+                                              ? e.Customer.agencyDetails[0]
+                                                  .photoUrl
+                                              : "default.jpg" // fallback image if none exists
+                                          }
+                                          alt="poster"
+                                          className="profile-pic"
+                                          style={{ width: "40px" }}
+                                        />
                                       </span>
                                       <span
                                         className="d-flex align-items-center"
@@ -696,94 +695,95 @@ const handleLookingForChange = (e) => {
                   </h4>
                 </div>
                 {/* End Section Title */}
-                {blogsData.length > 0 ? (            
-                <div className="container">
-                  <div className="row gy-4">
-                    {blogsData.map((blog) => (
-                      <div className="col-xl-4 col-md-4" key={blog.id}>
-                      <Link to={`/blog-details/${blog.slug}`}>
-                        <div className="feat_property">
-                          <div className="thumb">
-                            <img
-                              className="img-whp"
-                              src={blog.photoUrl}
-                              alt="fp1.jpg"
-                            />
-                          </div>
-                          <div className="details">
-                            <div className="tc_content">
-                              <p className="text-thm sub-t">
-                                <span>Bienes raíces</span>
-                              </p>
-                              <div className="title-price">
-                                <h4>
-                                  {blog.title}
-                                </h4>
-                              </div>
-                              <h5
-                                className="mt-2"
-                                style={{ color: "#FFBD59", fontSize: 18 }}
-                              >
-                                Seguir leyendo{" "}
-                                <i
-                                  className="fa fa-long-arrow-right"
-                                  style={{ marginLeft: 10 }}
+                {blogsData.length > 0 ? (
+                  <div className="container">
+                    <div className="row gy-4">
+                      {blogsData.map((blog) => (
+                        <div className="col-xl-4 col-md-4" key={blog.id}>
+                          <Link to={`/blog-details/${blog.slug}`}>
+                            <div className="feat_property">
+                              <div className="thumb">
+                                <img
+                                  className="img-whp"
+                                  src={blog.photoUrl}
+                                  alt="fp1.jpg"
                                 />
-                              </h5>
-                              <div
-                                className="fp_footer"
-                                style={{ border: "unset" }}
-                              >
-                                <ul className="fp_meta float-left mb0 mb-0 p-0">
-                                  <li className="list-inline-item">
-                                    <span to="#">
-                                      <img
-                                        src="img/my-img/Image.png"
-                                        alt="pposter1.png"
-                                        width="30%"
-                                      />
-                                      <span
-                                        style={{
-                                          marginLeft: 6,
-                                          color: "#97989F",
-                                        }}
-                                      >
-                                        By Hauzzi
-                                      </span>
-                                    </span>
-                                  </li>
-                                </ul>
-                                <div className="fp_pdate float-right">
-                                  {new Date(
-                                            blog.createdAt
-                                          ).toLocaleDateString("en-US", {
-                                            weekday: "short",
-                                            year: "numeric",
-                                            month: "short",
-                                            day: "numeric",
-                                          })}
+                              </div>
+                              <div className="details">
+                                <div className="tc_content">
+                                  <p className="text-thm sub-t">
+                                    <span>Bienes raíces</span>
+                                  </p>
+                                  <div className="title-price">
+                                    <h4>{blog.title}</h4>
+                                  </div>
+                                  <h5
+                                    className="mt-2"
+                                    style={{ color: "#FFBD59", fontSize: 18 }}
+                                  >
+                                    Seguir leyendo{" "}
+                                    <i
+                                      className="fa fa-long-arrow-right"
+                                      style={{ marginLeft: 10 }}
+                                    />
+                                  </h5>
+                                  <div
+                                    className="fp_footer"
+                                    style={{ border: "unset" }}
+                                  >
+                                    <ul className="fp_meta float-left mb0 mb-0 p-0">
+                                      <li className="list-inline-item">
+                                        <span to="#">
+                                          <img
+                                            src="img/my-img/Image.png"
+                                            alt="pposter1.png"
+                                            width="30%"
+                                          />
+                                          <span
+                                            style={{
+                                              marginLeft: 6,
+                                              color: "#97989F",
+                                            }}
+                                          >
+                                            By Hauzzi
+                                          </span>
+                                        </span>
+                                      </li>
+                                    </ul>
+                                    <div className="fp_pdate float-right">
+                                      {new Date(
+                                        blog.createdAt
+                                      ).toLocaleDateString("en-US", {
+                                        weekday: "short",
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+                                      })}
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          </Link>
                         </div>
-                      </Link>
-                    </div>
-                    ))}
-                    
-                    {/* End Feature Borx*/}
-                    <div className="col-md-12" style={{ textAlign: "center" }}>
-                      <Link
-                        className="btn-getstarted"
-                        to="/blog"
-                        style={{ padding: 16 }}
+                      ))}
+
+                      {/* End Feature Borx*/}
+                      <div
+                        className="col-md-12"
+                        style={{ textAlign: "center" }}
                       >
-                        Descubrir más
-                      </Link>
+                        <Link
+                          className="btn-getstarted"
+                          to="/blog"
+                          style={{ padding: 16 }}
+                        >
+                          Descubrir más
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                </div>
-                ):(
+                ) : (
                   <p>No Data</p>
                 )}
               </section>
@@ -795,6 +795,7 @@ const handleLookingForChange = (e) => {
                   backgroundRepeat: "no-repeat",
                   backgroundSize: "contain",
                   backgroundPosition: "right",
+                  padding: "37px 0 0 0",
                 }}
               >
                 <div
@@ -869,6 +870,15 @@ const handleLookingForChange = (e) => {
                             </li>
                           </ul>
                         </div>
+                        <div className="d-flex gap-5">
+                          <div >
+                            <img src={google} alt=""/>
+                          </div>
+                          <div>
+                            <img src={apple} alt="" />
+                          </div>
+                          
+                        </div>
                       </div>
                     </div>
                     <div
@@ -919,7 +929,9 @@ const handleLookingForChange = (e) => {
                             <Link to="#">Inmuebles en venta</Link>
                           </h3>
                           <p className="mt-3 mb-5" style={{ color: "#1A1A1A" }}>
-                           Encuentra casas en venta, apartamentos, locales y mucho más en Hauzzi. Utiliza nuestros filtros y alertas para estar al día de todas las novedades.
+                            Encuentra casas en venta, apartamentos, locales y
+                            mucho más en Hauzzi. Utiliza nuestros filtros y
+                            alertas para estar al día de todas las novedades.
                           </p>
                           <Link
                             className="btn-getstarted mt-3"
@@ -952,7 +964,10 @@ const handleLookingForChange = (e) => {
                             <Link to="#">Inmuebles en venta</Link>
                           </h3>
                           <p className="mt-3 mb-5" style={{ color: "#1A1A1A" }}>
-                            Descubre los mejores apartamentos en alquiler en cada ciudad. Filtra por precio, número de habitaciones o baños y contacta fácilmente con el propietario.
+                            Descubre los mejores apartamentos en alquiler en
+                            cada ciudad. Filtra por precio, número de
+                            habitaciones o baños y contacta fácilmente con el
+                            propietario.
                           </p>
                           <Link
                             className="btn-getstarted mt-3"

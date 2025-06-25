@@ -8,7 +8,7 @@ import map1 from "../../assets/img/my-img/map1.png";
 import filter_1 from "../../assets/img/my-img/filter_1.png";
 import filter_2 from "../../assets/img/my-img/filter_2.png";
 import filter_3 from "../../assets/img/my-img/filter_3.png";
-import PropertyMap from "../../PropertyMap";
+import PropertyMap from "../Property/PropertyMap";
 
 const PropertySell = () => {
   const [allData, setAllData] = useState([]);
@@ -133,8 +133,9 @@ const PropertySell = () => {
                 <div className="container">
                   <div className="row">
                     <div className="col-md-5">
-                      {/* <img src={map1} width="100%" /> */}
-                      <PropertyMap />
+                      <div style={{ position: "sticky", top: "100px" }}>
+                        <PropertyMap />
+                      </div>
                     </div>
                     <div className="col-md-7">
                       <div className="top-f">
@@ -221,8 +222,10 @@ const PropertySell = () => {
                                       <div className="title-price">
                                         <h4>{e.name}</h4>
                                         <span className="fp_price">
-                                          {/* ${e.maxPrice} */}
-                                          ${e.maxPrice ? e.maxPrice : e.rentalPrice}
+                                          {/* ${e.maxPrice} */}$
+                                          {e.maxPrice
+                                            ? e.maxPrice
+                                            : e.rentalPrice}
                                         </span>
                                       </div>
                                       <p>

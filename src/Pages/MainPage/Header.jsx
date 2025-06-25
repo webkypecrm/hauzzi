@@ -62,15 +62,12 @@ const Header = () => {
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
 
+  // Search get api
+  const [search, setSearch] = useState("");
 
-  // Search get api 
-    const [search, setSearch] = useState("")
- 
   const handelSearchInput = (e) => {
-    setSearch(e.target.value)
-  }
-
-
+    setSearch(e.target.value);
+  };
 
   return (
     <Fragment>
@@ -117,11 +114,13 @@ const Header = () => {
                     placeholder="Busca por dirección, ciudad o código postal"
                     onChange={handelSearchInput}
                     value={search}
-
                   />
-                  <button className="search-btn" >
-                    <Link to={`/propertysell?search=${(search)}`} style={{ color: "black" }}>
-                    <i className="bi bi-search" />
+                  <button className="search-btn">
+                    <Link
+                      to={`/propertysell?search=${search}`}
+                      style={{ color: "black" }}
+                    >
+                      <i className="bi bi-search" />
                     </Link>
                   </button>
                 </div>
@@ -240,14 +239,18 @@ const Header = () => {
                 </div>
               </div>
               <div className="d-flex align-items-center ms-3">
-                <Link to="/myfavoriets" className="h-icon-btn" style={{ color: "black" }}>
+                <Link
+                  to="/myfavoriets"
+                  className="h-icon-btn"
+                  style={{ color: "black" }}
+                >
                   <i className="bi bi-heart-fill" />
                 </Link>
                 <Link to="/mycomparisons" className="h-icon-btn">
                   <img src={arrow} alt="arrow" />
                 </Link>
                 <button className="h-icon-btn">
-                  <i className="bi bi-bell-fill" /> 
+                  <i className="bi bi-bell-fill" />
                 </button>
                 <Link
                   to={"/publish-propert"}
@@ -271,9 +274,9 @@ const Header = () => {
                     <FontAwesomeIcon icon={faCircleUser} />
                   </Link>
                 ) : (
-                  <a 
-                  href={redirectTo} 
-                  {...(isLoginPage ? { target: "_blank" } : {})}
+                  <a
+                    href={redirectTo}
+                    {...(isLoginPage ? { target: "_blank" } : {})}
                   >
                     <img
                       src={profileImg}
