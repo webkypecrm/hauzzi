@@ -47,13 +47,15 @@ const Main = () => {
     }
   };
 
+  console.log("first", mainData);
+
   const handleLookingForChange = (e) => {
     const selectedText = e.target.options[e.target.selectedIndex].text.trim();
 
     const purposeMap = {
-      "For Rent": "wantToRent",
-      "For Sale": "wantToSell",
-      "For Both": "bothSellRent",
+      "Rent": "wantToRent",
+      "Sale": "wantToSell",
+      "Both": "bothSellRent",
     };
 
     const mappedValue = purposeMap[selectedText] || "";
@@ -136,7 +138,6 @@ const Main = () => {
     }
   };
 
-  console.log("blogdata", blogsData);
 
   useEffect(() => {
     getMainData();
@@ -203,9 +204,9 @@ const Main = () => {
                                   onChange={handleLookingForChange}
                                 >
                                   <option value={1}>Looking For</option>
-                                  <option value={2}>For Rent</option>
-                                  <option value={3}>For Sale</option>
-                                  <option value={4}>For Both</option>
+                                  <option value={2}>Rent</option>
+                                  <option value={3}>Sale</option>
+                                  <option value={4}>Both</option>
                                 </select>
                                 <div
                                   className="query__input__icon"
@@ -381,7 +382,7 @@ const Main = () => {
                                       <span>{e.purpose}</span>
                                     </li>
                                     <li className="list-inline-item">
-                                      <span>{e.type}</span>
+                                      <span>{e.tags}</span>
                                     </li>
                                   </ul>
                                   <ul className="icon mb0">

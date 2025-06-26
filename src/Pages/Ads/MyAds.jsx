@@ -128,7 +128,7 @@ const MyAds = () => {
                                     <span>{e.purpose}</span>
                                   </li>{" "}
                                   <li className="list-inline-item">
-                                    <span>{e.type}</span>
+                                    <span>{e.tags}</span>
                                   </li>
                                 </ul>
                               </div>

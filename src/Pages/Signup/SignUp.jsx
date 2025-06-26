@@ -33,14 +33,17 @@ const SignUp = () => {
         registerData
       );
 
+      localStorage.setItem("token", res.data.data.Token);
+      localStorage.setItem("tokenId", res.data.data.id);
+      localStorage.setItem("userType", res.data.data.userType);
+
       toast.success("Registered Successfully", {
         autoClose: 1000,
       });
 
       setTimeout(() => {
-        navigate("/login");
+        navigate("/dashboard");
       }, 1500);
-
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
@@ -81,82 +84,82 @@ const SignUp = () => {
               <div className="my-3 Bienvenido">
                 <h2>Bienvenido</h2>
               </div>
-               <form
+              <form
                 onSubmit={handelSubmit}
                 style={{ borderBottom: "1px solid #E5E5E5" }}
               >
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    defaultValue=""
-                    id="Usuario"
-                    name="userType"
-                    value={"0"}
-                    checked={registerData.userType === "0"}
-                    onChange={(e) =>
-                      setRegisterData({
-                        ...registerData,
-                        userType: (e.target.value),
-                      })
-                    }
-                  />
-                  <label
-                    className="form-check-label new-form-label"
-                    htmlFor="Usuario"
-                  >
-                    Usuario
-                  </label>
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      defaultValue=""
+                      id="Usuario"
+                      name="userType"
+                      value={"0"}
+                      checked={registerData.userType === "0"}
+                      onChange={(e) =>
+                        setRegisterData({
+                          ...registerData,
+                          userType: e.target.value,
+                        })
+                      }
+                    />
+                    <label
+                      className="form-check-label new-form-label"
+                      htmlFor="Usuario"
+                    >
+                      Usuario
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      defaultValue=""
+                      id="Agente"
+                      name="userType"
+                      value={1}
+                      checked={registerData.userType === 1}
+                      onChange={(e) =>
+                        setRegisterData({
+                          ...registerData,
+                          userType: parseInt(e.target.value),
+                        })
+                      }
+                    />
+                    <label
+                      className="form-check-label new-form-label"
+                      htmlFor="Agente"
+                    >
+                      Agente
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      defaultValue=""
+                      id="Inmobiliaria"
+                      name="userType"
+                      value={2}
+                      checked={registerData.userType === 2}
+                      onChange={(e) =>
+                        setRegisterData({
+                          ...registerData,
+                          userType: parseInt(e.target.value),
+                        })
+                      }
+                    />
+                    <label
+                      className="form-check-label new-form-label"
+                      htmlFor="Inmobiliaria"
+                    >
+                      Inmobiliaria
+                    </label>
+                  </div>
                 </div>
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    defaultValue=""
-                    id="Agente"
-                    name="userType"
-                    value={1}
-                    checked={registerData.userType === 1}
-                    onChange={(e) =>
-                      setRegisterData({
-                        ...registerData,
-                        userType: parseInt(e.target.value),
-                      })
-                    }
-                  />
-                  <label
-                    className="form-check-label new-form-label"
-                    htmlFor="Agente"
-                  >
-                    Agente
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    defaultValue=""
-                    id="Inmobiliaria"
-                    name="userType"
-                    value={2}
-                    checked={registerData.userType === 2}
-                    onChange={(e) =>
-                      setRegisterData({
-                        ...registerData,
-                        userType: parseInt(e.target.value),
-                      })
-                    }
-                  />
-                  <label
-                    className="form-check-label new-form-label"
-                    htmlFor="Inmobiliaria"
-                  >
-                    Inmobiliaria
-                  </label>
-                </div>
-              </div>
-             
+
                 {/* <h1 className="header-text">Nos da gusto volver a verte</h1> */}
                 <div className="mb-3">
                   <label htmlFor="name" className="form-label">

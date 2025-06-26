@@ -551,27 +551,6 @@ const PropertyDetils = () => {
   };
 
   // for price up or down
-const originalBackendPriceRef = useRef(null);
-const [currentPrice, setCurrentPrice] = useState(null);
-
-useEffect(() => {
-  if (propertyData?.maxPrice) {
-    const price = Number(propertyData.maxPrice);
-
-    // Set only once
-    if (originalBackendPriceRef.current === null) {
-      originalBackendPriceRef.current = price;
-    }
-
-    setCurrentPrice(price);
-  }
-}, [propertyData]);
-
-
-console.log("originalBackendPrice", originalBackendPriceRef);
-console.log("currentPrice", currentPrice);
-
-
 
   return (
     <Fragment>
@@ -944,66 +923,13 @@ console.log("currentPrice", currentPrice);
                       </div>
                     )}
                   </div>
-                  {/* <h3 className="mt-2">
-                    ${propertyData?.maxPrice}{" "}
+                  <h3 className="mt-2">
+                    ${propertyData?.maxPrice || propertyData?.rentalPrice}{" "}
                     <span style={{ fontSize: 13, color: "#00BF63" }}>
                       <img src={img11} style={{ width: 20 }} />
                       Ha bajado $5.000{" "}
                     </span>
-                  </h3> */}
-
-                  {/* <h3 className="mt-2">
-  ${currentPrice}{" "}
-  {previousPrice !== null && previousPrice !== currentPrice && (
-    <span style={{ fontSize: 13, color: currentPrice > previousPrice ? "#007BFF" : "#00BF63" }}>
-      <img
-        src={currentPrice > previousPrice ? img11 : downIcon}
-        style={{ width: 20 }}
-        alt=""
-      />
-      {currentPrice > previousPrice
-        ? `Ha subido $${currentPrice - previousPrice}`
-        : `Ha bajado $${previousPrice - currentPrice}`}
-    </span>
-  )}
-</h3> */}
-<h3 className="mt-2">
-  ${currentPrice}
-  {originalBackendPriceRef.current !== null &&
-    originalBackendPriceRef.current !== currentPrice && (
-      <span
-        style={{
-          fontSize: 13,
-          color:
-            currentPrice > originalBackendPriceRef.current
-              ? "#007BFF"
-              : "#00BF63",
-        }}
-      >
-        <img
-          src={
-            currentPrice > originalBackendPriceRef.current
-              ? img11
-              : downIcon
-          }
-          style={{ width: 20 }}
-          alt=""
-        />
-        {currentPrice > originalBackendPriceRef.current
-          ? `Ha subido $${currentPrice - originalBackendPriceRef.current}`
-          : `Ha bajado $${originalBackendPriceRef.current - currentPrice}`}
-      </span>
-    )}
-</h3>
-
-
-
-
-
-
-
-
-
+                  </h3>
 
                   <h6 className="mt-4" style={{ fontWeight: 800 }}>
                     {propertyData?.name}
@@ -1629,7 +1555,7 @@ console.log("currentPrice", currentPrice);
                                   <span>{e.purpose}</span>
                                 </li>
                                 <li className="list-inline-item">
-                                  <span>{e.type}</span>
+                                  <span>{e.tags}</span>
                                 </li>
                               </ul>
                               <ul className="icon mb0">

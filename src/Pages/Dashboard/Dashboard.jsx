@@ -84,7 +84,7 @@ const navigate = useNavigate();
                   <div className="row mb-4">
                     <div className="profile-container">
                       <div className="profile-pic-wrapper">
-                        {photo == "" ? (
+                        {photo == "" || photo == null ?  (
                           <img src={imageSrc} alt="Profile" id="profileImage" />
                         ) : (
                           <img

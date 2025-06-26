@@ -29,7 +29,7 @@ const PublishProperty = () => {
   const [selectedStateId, setSelectedStateId] = useState("");
   const [allData, setAllData] = useState([]);
 
-  const {id} = useParams();
+  const { id } = useParams();
 
   const handleFileChange = (index, event) => {
     const file = event.target.files[0];
@@ -58,6 +58,7 @@ const PublishProperty = () => {
   };
 
   // Type of property GET
+
   const getPropertyTypes = async () => {
     setLoading(true);
     try {
@@ -74,13 +75,23 @@ const PublishProperty = () => {
     }
   };
 
+  // const handleSelectType = (type, index) => {
+  //   setActiveTypeIndex(index);
+  //   setPropertyData((prev) => ({
+  //     ...prev,
+  //     type: type.name,
+  //   }));
+  //   getPropertyCategory(type);
+  // };
+
   const handleSelectType = (type, index) => {
     setActiveTypeIndex(index);
     setPropertyData((prev) => ({
       ...prev,
       type: type.name,
     }));
-    getPropertyCategory(type);
+    // Optional: Load category based on selected type
+    getPropertyCategory(type); // if this function is defined
   };
 
   // property category GET
@@ -96,7 +107,7 @@ const PublishProperty = () => {
       );
       setPropertyCategory(res.data?.data || []);
       setActiveCategoryIndex(null);
-      setMastersData([]); 
+      setMastersData([]);
     } catch (error) {}
   };
 
@@ -132,6 +143,7 @@ const PublishProperty = () => {
     name: "",
     purpose: "",
     maxPrice: "",
+    // originalMaxPrice: "",
     maxSize: "",
     maxPSF: "",
     rentalPrice: "",
@@ -161,6 +173,7 @@ const PublishProperty = () => {
     photo9: null,
     photo10: null,
     isDraft: "",
+    tags: "",
     customerId: localStorage.getItem("tokenId") || "",
     userType: localStorage.getItem("userType") || "",
   };
@@ -176,6 +189,30 @@ const PublishProperty = () => {
       [e.target.name]: e.target.value,
     });
   };
+
+  const handleInputChange2 = (e) => {
+  const { name, value } = e.target;
+
+  const updatedData = {
+    ...propertyData,
+    [name]: value,
+  };
+    // Auto-calculate maxPSF only when maxPrice or maxSize is updated
+  const price = parseFloat(
+    name === "maxPrice" ? value : updatedData.maxPrice
+  );
+  const size = parseFloat(
+    name === "maxSize" ? value : updatedData.maxSize
+  );
+
+  if (!isNaN(price) && !isNaN(size) && size > 0) {
+    updatedData.maxPSF = (price / size) // Round to 2 decimals
+  } else {
+    updatedData.maxPSF = "";
+  }
+
+  setPropertyData(updatedData);
+};
 
   const handleListingDetailChange = (label, value) => {
     setPropertyData((prev) => ({
@@ -199,6 +236,15 @@ const PublishProperty = () => {
         ...prev.listingDetails,
         [label]: selectedValues.join(", "),
       },
+    }));
+  };
+
+  const handleSingleTagSelect = (e) => {
+    const { value } = e.target;
+
+    setPropertyData((prev) => ({
+      ...prev,
+      tags: prev.tags === value ? "" : value,
     }));
   };
 
@@ -259,43 +305,115 @@ const PublishProperty = () => {
 
   const [originalData, setOriginalData] = useState(null);
 
-useEffect(() => {
-  if (id) {
-    axios
-      .get(`${apiUrl}/property/property?isDraft=false&id=${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => {
-        const fetchedData = res.data?.data?.[0];
-        if (!fetchedData) {
-          toast.error("Property data not found");
-          return;
-        }
+  useEffect(() => {
+    if (id) {
+      axios
+        .get(`${apiUrl}/property/property?isDraft=false&id=${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => {
+          const fetchedData = res.data?.data?.[0];
+          if (!fetchedData) {
+            toast.error("Property data not found");
+            return;
+          }
 
-        const fullData = { ...initialData, ...fetchedData, id };
-        setOriginalData(fullData);
-        setPropertyData(fullData);
-      })
-      .catch((err) => {
-        toast.error("Failed to load property");
-        console.error(err);
-      });
-  }
-}, [id]);
+          const fullData = { ...initialData, ...fetchedData, id };
+          setOriginalData(fullData);
+          setPropertyData(fullData);
+        })
+        .catch((err) => {
+          toast.error("Failed to load property");
+          console.error(err);
+        });
+    }
+  }, [id]);
 
+  //  const handelPropertyDataSubmit = async (e) => {
+  //   e.preventDefault();
 
+  //   const clickedButton = e.nativeEvent.submitter?.value || "publish";
+  //   const isDraftValue = clickedButton === "draft" ? "true" : "false";
 
-   const handelPropertyDataSubmit = async (e) => {
+  //   // 🧠 Merge originalData with new changes
+  //   const updatedPropertyData = {
+  //     ...(originalData || initialData), // full base
+  //     ...propertyData,                  // new values overwrite old
+  //     isDraft: isDraftValue,           // update draft status
+  //   };
+
+  //   try {
+  //     const formData = new FormData();
+
+  //     for (const key in updatedPropertyData) {
+  //       const value = updatedPropertyData[key];
+
+  //       // jo edit krte time muje send nhi krni h
+  //       if (key === "userType" && !!id) continue;
+  //       if (key === "slug" && !!id) continue;
+  //       if (key === "bookedBy" && !!id) continue;
+  //       if (key === "cancelledBy" && !!id) continue;
+  //       if (key === "views" && !!id) continue;
+  //       if (key === "saved" && !!id) continue;
+  //       if (key === "createdAt" && !!id) continue;
+  //       if (key === "updatedAt" && !!id) continue;
+  //       if (key === "Customer" && !!id) continue;
+  //       if (key === "cities" && !!id) continue;
+  //       if (key === "states" && !!id) continue;
+  //       if (key === "countries" && !!id) continue;
+  //       if (key === "images" && !!id) continue;
+  //       if (key === "propertyDocs" && !!id) continue;
+
+  //       if (key.startsWith("photo") && value instanceof File) {
+  //         formData.append(key, value);
+  //       } else if (key === "listingDetails" && typeof value === "object") {
+  //         formData.append("listingDetails", JSON.stringify(value));
+  //       } else if (value !== null && value !== undefined) {
+  //         formData.append(key, value);
+  //       }
+  //     }
+
+  //     const isEdit = !!id;
+  //     const url = isEdit
+  //       ? `${apiUrl}/property/update-property`
+  //       : `${apiUrl}/property/add-property`;
+
+  //     await axios.post(url, formData, {
+  //       headers: {
+  //         Authorization: `Bearer ${token2}`,
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
+
+  //     toast.success(
+  //       isEdit ? "Property updated successfully!" : "Property added successfully!"
+  //     );
+
+  //     setPropertyData({
+  //       ...initialData,
+  //       purpose: "Vender",
+  //     });
+  //     setOriginalData(null);
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error(error.response?.data?.message || "Something went wrong");
+  //   }
+  // };
+
+  const handelPropertyDataSubmit = async (e) => {
     e.preventDefault();
 
     const clickedButton = e.nativeEvent.submitter?.value || "publish";
     const isDraftValue = clickedButton === "draft" ? "true" : "false";
 
-    // 🧠 Merge originalData with new changes
+    // if (!id) {
+    //   propertyData.originalMaxPrice = propertyData.maxPrice; // set only on add
+    // }
+
     const updatedPropertyData = {
-      ...(originalData || initialData), // full base
-      ...propertyData,                  // new values overwrite old
-      isDraft: isDraftValue,           // update draft status
+      ...(originalData || initialData),
+      ...propertyData,
+      isDraft: isDraftValue,
     };
 
     try {
@@ -304,7 +422,8 @@ useEffect(() => {
       for (const key in updatedPropertyData) {
         const value = updatedPropertyData[key];
 
-        // jo edit krte time muje send nhi krni h
+        // Fields to skip during edit
+        // if (key === "originalMaxPrice" && !!id) continue;
         if (key === "userType" && !!id) continue;
         if (key === "slug" && !!id) continue;
         if (key === "bookedBy" && !!id) continue;
@@ -320,6 +439,7 @@ useEffect(() => {
         if (key === "images" && !!id) continue;
         if (key === "propertyDocs" && !!id) continue;
 
+        // Handle file/image
         if (key.startsWith("photo") && value instanceof File) {
           formData.append(key, value);
         } else if (key === "listingDetails" && typeof value === "object") {
@@ -329,8 +449,7 @@ useEffect(() => {
         }
       }
 
-      const isEdit = !!id;
-      const url = isEdit
+      const url = !!id
         ? `${apiUrl}/property/update-property`
         : `${apiUrl}/property/add-property`;
 
@@ -342,7 +461,7 @@ useEffect(() => {
       });
 
       toast.success(
-        isEdit ? "Property updated successfully!" : "Property added successfully!"
+        !!id ? "Property updated successfully!" : "Property added successfully!"
       );
 
       setPropertyData({
@@ -355,8 +474,6 @@ useEffect(() => {
       toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
-
-
 
   // country Get
   const getCountries = async () => {
@@ -465,6 +582,28 @@ useEffect(() => {
     setMapCenter({ lat, lng }); // Move map & marker
   };
   // };
+
+  useEffect(() => {
+    if (propertyData?.type && propertyTypes.length > 0) {
+      const foundIndex = propertyTypes.findIndex(
+        (item) => item.name === propertyData.type
+      );
+      if (foundIndex !== -1) {
+        setActiveTypeIndex(foundIndex);
+      }
+    }
+  }, [propertyData.type, propertyTypes]);
+
+  useEffect(() => {
+    if (propertyData?.category && propertyCategory.length > 0) {
+      const foundIndex = propertyCategory.findIndex(
+        (item) => item.name === propertyData.category
+      );
+      if (foundIndex !== -1) {
+        setActiveCategoryIndex(foundIndex);
+      }
+    }
+  }, [propertyData.category, propertyCategory]);
 
   return (
     <Fragment>
@@ -632,7 +771,7 @@ useEffect(() => {
                             placeholder="Precio de venta"
                             name="maxPrice"
                             value={propertyData.maxPrice}
-                            onChange={handleInputChange}
+                            onChange={handleInputChange2}
                           />
                           <button className="dollar-btn">$</button>
                         </div>
@@ -649,7 +788,7 @@ useEffect(() => {
                             placeholder="Tamaño de la propiedad"
                             name="maxSize"
                             value={propertyData.maxSize}
-                            onChange={handleInputChange}
+                            onChange={handleInputChange2}
                           />
                           <button className="dollar-btn">
                             m<sup>2</sup>
@@ -668,7 +807,8 @@ useEffect(() => {
                             placeholder="Tarifa por pie cuadrado"
                             name="maxPSF"
                             value={propertyData.maxPSF}
-                            onChange={handleInputChange}
+                            // onChange={handleInputChange2}
+                            readOnly
                           />
                           <button className="dollar-btn">
                             m<sup>2</sup>
@@ -1605,97 +1745,98 @@ useEffect(() => {
 
                 <h5 className="fw-bold mb-3">Etiquetas para tu anuncio</h5>
                 <div className="row g-2 mb-4">
-                          <div className="col-md-auto">
-                            <input
-                              // id={`sec181-a${item.id}`}
-                              className="asButton"
-                              type="checkbox"
-                              name="meldungLageCondicion"
-                              // value={item.name}
-                              // onChange={() =>
-                              //   handleCheckboxGroupChange(
-                              //     "Formadelterreno",
-                              //     "meldungLageCondicion"
-                              //   )
-                              // }
-                            />
-                            <label >
-                              Negociable
-                            </label>
-                          </div>
-                          <div className="col-md-auto">
-                            <input
-                              // id={`sec181-a${item.id}`}
-                              className="asButton"
-                              type="checkbox"
-                              name="meldungLageCondicion"
-                              // value={item.name}
-                              // onChange={() =>
-                              //   handleCheckboxGroupChange(
-                              //     "Formadelterreno",
-                              //     "meldungLageCondicion"
-                              //   )
-                              // }
-                            />
-                            <label >
-                              A estrenar
-                            </label>
-                          </div>
-                          <div className="col-md-auto">
-                            <input
-                              // id={`sec181-a${item.id}`}
-                              className="asButton"
-                              type="checkbox"
-                              name="meldungLageCondicion"
-                              // value={item.name}
-                              // onChange={() =>
-                              //   handleCheckboxGroupChange(
-                              //     "Formadelterreno",
-                              //     "meldungLageCondicion"
-                              //   )
-                              // }
-                            />
-                            <label >
-                              Acepta financiamiento
-                            </label>
-                          </div>
-                          <div className="col-md-auto">
-                            <input
-                              // id={`sec181-a${item.id}`}
-                              className="asButton"
-                              type="checkbox"
-                              name="meldungLageCondicion"
-                              // value={item.name}
-                              // onChange={() =>
-                              //   handleCheckboxGroupChange(
-                              //     "Formadelterreno",
-                              //     "meldungLageCondicion"
-                              //   )
-                              // }
-                            />
-                            <label >
-                              Opción de compra
-                            </label>
-                          </div>
-                          <div className="col-md-auto">
-                            <input
-                              // id={`sec181-a${item.id}`}
-                              className="asButton"
-                              type="checkbox"
-                              name="meldungLageCondicion"
-                              // value={item.name}
-                              // onChange={() =>
-                              //   handleCheckboxGroupChange(
-                              //     "Formadelterreno",
-                              //     "meldungLageCondicion"
-                              //   )
-                              // }
-                            />
-                            <label >
-                              Opción de intercambio
-                            </label>
-                          </div>
-                    </div>
+                  <div className="col-md-auto">
+                    <input
+                      id="tag-negociable"
+                      className="asButton active"
+                      type="checkbox"
+                      name="tags"
+                      value="Negociable"
+                      checked={propertyData.tags === "Negociable"}
+                      onChange={handleSingleTagSelect}
+                    />
+                    <label
+                      htmlFor="tag-negociable"
+                      className={`asButton ${
+                        propertyData.tags === "Negociable" ? "active" : ""
+                      }`}
+                    >
+                      Negociable
+                    </label>
+                  </div>
+                  <div className="col-md-auto">
+                    <input
+                      id="tag-estrenar"
+                      className="asButton"
+                      type="checkbox"
+                      name="tags"
+                      value="A estrenar"
+                      checked={propertyData.tags === "A estrenar"}
+                      onChange={handleSingleTagSelect}
+                    />
+                    <label
+                      htmlFor="tag-estrenar"
+                      className={`asButton ${
+                        propertyData.tags === "estrenar" ? "active" : ""
+                      }`}
+                    >
+                      A estrenar
+                    </label>
+                  </div>
+                  <div className="col-md-auto">
+                    <input
+                      id="tag-financiamiento"
+                      className="asButton"
+                      type="checkbox"
+                      name="tags"
+                      value="Acepta financiamiento"
+                      checked={propertyData.tags === "Acepta financiamiento"}
+                      onChange={handleSingleTagSelect}
+                    />
+                    <label
+                      htmlFor="tag-financiamiento"
+                      className={`asButton ${
+                        propertyData.tags === "financiamiento" ? "active" : ""
+                      }`}
+                    >
+                      Acepta financiamiento
+                    </label>
+                  </div>
+                  <div className="col-md-auto">
+                    <input
+                      id="tag-Opcióndecompra"
+                      className="asButton"
+                      type="checkbox"
+                      name="tags"
+                      value="Opción de compra"
+                      checked={propertyData.tags === "Opción de compra"}
+                      onChange={handleSingleTagSelect}
+                    />
+                    <label
+                      htmlFor="tag-Opcióndecompra"
+                      className={`asButton ${
+                        propertyData.tags === "Opcióndecompra" ? "active" : ""
+                      }`}
+                    >
+                      Opción de compra
+                    </label>
+                  </div>
+                  <div className="col-md-auto">
+                    <input
+                    id="tag-intercambio"
+                      className="asButton"
+                      type="checkbox"
+                      name="tags"
+                      value="Opción de intercambio"
+                      checked={propertyData.tags === "Opción de intercambio"}
+                      onChange={handleSingleTagSelect}
+                    />
+                    <label  htmlFor="tag-intercambio"
+                      className={`asButton ${
+                        propertyData.tags === "intercambio" ? "active" : ""
+                      }`}>Opción de intercambio</label>
+                  </div>
+                </div>
 
                 <h5 className="fw-bold mb-3">Tus datos de contacto</h5>
                 <div className="row g-2">

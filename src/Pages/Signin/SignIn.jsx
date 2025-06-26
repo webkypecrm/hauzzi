@@ -8,7 +8,6 @@ const SignIn = () => {
   const navigate = useNavigate();
   const apiUrl = import.meta.env.VITE_API_URL;
 
-
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -32,13 +31,19 @@ const SignIn = () => {
       localStorage.setItem("token", res.data.data.Token);
       localStorage.setItem("tokenId", res.data.data.id);
       localStorage.setItem("userType", res.data.data.userType);
-      navigate("/dashboard");
+
+      toast.success("Login Successfully", {
+        autoClose: 1000,
+      });
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1500);
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message);
     }
   };
-  
+
   return (
     <Fragment>
       <div className="container-fluid">
