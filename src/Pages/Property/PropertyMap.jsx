@@ -4,7 +4,7 @@ import axios from "axios";
 
 const mapContainerStyle = {
   width: "100%",
-  height: "500px",
+  height: "650px",
   borderRadius:"10px"
 };
 

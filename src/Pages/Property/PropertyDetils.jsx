@@ -30,7 +30,9 @@ import phn from "../../assets/img/my-img/call.png";
 import Map from "../../Map";
 import locationn from "../../assets/img/my-img/vector.png";
 import { toast } from "react-toastify";
-import Calendar from "../../Calendar";
+// import Calendar from "../../Calendar";
+import hauzzi from "../../assets/img/hauzziIcon.png";
+import share from "../../assets/img/my-img/share-icon.png";
 
 const PropertyDetils = () => {
   // -------------lightbox---------
@@ -60,7 +62,6 @@ const PropertyDetils = () => {
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
   const token2 = localStorage.getItem("token");
   const customerId = localStorage.getItem("tokenId") || "";
-  console.log("tocken", token2);
 
   // const lightboxImageRef = useRef();
 
@@ -150,7 +151,7 @@ const PropertyDetils = () => {
   };
 
   let showData = [];
-  let profileType = ""; 
+  let profileType = "";
 
   if (propertyData?.Customer?.userDetails?.length > 0) {
     showData = propertyData.Customer.userDetails;
@@ -549,6 +550,29 @@ const PropertyDetils = () => {
     }
   };
 
+  // for price up or down
+const originalBackendPriceRef = useRef(null);
+const [currentPrice, setCurrentPrice] = useState(null);
+
+useEffect(() => {
+  if (propertyData?.maxPrice) {
+    const price = Number(propertyData.maxPrice);
+
+    // Set only once
+    if (originalBackendPriceRef.current === null) {
+      originalBackendPriceRef.current = price;
+    }
+
+    setCurrentPrice(price);
+  }
+}, [propertyData]);
+
+
+console.log("originalBackendPrice", originalBackendPriceRef);
+console.log("currentPrice", currentPrice);
+
+
+
   return (
     <Fragment>
       <div className="index-page">
@@ -614,8 +638,14 @@ const PropertyDetils = () => {
             <section className="gallery">
               <section className="p-0 container">
                 <div className="row d-flex">
-                  <div className="col-md-6 position-relative" style={{padding: 2.5}}>
-                    <div className="lightbox_img_wrap" style={{height: "99%"}}>
+                  <div
+                    className="col-md-6 position-relative"
+                    style={{ padding: 2.5 }}
+                  >
+                    <div
+                      className="lightbox_img_wrap"
+                      style={{ height: "99%" }}
+                    >
                       <img
                         className="lightbox-enabled"
                         src={images[0]}
@@ -628,19 +658,23 @@ const PropertyDetils = () => {
                         <img src="img/my-img/camera.png" alt="" />
                         {images.length} Fotos
                       </Link>
-                      <Link
+                      {/* <Link
                         className="btn-getstarted"
                         to="#"
                         style={{ backgroundColor: "#fff", color: "#000" }}
                       >
                         3D Visita Virtual
-                      </Link>
+                      </Link> */}
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="row">
                       {images.slice(1, 5).map((img, index) => (
-                        <div className="col-md-6" key={index + 1} style={{padding: 2.5}}>
+                        <div
+                          className="col-md-6"
+                          key={index + 1}
+                          style={{ padding: 2.5 }}
+                        >
                           <div className="lightbox_img_wrap position-relative">
                             <img
                               loading="lazy"
@@ -910,13 +944,67 @@ const PropertyDetils = () => {
                       </div>
                     )}
                   </div>
-                  <h3 className="mt-2">
+                  {/* <h3 className="mt-2">
                     ${propertyData?.maxPrice}{" "}
                     <span style={{ fontSize: 13, color: "#00BF63" }}>
                       <img src={img11} style={{ width: 20 }} />
                       Ha bajado $5.000{" "}
                     </span>
-                  </h3>
+                  </h3> */}
+
+                  {/* <h3 className="mt-2">
+  ${currentPrice}{" "}
+  {previousPrice !== null && previousPrice !== currentPrice && (
+    <span style={{ fontSize: 13, color: currentPrice > previousPrice ? "#007BFF" : "#00BF63" }}>
+      <img
+        src={currentPrice > previousPrice ? img11 : downIcon}
+        style={{ width: 20 }}
+        alt=""
+      />
+      {currentPrice > previousPrice
+        ? `Ha subido $${currentPrice - previousPrice}`
+        : `Ha bajado $${previousPrice - currentPrice}`}
+    </span>
+  )}
+</h3> */}
+<h3 className="mt-2">
+  ${currentPrice}
+  {originalBackendPriceRef.current !== null &&
+    originalBackendPriceRef.current !== currentPrice && (
+      <span
+        style={{
+          fontSize: 13,
+          color:
+            currentPrice > originalBackendPriceRef.current
+              ? "#007BFF"
+              : "#00BF63",
+        }}
+      >
+        <img
+          src={
+            currentPrice > originalBackendPriceRef.current
+              ? img11
+              : downIcon
+          }
+          style={{ width: 20 }}
+          alt=""
+        />
+        {currentPrice > originalBackendPriceRef.current
+          ? `Ha subido $${currentPrice - originalBackendPriceRef.current}`
+          : `Ha bajado $${originalBackendPriceRef.current - currentPrice}`}
+      </span>
+    )}
+</h3>
+
+
+
+
+
+
+
+
+
+
                   <h6 className="mt-4" style={{ fontWeight: 800 }}>
                     {propertyData?.name}
                   </h6>
@@ -1200,7 +1288,13 @@ const PropertyDetils = () => {
                       <div className="card-de" key={item.id}>
                         <div className="pr-det" style={{ marginTop: "10%" }}>
                           <p className="de-i"></p>
-                          <p style={{ marginLeft: "-22px" }}>
+                          <p
+                            style={{
+                              marginLeft: "40px",
+                              marginRight: "22%",
+                              fontSize: "13px",
+                            }}
+                          >
                             <img
                               src={telephn}
                               style={{ width: 18, marginRight: 9 }}
@@ -1208,13 +1302,19 @@ const PropertyDetils = () => {
                             Teléfono
                           </p>
                           <p>
-                            <b>{item.phone}</b>
+                            <b style={{ fontSize: "13px" }}>{item.phone}</b>
                           </p>
                           <p />
                         </div>
                         <div className="pr-det">
                           <p className="de-i"></p>
-                          <p>
+                          <p
+                            style={{
+                              marginLeft: "40px",
+                              marginRight: "25%",
+                              fontSize: "13px",
+                            }}
+                          >
                             <img
                               src={msg}
                               style={{ width: 18, marginRight: 9 }}
@@ -1222,13 +1322,21 @@ const PropertyDetils = () => {
                             Correo
                           </p>
                           <p>
-                            <b>{propertyData?.Customer.email}</b>
+                            <b style={{ fontSize: "13px" }}>
+                              {propertyData?.Customer.email}
+                            </b>
                           </p>
                           <p />
                         </div>
                         <div className="pr-det">
                           <p className="de-i"></p>
-                          <p style={{ marginLeft: 10 }}>
+                          <p
+                            style={{
+                              marginLeft: "40px",
+                              marginRight: "17%",
+                              fontSize: "13px",
+                            }}
+                          >
                             <img
                               src={global}
                               style={{ width: 18, marginRight: 9 }}
@@ -1236,7 +1344,7 @@ const PropertyDetils = () => {
                             Página web
                           </p>
                           <p>
-                            <b>{item.website}</b>
+                            <b style={{ fontSize: "13px" }}>{item.website}</b>
                           </p>
                           <p />
                         </div>
@@ -1495,7 +1603,10 @@ const PropertyDetils = () => {
                 <div className="row gy-4">
                   {mainData?.data?.map((e) => (
                     <div className="col-xl-4 col-md-6" key={e.id}>
-                      <div className="feat_property">
+                      <div
+                        className="feat_property"
+                        style={{ height: "410px" }}
+                      >
                         <Link
                           to={`/propert-details/${e.id}`}
                           state={{
@@ -1554,16 +1665,19 @@ const PropertyDetils = () => {
                               allProducts: mainData.data,
                             }}
                           >
-                            <div className="tc_content">
+                            <div
+                              className="tc_contentt"
+                              style={{ height: "150px" }}
+                            >
                               <div className="title-price">
-                                <h4>{e.name}</h4>
+                                <h4 className="line-clamp-2">{e.name}</h4>
                                 <span className="fp_price">
                                   ${e.maxPrice ? e.maxPrice : e.rentalPrice}
                                 </span>
                               </div>
-                              <p>
+                              <p className="line-clamp-1">
                                 <img src={locationn} alt="hh" />
-                                <img src="" alt="" />
+                                {/* <img src="" alt="" /> */}
                                 <span style={{ marginLeft: 5 }}>
                                   {e.address1}
                                 </span>
@@ -1616,16 +1730,29 @@ const PropertyDetils = () => {
                                       className="profile-pic"
                                     /> */}
                                     <img
+                                      // src={
+                                      //   e.Customer?.userDetails?.length > 0
+                                      //     ? e.Customer.userDetails[0].photoUrl
+                                      //     : e.Customer?.agentDetails?.length > 0
+                                      //     ? e.Customer.agentDetails[0].photoUrl
+                                      //     : e.Customer?.agencyDetails?.length >
+                                      //       0
+                                      //     ? e.Customer.agencyDetails[0].photoUrl
+                                      //     : "default.jpg"
+                                      // }
                                       src={
-                                        e.Customer?.userDetails?.length > 0
-                                          ? e.Customer.userDetails[0].photoUrl
-                                          : e.Customer?.agentDetails?.length > 0
-                                          ? e.Customer.agentDetails[0].photoUrl
-                                          : e.Customer?.agencyDetails?.length >
-                                            0
-                                          ? e.Customer.agencyDetails[0].photoUrl
-                                          : "default.jpg" // fallback image if none exists
+                                        e.Customer?.userDetails?.[0]
+                                          ?.photoUrl ||
+                                        e.Customer?.agentDetails?.[0]
+                                          ?.photoUrl ||
+                                        e.Customer?.agencyDetails?.[0]
+                                          ?.photoUrl ||
+                                        hauzzi
                                       }
+                                      onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = hauzzi;
+                                      }}
                                       alt="poster"
                                       className="profile-pic"
                                     />
@@ -1650,15 +1777,41 @@ const PropertyDetils = () => {
                                 Llamar
                               </Link>
                               <Link to="#">
-                                <i
-                                  className="fa fa-ellipsis-v"
-                                  aria-hidden="true"
-                                  style={{
-                                    marginLeft: 10,
-                                    marginTop: 8,
-                                    color: "#8a8a8a",
-                                  }}
-                                />
+                                <div className="dropdown">
+                                  <button
+                                    className="btn btn-link p-0 border-0 text-muted"
+                                    type="button"
+                                    id="dropdownMenuButton"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                  >
+                                    <i
+                                      className="bi bi-three-dots-vertical"
+                                      style={{ fontSize: 24 }}
+                                    />
+                                  </button>
+                                  <ul
+                                    className="dropdown-menu"
+                                    aria-labelledby="dropdownMenuButton"
+                                  >
+                                    <li>
+                                      <Link className="dropdown-item" to="#">
+                                        <img
+                                          src={share}
+                                          className="me-2"
+                                          alt="Share"
+                                        />{" "}
+                                        Compartir
+                                      </Link>
+                                    </li>
+                                    <li>
+                                      <Link className="dropdown-item" to="#">
+                                        <i className="bi bi-trash me-2" />{" "}
+                                        Descartar
+                                      </Link>
+                                    </li>
+                                  </ul>
+                                </div>
                               </Link>
                             </div>
                           </div>

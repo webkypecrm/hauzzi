@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState, useRef } from "react";
 import Header from "../MainPage/Header";
 import Footer from "../MainPage/Footer";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import axios from "axios";
 import Loading from "../../Loading";
@@ -28,6 +28,8 @@ const PublishProperty = () => {
   const [selectedCountryId, setSelectedCountryId] = useState("");
   const [selectedStateId, setSelectedStateId] = useState("");
   const [allData, setAllData] = useState([]);
+
+  const {id} = useParams();
 
   const handleFileChange = (index, event) => {
     const file = event.target.files[0];
@@ -202,15 +204,98 @@ const PublishProperty = () => {
 
   // Post Data Api
 
-  const handelPropertyDataSubmit = async (e) => {
+  // const handelPropertyDataSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   const clickedButton = e.nativeEvent.submitter?.value || "publish";
+  //   const isDraftValue = clickedButton === "draft" ? "true" : "false";
+
+  //   const updatedPropertyData = {
+  //     ...propertyData,
+  //     isDraft: isDraftValue,
+  //   };
+
+  //   try {
+  //     const formData = new FormData();
+
+  //     for (const key in updatedPropertyData) {
+  //       const value = updatedPropertyData[key];
+
+  //       // Handle images
+  //       if (key.startsWith("photo") && value instanceof File) {
+  //         formData.append(key, value);
+  //       }
+
+  //       // Handle listingDetails as JSON string
+  //       else if (key === "listingDetails" && typeof value === "object") {
+  //         formData.append("listingDetails", JSON.stringify(value));
+  //       }
+
+  //       // Other fields
+  //       else if (value !== null && value !== undefined) {
+  //         formData.append(key, value);
+  //       }
+  //     }
+
+  //     const res = await axios.post(
+  //       `${apiUrl}/property/add-property`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token2}`,
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+
+  //     setPropertyData(initialData);
+  //     initialData.listingDetails = {};
+  //     toast.success("Product added successfully!");
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error(error.response.data.message);
+  //   }
+  // };
+
+  const [originalData, setOriginalData] = useState(null);
+
+useEffect(() => {
+  if (id) {
+    axios
+      .get(`${apiUrl}/property/property?isDraft=false&id=${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        const fetchedData = res.data?.data?.[0];
+        if (!fetchedData) {
+          toast.error("Property data not found");
+          return;
+        }
+
+        const fullData = { ...initialData, ...fetchedData, id };
+        setOriginalData(fullData);
+        setPropertyData(fullData);
+      })
+      .catch((err) => {
+        toast.error("Failed to load property");
+        console.error(err);
+      });
+  }
+}, [id]);
+
+
+
+   const handelPropertyDataSubmit = async (e) => {
     e.preventDefault();
 
     const clickedButton = e.nativeEvent.submitter?.value || "publish";
     const isDraftValue = clickedButton === "draft" ? "true" : "false";
 
+    // 🧠 Merge originalData with new changes
     const updatedPropertyData = {
-      ...propertyData,
-      isDraft: isDraftValue,
+      ...(originalData || initialData), // full base
+      ...propertyData,                  // new values overwrite old
+      isDraft: isDraftValue,           // update draft status
     };
 
     try {
@@ -219,41 +304,59 @@ const PublishProperty = () => {
       for (const key in updatedPropertyData) {
         const value = updatedPropertyData[key];
 
-        // Handle images
+        // jo edit krte time muje send nhi krni h
+        if (key === "userType" && !!id) continue;
+        if (key === "slug" && !!id) continue;
+        if (key === "bookedBy" && !!id) continue;
+        if (key === "cancelledBy" && !!id) continue;
+        if (key === "views" && !!id) continue;
+        if (key === "saved" && !!id) continue;
+        if (key === "createdAt" && !!id) continue;
+        if (key === "updatedAt" && !!id) continue;
+        if (key === "Customer" && !!id) continue;
+        if (key === "cities" && !!id) continue;
+        if (key === "states" && !!id) continue;
+        if (key === "countries" && !!id) continue;
+        if (key === "images" && !!id) continue;
+        if (key === "propertyDocs" && !!id) continue;
+
         if (key.startsWith("photo") && value instanceof File) {
           formData.append(key, value);
-        }
-
-        // Handle listingDetails as JSON string
-        else if (key === "listingDetails" && typeof value === "object") {
+        } else if (key === "listingDetails" && typeof value === "object") {
           formData.append("listingDetails", JSON.stringify(value));
-        }
-
-        // Other fields
-        else if (value !== null && value !== undefined) {
+        } else if (value !== null && value !== undefined) {
           formData.append(key, value);
         }
       }
 
-      const res = await axios.post(
-        `${apiUrl}/property/add-property`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token2}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
+      const isEdit = !!id;
+      const url = isEdit
+        ? `${apiUrl}/property/update-property`
+        : `${apiUrl}/property/add-property`;
+
+      await axios.post(url, formData, {
+        headers: {
+          Authorization: `Bearer ${token2}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      toast.success(
+        isEdit ? "Property updated successfully!" : "Property added successfully!"
       );
 
-      setPropertyData(initialData);
-      initialData.listingDetails = {};
-      toast.success("Product added successfully!");
+      setPropertyData({
+        ...initialData,
+        purpose: "Vender",
+      });
+      setOriginalData(null);
     } catch (error) {
-      console.log(error);
-      toast.error(error.response.data.message);
+      console.error(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
+
+
 
   // country Get
   const getCountries = async () => {
@@ -1749,7 +1852,8 @@ const PublishProperty = () => {
                     name="action"
                     value="publish"
                   >
-                    Publicar inmueble
+                    {/* Publicar inmueble */}
+                    {id ? "Actualizar Inmueble" : "Publicar Inmueble"}
                   </button>
                   <button
                     type="submit"

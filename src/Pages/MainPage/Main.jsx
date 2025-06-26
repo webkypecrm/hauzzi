@@ -5,9 +5,11 @@ import Header from "./Header";
 import Footer from "./Footer";
 import axios from "axios";
 import Loading from "../../Loading";
-import serchIcon from "../../assets/img/searchIcon.png"
+import serchIcon from "../../assets/img/searchIcon.png";
 import apple from "../../assets/img/apple.png";
 import google from "../../assets/img/google.png";
+import hauzzi from "../../assets/img/hauzziIcon.png";
+import blackImg from "../../assets/img/my-img/back-img.png";
 
 const Main = () => {
   const [mainData, setMainData] = useState([]);
@@ -274,9 +276,19 @@ const Main = () => {
                                 <Link
                                   className=""
                                   to={`/propertysell?purpose=${lookingFor}&type=${selectType}&category=${selectCategory}&search=${search}`}
-                                  style={{backgroundColor:"#ffbd59", borderRadius:"15px",padding:"3px"}}
+                                  style={{
+                                    backgroundColor: "#ffbd59",
+                                    borderRadius: "15px",
+                                    padding: "3px",
+                                  }}
                                 >
-                                  <span className="search-icon-content" style={{color:"black",fontWeight:"500"}}>
+                                  <span
+                                    className="search-icon-content"
+                                    style={{
+                                      color: "black",
+                                      fontWeight: "500",
+                                    }}
+                                  >
                                     BUSCAR
                                   </span>{" "}
                                   {/* <img
@@ -284,7 +296,10 @@ const Main = () => {
                                     className="fa fa-search search-c slider-search"
                                     // style={{ color: "black" }}
                                   /> */}
-                                  <i className="fa fa-search search-c slider-search" style={{ color: "black" }}/>
+                                  <i
+                                    className="fa fa-search search-c slider-search"
+                                    style={{ color: "black" }}
+                                  />
                                 </Link>
                               </div>
                               {/* submit button end */}
@@ -298,7 +313,7 @@ const Main = () => {
                           {" "}
                           ¿Necesita más opciones de búsqueda?{" "}
                           <Link
-                            to="#"
+                            to="/propertysell"
                             className="btn btn-primary me-0 me-sm-2 mx-1"
                           >
                             Búsqueda avanzada
@@ -339,7 +354,10 @@ const Main = () => {
                     <div className="row gy-4">
                       {mainData?.data?.map((e) => (
                         <div className="col-xl-4 col-md-6" key={e.id}>
-                          <div className="feat_property">
+                          <div
+                            className="feat_property"
+                            style={{ height: "410px" }}
+                          >
                             {/* <Link to="/propert-details"> */}
                             <Link
                               to={`/propert-details/${e.id}`}
@@ -399,20 +417,23 @@ const Main = () => {
                                   allProducts: mainData.data,
                                 }}
                               >
-                                <div className="tc_content">
+                                <div
+                                  className="tc_contentt"
+                                  style={{ height: "150px" }}
+                                >
                                   <div className="title-price">
-                                    <h4>{e.name}</h4>
+                                    <h4 className="line-clamp-2">{e.name}</h4>
                                     <span className="fp_price">
                                       {/* ${e.maxPrice} */}$
                                       {e.maxPrice ? e.maxPrice : e.rentalPrice}
                                     </span>
                                   </div>
-                                  <p>
+                                  <p className="line-clamp-1">
                                     <img
                                       src="img/my-img/vector.png"
                                       alt="location"
                                     />
-                                    <span style={{ marginLeft: 5 }}>
+                                    <span style={{ marginLeft: 5 }} >
                                       {e.address1}
                                     </span>
                                   </p>
@@ -473,20 +494,33 @@ const Main = () => {
                                           className="profile-pic"
                                         /> */}
                                         <img
+                                          // src={
+                                          //   e.Customer?.userDetails?.length > 0
+                                          //     ? e.Customer.userDetails[0]
+                                          //         .photoUrl
+                                          //     : e.Customer?.agentDetails
+                                          //         ?.length > 0
+                                          //     ? e.Customer.agentDetails[0]
+                                          //         .photoUrl
+                                          //     : e.Customer?.agencyDetails
+                                          //         ?.length > 0
+                                          //     ? e.Customer.agencyDetails[0]
+                                          //         .photoUrl
+                                          //     : hauzzi
+                                          // }
                                           src={
-                                            e.Customer?.userDetails?.length > 0
-                                              ? e.Customer.userDetails[0]
-                                                  .photoUrl
-                                              : e.Customer?.agentDetails
-                                                  ?.length > 0
-                                              ? e.Customer.agentDetails[0]
-                                                  .photoUrl
-                                              : e.Customer?.agencyDetails
-                                                  ?.length > 0
-                                              ? e.Customer.agencyDetails[0]
-                                                  .photoUrl
-                                              : "default.jpg" // fallback image if none exists
+                                            e.Customer?.userDetails?.[0]
+                                              ?.photoUrl ||
+                                            e.Customer?.agentDetails?.[0]
+                                              ?.photoUrl ||
+                                            e.Customer?.agencyDetails?.[0]
+                                              ?.photoUrl ||
+                                            hauzzi
                                           }
+                                          onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = hauzzi;
+                                          }}
                                           alt="poster"
                                           className="profile-pic"
                                           style={{ width: "40px" }}
@@ -520,7 +554,7 @@ const Main = () => {
                                     Llamar
                                   </Link>
                                   <Link to="#">
-                                    <i
+                                    {/* <i
                                       className="fa fa-ellipsis-v"
                                       aria-hidden="true"
                                       style={{
@@ -528,7 +562,49 @@ const Main = () => {
                                         marginTop: 8,
                                         color: "#8a8a8a",
                                       }}
-                                    />
+                                    /> */}
+                                    <div className="dropdown">
+                                      <button
+                                        className="btn btn-link p-0 border-0 text-muted"
+                                        type="button"
+                                        id="dropdownMenuButton"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                      >
+                                        <i
+                                          className="bi bi-three-dots-vertical"
+                                          style={{ fontSize: 24 }}
+                                        />
+                                      </button>
+                                      <ul
+                                        className="dropdown-menu"
+                                        aria-labelledby="dropdownMenuButton"
+                                      >
+                                        <li>
+                                          <Link
+                                            className="dropdown-item"
+                                            to="#"
+                                          >
+                                            <img
+                                              src="img/my-img/share-icon.png"
+                                              className="me-2"
+                                              alt="Share"
+                                            />{" "}
+                                            Compartir
+                                          </Link>
+                                        </li>
+                                        <li>
+                                          <Link
+                                            className="dropdown-item"
+                                            to="#"
+                                          >
+                                            <i className="bi bi-trash me-2" />{" "}
+                                            Descartar
+                                          </Link>
+                                        </li>
+                                        
+                                      </ul>
+                                    </div>
                                   </Link>
                                 </div>
                               </div>
@@ -715,7 +791,7 @@ const Main = () => {
                                     <span>Bienes raíces</span>
                                   </p>
                                   <div className="title-price">
-                                    <h4>{blog.title}</h4>
+                                    <h4 className="line-clamp-2">{blog.title}</h4>
                                   </div>
                                   <h5
                                     className="mt-2"
@@ -735,9 +811,10 @@ const Main = () => {
                                       <li className="list-inline-item">
                                         <span to="#">
                                           <img
-                                            src="img/my-img/Image.png"
+                                            src={hauzzi}
                                             alt="pposter1.png"
-                                            width="30%"
+                                            className="profile-pic"
+                                          style={{ width: "40px" }}
                                           />
                                           <span
                                             style={{
@@ -871,13 +948,12 @@ const Main = () => {
                           </ul>
                         </div>
                         <div className="d-flex gap-5">
-                          <div >
-                            <img src={google} alt=""/>
+                          <div>
+                            <img src={google} alt="" />
                           </div>
                           <div>
                             <img src={apple} alt="" />
                           </div>
-                          
                         </div>
                       </div>
                     </div>
@@ -893,7 +969,7 @@ const Main = () => {
                           data-aos-delay={400}
                         >
                           <img
-                            src="img/my-img/back-img.png"
+                            src={blackImg}
                             alt="Business Meeting"
                             className="img-fluid"
                           />
@@ -958,7 +1034,7 @@ const Main = () => {
                       data-aos="zoom-in"
                       data-aos-delay={200}
                     >
-                      <div className="instructor__item-two tg-svg d-flex justify-content-between imutable1">
+                      <div className="instructor__item-two tg-svg d-flex justify-content-between imutable">
                         <div className="instructor__content-two">
                           <h3 className="title">
                             <Link to="#">Inmuebles en venta</Link>

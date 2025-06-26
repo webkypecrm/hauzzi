@@ -90,6 +90,14 @@ createRoot(document.getElementById("root")).render(
             </PrivateRoute>
           }
         />
+        <Route
+          path="/publish-propert/:id"
+          element={
+            <PrivateRoute>
+              <PublishProperty />
+            </PrivateRoute>
+          }
+        />
         <Route path="/propert-details/:id" element={<PropertyDetils />} />
         <Route path="/real-state-agencies" element={<Agencies />} />
         <Route path="/agencyprofile/:id" element={<Profile />} />

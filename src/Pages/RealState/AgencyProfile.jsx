@@ -726,7 +726,7 @@ const AgencyProfile = () => {
                                 style={{ marginTop: "10%" }}
                               >
                                 <p className="de-i"></p>
-                                <p style={{ marginLeft: "-22px" }}>
+                                <p style={{ marginLeft: "40px",marginRight:"22%" }}>
                                   <img
                                     src={call}
                                     style={{ width: 18, marginRight: 9 }}
@@ -740,7 +740,7 @@ const AgencyProfile = () => {
                               </div>
                               <div className="pr-det">
                                 <p className="de-i"></p>
-                                <p>
+                                <p style={{ marginLeft: "40px",marginRight:"25%" }}>
                                   <img
                                     src={sms}
                                     style={{ width: 18, marginRight: 9 }}
@@ -754,7 +754,7 @@ const AgencyProfile = () => {
                               </div>
                               <div className="pr-det">
                                 <p className="de-i"></p>
-                                <p style={{ marginLeft: 10 }}>
+                                <p style={{ marginLeft: "40px",marginRight:"17%" }}>
                                   <img
                                     src={global}
                                     style={{ width: 18, marginRight: 9 }}

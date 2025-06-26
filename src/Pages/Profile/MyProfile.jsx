@@ -4,9 +4,10 @@ import Header from "../MainPage/Header";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import Select from "react-select";
 
 const MyProfile = () => {
-    const [allData, setAllData] = useState([]);
+  const [allData, setAllData] = useState([]);
 
   const customerId = localStorage.getItem("tokenId") || "";
   const token = localStorage.getItem("token");
@@ -15,7 +16,7 @@ const MyProfile = () => {
     "img/my-img/pp-textarea.png"
   );
 
-    // get Data
+  // get Data
 
   const getAllData = async () => {
     try {
@@ -45,6 +46,8 @@ const MyProfile = () => {
 
   const name = allData?.name;
   const phn = allData?.userDetails?.map((item) => item.phone);
+  const profileImg = allData?.userDetails?.map((item) => item.photoUrl);
+  const photo = allData?.userDetails?.map((item) => item.photo);
 
   // post Api
   const initialData = {
@@ -222,7 +225,16 @@ const MyProfile = () => {
     return "User";
   };
 
+  // language
+  const [languages, setLanguages] = useState([]);
 
+  const languageOptions = [
+    { value: "es", label: "Español" },
+    { value: "en", label: "Inglés" },
+    { value: "fr", label: "Francés" },
+    { value: "de", label: "Alemán" },
+    { value: "it", label: "Italiano" },
+  ];
 
   return (
     <Fragment>
@@ -279,7 +291,16 @@ const MyProfile = () => {
                     {/* <div className="col-lg-12"> */}
                     {/* <div className="profile-container mt-1"> */}
                     <div className="profile-pic-wrapper ms-lg-0 mb-3">
-                      <img src={previewImage} alt="Profile" id="profileImage" />
+                      {/* <img src={previewImage} alt="Profile" id="profileImage" /> */}
+                      {photo == "" || photo == null ? (
+                        <img
+                          src={previewImage}
+                          alt="Profile"
+                          id="profileImage"
+                        />
+                      ) : (
+                        <img src={profileImg} alt="Profile" id="profileImage" />
+                      )}
                       <label htmlFor="fileInput" className="edit-icon">
                         <img src="img/my-img/gallery-edit.svg" />
                       </label>
@@ -434,7 +455,7 @@ const MyProfile = () => {
                         className="form-control"
                         rows={8}
                         placeholder="Introduce tu biografía"
-                        defaultValue={""}
+                        // defaultValue={""}
                         name="notes"
                         value={profileData.notes}
                         onChange={handelInputChange}
@@ -628,10 +649,24 @@ const MyProfile = () => {
                       <span className="input-group-text bg-light border-0">
                         <i className="bi bi-translate primary-text" />
                       </span>
-                      <select type="text" className="form-control">
+                      {/* <select
+                        multiple
+                        className="form-control"
+                        value={languages}
+                        onChange={handleLanguagesChange}
+                      >
                         <option value={0}>Seleccionar idioma(s)</option>
                         <option value={1}>Seleccionar idioma(s)</option>
-                      </select>
+                      </select> */}
+                      
+<Select
+  isMulti
+  options={languageOptions}
+  className="form-control"
+  classNamePrefix="select"
+  // placeholder="Selecciona idioma(s)"
+  onChange={(selected) => setLanguages(selected)}
+/>
                     </div>
                   </div>
                   <button className="btn btn-primary w-100 p-2 mb-4">

@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import Header from "../MainPage/Header";
 import Footer from "../MainPage/Footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Dropdown } from "bootstrap";
 import axios from "axios";
 import Loading from "../../Loading";
@@ -13,6 +13,11 @@ const MyAds = () => {
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
   const token2 = localStorage.getItem("token");
   const customerId = localStorage.getItem("tokenId") || "";
+  const navigate = useNavigate();
+
+  const handelNavigate = (id) => {
+    navigate(`/publish-propert/${id}`);
+  };
 
   // console.log("getData", adsData);
   const draftAds = adsData?.data?.filter((item) => item.isDraft);
@@ -131,13 +136,13 @@ const MyAds = () => {
                             <div className="details">
                               <div className="tc_content">
                                 <div className="title-price">
-                                  <h4>{e.name}</h4>
+                                  <h4 className="line-clamp-1">{e.name}</h4>
                                   <span className="fp_price">
                                     {/* ${e.maxPrice} */}
                                     ${e.maxPrice ? e.maxPrice : e.rentalPrice}
                                   </span>
                                 </div>
-                                <p>
+                                <p className="line-clamp-1">
                                   <img src="img/my-img/vector.png" />{" "}
                                   <span style={{ marginLeft: 5 }}>
                                     {e.address1}
@@ -172,7 +177,7 @@ const MyAds = () => {
                                 <div className="view-counter">
                                   <i className="bi bi-eye" /> Visto: {e.views}
                                 </div>
-                                <button className="icon-btn ms-2">
+                                <button className="icon-btn ms-2" onClick={() => handelNavigate(e.id)}>
                                   <i className="bi bi-pencil-square" />
                                 </button>
                                 <button

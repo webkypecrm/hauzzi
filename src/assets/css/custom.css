@@ -1207,7 +1207,7 @@ input[type="checkbox"].asButton:disabled + label {
   font-size: 1.2rem;
 }
 .view-counter {
-  font-size: 0.9rem;
+  font-size: 13.1px;
   color: #555;
   margin: 0 5px;
   display: flex;

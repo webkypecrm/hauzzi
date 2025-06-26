@@ -59,16 +59,16 @@ const Footer = () => {
               <h4>Sobre Hauzzi</h4>
               <ul style={{fontSize: 13}}>
                 <li>
-                  <Link to="#">Sobre nosotros&nbsp;</Link>
+                  <Link to="/about">Sobre nosotros&nbsp;</Link>
                 </li>
                 <li>
-                  <Link to="#">Contacta con Hauzz&nbsp;</Link>
+                  <Link to="/contact">Contacta con Hauzz&nbsp;</Link>
                 </li>
                 <li>
                   <Link to="#">Preguntas frecuentes&nbsp;</Link>
                 </li>
                 <li>
-                  <Link to="#">Blog&nbsp;</Link>
+                  <Link to="/blog">Blog&nbsp;</Link>
                 </li>
               </ul>
             </div>
@@ -87,7 +87,7 @@ const Footer = () => {
               <h4>Profesionales</h4>
               <ul style={{fontSize: 13}}>
                 <li>
-                  <Link to="#">Regístrate</Link>
+                  <Link to="/sign-up">Regístrate</Link>
                 </li>
                 <li>
                   <Link to="#">Anuncia tu propiedad</Link>

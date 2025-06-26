@@ -598,62 +598,13 @@ const AgentProfile = () => {
                                 </div>
                               </div>
                             </div>
-                            {/* <div className="card-de">
-                              <p className="de-i"></p>
-                              <div
-                                className="pr-det"
-                                style={{ marginTop: "10%", }}
-                              >
-                                <p style={{ marginLeft: "-22px" }}>
-                                  <img
-                                    src={call}
-                                    style={{ width: 18, marginRight: 9 }}
-                                  />
-                                  Teléfono
-                                </p>
-                                <p>
-                                  <b>{item.phone}</b>
-                                </p>
-                              </div>
-                              <div className="pr-det">
-                                <p className="de-i"></p>
-                                <p className="">
-                                  <img src={whats} style={{ width: 18 }} />
-                                  Whatsapp
-                                </p>
-                           
-                                <p className="col-lg-6 col-md-6 text-start">
-                                  <b>{item.whatsApp}</b>
-                                </p>
-                              </div>
-                              <div className="row mb-3 align-items-center justify-content-center">
-                                <div className="col-auto text-warning">
-                                  <img src={sms} style={{ width: 18 }} />
-                                </div>
-                                <div className="col-lg-3 col-md-3">Correo</div>
-                                <div className="col-lg-6 col-md-6 text-start">
-                                  {agentData.email}
-                                </div>
-                              </div>
-                              <div className="row align-items-center justify-content-center">
-                                <div className="col-auto text-warning">
-                                  <img src={global} style={{ width: 18 }} />
-                                </div>
-                                <div className="col-lg-3 col-md-3">
-                                  Página web
-                                </div>
-                                <div className="col-lg-6 col-md-6 text-start">
-                                  {item.website}
-                                </div>
-                              </div>
-                            </div> */}
                             <div className="card-de" key={item.id}>
                               <div
                                 className="pr-det"
                                 style={{ marginTop: "10%" }}
                               >
                                 <p className="de-i"></p>
-                                <p style={{ marginLeft: "-22px" }}>
+                                <p style={{ marginLeft: "40px",marginRight:"22%" }}>
                                   <img
                                     src={call}
                                     style={{ width: 18, marginRight: 9 }}
@@ -667,7 +618,7 @@ const AgentProfile = () => {
                               </div>
                               <div className="pr-det">
                                 <p className="de-i"></p>
-                                <p>
+                                <p style={{ marginLeft: "40px",marginRight:"25%" }}>
                                   <img
                                     src={sms}
                                     style={{ width: 18, marginRight: 9 }}
@@ -681,7 +632,7 @@ const AgentProfile = () => {
                               </div>
                               <div className="pr-det">
                                 <p className="de-i"></p>
-                                <p style={{ marginLeft: 10 }}>
+                                <p style={{ marginLeft: "40px",marginRight:"17%" }}>
                                   <img
                                     src={global}
                                     style={{ width: 18, marginRight: 9 }}

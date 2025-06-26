@@ -9,6 +9,7 @@ import filter_1 from "../../assets/img/my-img/filter_1.png";
 import filter_2 from "../../assets/img/my-img/filter_2.png";
 import filter_3 from "../../assets/img/my-img/filter_3.png";
 import PropertyMap from "../Property/PropertyMap";
+import hauzzi from "../../assets/img/hauzziIcon.png";
 
 const PropertySell = () => {
   const [allData, setAllData] = useState([]);
@@ -159,7 +160,10 @@ const PropertySell = () => {
                           {allData?.data?.map((e) => (
                             <div className="col-xl-6 col-md-6" key={e.id}>
                               <Link to="#"></Link>
-                              <div className="feat_property">
+                              <div
+                                className="feat_property"
+                                style={{ height: "427px" }}
+                              >
                                 <Link
                                   to={`/propert-details/${e.id}`}
                                   state={{
@@ -218,9 +222,14 @@ const PropertySell = () => {
                                       allProducts: allData.data,
                                     }}
                                   >
-                                    <div className="tc_content">
+                                    <div
+                                      className="tc_content"
+                                      style={{ height: "150px" }}
+                                    >
                                       <div className="title-price">
-                                        <h4>{e.name}</h4>
+                                        <h4 className="line-clamp-2">
+                                          {e.name}
+                                        </h4>
                                         <span className="fp_price">
                                           {/* ${e.maxPrice} */}$
                                           {e.maxPrice
@@ -228,7 +237,7 @@ const PropertySell = () => {
                                             : e.rentalPrice}
                                         </span>
                                       </div>
-                                      <p>
+                                      <p className="line-clamp-1">
                                         <img src="img/my-img/vector.png" />
                                         <span style={{ marginLeft: 5 }}>
                                           {e.address1}
@@ -280,20 +289,18 @@ const PropertySell = () => {
                                     /> */}
                                             <img
                                               src={
-                                                e.Customer?.userDetails
-                                                  ?.length > 0
-                                                  ? e.Customer.userDetails[0]
-                                                      .photoUrl
-                                                  : e.Customer?.agentDetails
-                                                      ?.length > 0
-                                                  ? e.Customer.agentDetails[0]
-                                                      .photoUrl
-                                                  : e.Customer?.agencyDetails
-                                                      ?.length > 0
-                                                  ? e.Customer.agencyDetails[0]
-                                                      .photoUrl
-                                                  : "default.jpg" // fallback image if none exists
+                                                e.Customer?.userDetails?.[0]
+                                                  ?.photoUrl ||
+                                                e.Customer?.agentDetails?.[0]
+                                                  ?.photoUrl ||
+                                                e.Customer?.agencyDetails?.[0]
+                                                  ?.photoUrl ||
+                                                hauzzi
                                               }
+                                              onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = hauzzi;
+                                              }}
                                               alt="poster"
                                               className="profile-pic"
                                             />
@@ -327,15 +334,47 @@ const PropertySell = () => {
                                         Llamar{" "}
                                       </Link>
                                       <Link to="">
-                                        <i
-                                          className="fa fa-ellipsis-v"
-                                          aria-hidden="true"
-                                          style={{
-                                            marginLeft: 10,
-                                            marginTop: 8,
-                                            color: "#8a8a8a",
-                                          }}
-                                        />
+                                        <div className="dropdown">
+                                          <button
+                                            className="btn btn-link p-0 border-0 text-muted"
+                                            type="button"
+                                            id="dropdownMenuButton"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                          >
+                                            <i
+                                              className="bi bi-three-dots-vertical"
+                                              style={{ fontSize: 24 }}
+                                            />
+                                          </button>
+                                          <ul
+                                            className="dropdown-menu"
+                                            aria-labelledby="dropdownMenuButton"
+                                          >
+                                            <li>
+                                              <Link
+                                                className="dropdown-item"
+                                                to="#"
+                                              >
+                                                <img
+                                                  src="img/my-img/share-icon.png"
+                                                  className="me-2"
+                                                  alt="Share"
+                                                />{" "}
+                                                Compartir
+                                              </Link>
+                                            </li>
+                                            <li>
+                                              <Link
+                                                className="dropdown-item"
+                                                to="#"
+                                              >
+                                                <i className="bi bi-trash me-2" />{" "}
+                                                Descartar
+                                              </Link>
+                                            </li>
+                                          </ul>
+                                        </div>
                                       </Link>
                                     </div>
                                   </div>
