@@ -965,7 +965,7 @@ const Main = () => {
                     >
                       <div className="image-wrapper">
                         <div
-                          className="images aos-init aos-animate image-view"
+                          className="images aos-init aos-animate image-view responsive-class"
                           data-aos="zoom-out"
                           data-aos-delay={400}
                         >
