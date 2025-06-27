@@ -2,22 +2,15 @@ import React, { Fragment, useEffect, useState, useRef } from "react";
 import Header from "../MainPage/Header";
 import Footer from "../MainPage/Footer";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import {
-  GoogleMap,
-  LoadScript,
-  Marker,
-  useJsApiLoader,
-} from "@react-google-maps/api";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import axios from "axios";
 import Loading from "../../Loading";
 import { toast } from "react-toastify";
 import { Autocomplete } from "@react-google-maps/api";
+import uploade from "../../assets/img/my-img/gallery-add.png";
+import asistance from "../../assets/img/my-img/pp-textarea.png";
 
-const LIBRARIES = ["places"];
-
-const defaultCenter = { lat: 28.6139, lng: 77.209 };
-
-const PublishProperty = () => {
+const PropertyEdit = () => {
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
   const token2 = localStorage.getItem("token");
@@ -41,6 +34,7 @@ const PublishProperty = () => {
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
@@ -231,7 +225,7 @@ const PublishProperty = () => {
     const size = parseFloat(name === "maxSize" ? value : updatedData.maxSize);
 
     if (!isNaN(price) && !isNaN(size) && size > 0) {
-      updatedData.maxPSF = Math.floor(price / size);
+      updatedData.maxPSF = price / size; // Round to 2 decimals
     } else {
       updatedData.maxPSF = "";
     }
@@ -275,6 +269,32 @@ const PublishProperty = () => {
 
   // Post Data Api
 
+  const [originalData, setOriginalData] = useState(null);
+
+  useEffect(() => {
+    if (id) {
+      axios
+        .get(`${apiUrl}/property/property?isDraft=false&id=${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res) => {
+          const fetchedData = res.data?.data?.[0];
+          if (!fetchedData) {
+            toast.error("Property data not found");
+            return;
+          }
+
+          const fullData = { ...initialData, ...fetchedData, id };
+          setOriginalData(fullData);
+          setPropertyData(fullData);
+        })
+        .catch((err) => {
+          toast.error("Failed to load property");
+          console.error(err);
+        });
+    }
+  }, [id]);
+
   const handelPropertyDataSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitLoading(true);
@@ -283,6 +303,7 @@ const PublishProperty = () => {
     const isDraftValue = clickedButton === "draft" ? "true" : "false";
 
     const updatedPropertyData = {
+      ...(originalData || initialData),
       ...propertyData,
       isDraft: isDraftValue,
     };
@@ -293,39 +314,52 @@ const PublishProperty = () => {
       for (const key in updatedPropertyData) {
         const value = updatedPropertyData[key];
 
-        // Handle images
+        // Fields to skip during edit
+        // if (key === "originalMaxPrice" && !!id) continue;
+        if (key === "userType" && !!id) continue;
+        if (key === "slug" && !!id) continue;
+        if (key === "bookedBy" && !!id) continue;
+        if (key === "cancelledBy" && !!id) continue;
+        if (key === "views" && !!id) continue;
+        if (key === "saved" && !!id) continue;
+        if (key === "createdAt" && !!id) continue;
+        if (key === "updatedAt" && !!id) continue;
+        if (key === "Customer" && !!id) continue;
+        if (key === "cities" && !!id) continue;
+        if (key === "states" && !!id) continue;
+        if (key === "countries" && !!id) continue;
+        if (key === "images" && !!id) continue;
+        if (key === "propertyDocs" && !!id) continue;
+
+        // Handle file/image
         if (key.startsWith("photo") && value instanceof File) {
           formData.append(key, value);
-        }
-
-        // Handle listingDetails as JSON string
-        else if (key === "listingDetails" && typeof value === "object") {
+        } else if (key === "listingDetails" && typeof value === "object") {
           formData.append("listingDetails", JSON.stringify(value));
-        }
-
-        // Other fields
-        else if (value !== null && value !== undefined) {
+        } else if (value !== null && value !== undefined) {
           formData.append(key, value);
         }
       }
 
-      const res = await axios.post(
-        `${apiUrl}/property/add-property`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token2}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await axios.post(`${apiUrl}/property/update-property`, formData, {
+        headers: {
+          Authorization: `Bearer ${token2}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-      setPropertyData(initialData);
-      initialData.listingDetails = {};
-      toast.success("Product added successfully!");
+      toast.success("Property updated successfully!");
+
+      setPropertyData({
+        ...initialData,
+        purpose: "Vender",
+      });
+      setOriginalData(null);
+
+      navigate("/myads");
     } catch (error) {
-      console.log(error);
-      toast.error(error.response.data.message);
+      console.error(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       setIsSubmitLoading(false);
     }
@@ -410,39 +444,52 @@ const PublishProperty = () => {
 
   // Google Map
 
+  const libraries = ["places"];
+
+  const defaultCenter = { lat: 28.6139, lng: 77.209 };
+
   const autocompleteRef = useRef(null);
-  const mapRef = useRef(null);
 
   const [mapCenter, setMapCenter] = useState(defaultCenter);
-  const [markerPosition, setMarkerPosition] = useState(defaultCenter);
-
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx",
-    libraries: LIBRARIES,
-  });
-
-  const onMapLoad = (map) => {
-    mapRef.current = map;
-  };
 
   const onPlaceChanged = () => {
-    const place = autocompleteRef.current?.getPlace();
-    if (!place?.geometry) return;
+    const place = autocompleteRef.current.getPlace();
+    if (!place.geometry) return;
 
     const lat = place.geometry.location.lat();
     const lng = place.geometry.location.lng();
 
-    const coords = { lat: parseFloat(lat), lng: parseFloat(lng) };
-
-    setMapCenter(coords);
-    setMarkerPosition(coords);
-     setPropertyData((prev) => ({
+    setPropertyData((prev) => ({
       ...prev,
       latitude: lat,
       longitude: lng,
     }));
-  };
 
+    setMapCenter({ lat, lng }); // Move map & marker
+  };
+  // };
+
+  useEffect(() => {
+    if (propertyData?.type && propertyTypes.length > 0) {
+      const foundIndex = propertyTypes.findIndex(
+        (item) => item.name === propertyData.type
+      );
+      if (foundIndex !== -1) {
+        setActiveTypeIndex(foundIndex);
+      }
+    }
+  }, [propertyData.type, propertyTypes]);
+
+  useEffect(() => {
+    if (propertyData?.category && propertyCategory.length > 0) {
+      const foundIndex = propertyCategory.findIndex(
+        (item) => item.name === propertyData.category
+      );
+      if (foundIndex !== -1) {
+        setActiveCategoryIndex(foundIndex);
+      }
+    }
+  }, [propertyData.category, propertyCategory]);
   return (
     <Fragment>
       <div className="index-page">
@@ -1204,10 +1251,47 @@ const PublishProperty = () => {
                     />
                   </div>
                   <div className="col-md-12">
+                    {/* <LoadScript
+                      googleMapsApiKey="AIzaSyDAc6yU2PelDIJKgzSxOJZIepi7Bx43lXw"
+                      libraries={libraries}
+                    >
+                      <div className="row mb-4">
+                        <div className="col-md-12">
+                          <Autocomplete
+                            onLoad={(autoC) =>
+                              (autocompleteRef.current = autoC)
+                            }
+                            onPlaceChanged={onPlaceChanged}
+                          >
+                            <input
+                              type="text"
+                              className="form-control border bg-transparent"
+                              placeholder="Buscar dirección del inmueble"
+                              
+                            />
+                          </Autocomplete>
+                        </div>
+                      </div>
+
+                      <div className="row mb-4">
+                        <div className="col-md-12">
+                          <GoogleMap
+                            mapContainerStyle={{
+                              width: "100%",
+                              height: "400px",
+                            }}
+                            center={mapCenter}
+                            zoom={15}
+                          >
+                            <Marker position={mapCenter} />
+                          </GoogleMap>
+                        </div>
+                      </div>
+                    </LoadScript> */}
                     <div className="row mb-4">
                       <div className="col-md-12">
                         <Autocomplete
-                          onLoad={(ref) => (autocompleteRef.current = ref)}
+                          onLoad={(autoC) => (autocompleteRef.current = autoC)}
                           onPlaceChanged={onPlaceChanged}
                         >
                           <input
@@ -1221,24 +1305,16 @@ const PublishProperty = () => {
 
                     <div className="row mb-4">
                       <div className="col-md-12">
-                        {isLoaded && (
-                          <GoogleMap
-                            mapContainerStyle={{
-                              width: "100%",
-                              height: "400px",
-                            }}
-                            center={mapCenter}
-                            zoom={15}
-                            onLoad={onMapLoad}
-                          >
-                            {markerPosition && (
-                              <Marker
-                                position={markerPosition}
-                                key={`${markerPosition.lat}-${markerPosition.lng}`}
-                              />
-                            )}
-                          </GoogleMap>
-                        )}
+                        <GoogleMap
+                          mapContainerStyle={{
+                            width: "100%",
+                            height: "400px",
+                          }}
+                          center={mapCenter}
+                          zoom={15}
+                        >
+                          <Marker position={mapCenter} />
+                        </GoogleMap>
                       </div>
                     </div>
                   </div>
@@ -1270,7 +1346,7 @@ const PublishProperty = () => {
                     </div>
                     {/* Assistant Image */}
                     <img
-                      src="img/my-img/pp-textarea.png"
+                      src={asistance}
                       alt="Asistente"
                       className="assistant-img"
                     />
@@ -1337,10 +1413,7 @@ const PublishProperty = () => {
                       {images.length < 10 && (
                         <div>
                           <div className="upload-icon" id="uploadIcon">
-                            <img
-                              src="img/my-img/gallery-add.png"
-                              alt="Upload Icon"
-                            />
+                            <img src={uploade} alt="Upload Icon" />
                           </div>
                           <div className="tb-container">
                             <div className="tb-img-view">
@@ -1751,24 +1824,6 @@ const PublishProperty = () => {
                       </div>
                     </div>
                   </div>
-                  {/* <div className="col-md-3">
-                    <div className="mb-3 position-relative">
-                      <label className="mb-2">Página web</label>
-                      <div className="input-group">
-                        <span className="input-group-text bg-transparent">
-                          <i className="bi bi-globe primary-text" />
-                        </span>
-                        <input
-                          type="text"
-                          className="form-control bg-transparent border"
-                          id=""
-                          name=""
-                          placeholder="www.dominio.com"
-                          required=""
-                        />
-                      </div>
-                    </div>
-                  </div> */}
                 </div>
                 <h5 className="fw-bold">
                   ¿Quieres aumentar la visibilidad a tu anuncio?
@@ -1832,6 +1887,8 @@ const PublishProperty = () => {
                     value="publish"
                     disabled={isSubmitLoading}
                   >
+                    {/* Publicar inmueble */}
+                    {/* {id ? "Actualizar Inmueble" : "Publicar Inmueble"} */}
                     {isSubmitLoading ? (
                       <>
                         <span
@@ -1839,10 +1896,10 @@ const PublishProperty = () => {
                           role="status"
                           aria-hidden="true"
                         ></span>
-                        Publicando...
+                        Actualizado...
                       </>
                     ) : (
-                      "Publicar inmueble"
+                      "Actualizar Inmueble"
                     )}
                   </button>
                   <button
@@ -1865,4 +1922,4 @@ const PublishProperty = () => {
   );
 };
 
-export default PublishProperty;
+export default PropertyEdit;

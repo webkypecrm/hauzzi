@@ -16,7 +16,7 @@ const MyAds = () => {
   const navigate = useNavigate();
 
   const handelNavigate = (id) => {
-    navigate(`/publish-propert/${id}`);
+    navigate(`/edit-propert/${id}`);
   };
 
   // console.log("getData", adsData);
@@ -116,6 +116,13 @@ const MyAds = () => {
                       {adsData?.data?.map((e) => (
                         <div className="col-lg-4 col-md-4" key={e.id}>
                           <div className="feat_property">
+                            <Link to={`/propert-details/${e.id}`} state={{
+                                  lat: e.latitude,
+                                  lng: e.longitude,
+                                  name: e.name,
+                                  image: e.images[0],
+                                  allProducts: adsData.data,
+                                }}>
                             <div className="thumb">
                               <img
                                 className="img-whp"
@@ -133,7 +140,15 @@ const MyAds = () => {
                                 </ul>
                               </div>
                             </div>
+                            </Link>
                             <div className="details">
+                              <Link to={`/propert-details/${e.id}`} state={{
+                                  lat: e.latitude,
+                                  lng: e.longitude,
+                                  name: e.name,
+                                  image: e.images[0],
+                                  allProducts: adsData.data,
+                                }}>
                               <div className="tc_content">
                                 <div className="title-price">
                                   <h4 className="line-clamp-1">{e.name}</h4>
@@ -169,6 +184,7 @@ const MyAds = () => {
                                   </li>
                                 </ul>
                               </div>
+                              </Link>
                               <div className="d-flex align-items-center p-2 border-top">
                                 <button className="btn highlight-btn d-flex align-items-center me-2">
                                   <i className="bi bi-star-fill me-2" />{" "}

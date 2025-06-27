@@ -62,7 +62,7 @@ const Footer = () => {
                   <Link to="/about">Sobre nosotros&nbsp;</Link>
                 </li>
                 <li>
-                  <Link to="/contact">Contacta con Hauzz&nbsp;</Link>
+                  <Link to="/contact">Contacta con Hauzzi&nbsp;</Link>
                 </li>
                 <li>
                   <Link to="#">Preguntas frecuentes&nbsp;</Link>

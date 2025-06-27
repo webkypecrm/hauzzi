@@ -33,6 +33,7 @@ import BlogDetails from "./Pages/Blog/BlogDetails.jsx";
 import PrivateRoute from "./PrivateRoute";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PropertyEdit from "./Pages/Property/PropertyEdit.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -91,10 +92,10 @@ createRoot(document.getElementById("root")).render(
           }
         />
         <Route
-          path="/publish-propert/:id"
+          path="/edit-propert/:id"
           element={
             <PrivateRoute>
-              <PublishProperty />
+              <PropertyEdit/>
             </PrivateRoute>
           }
         />

@@ -207,6 +207,7 @@ const AgencyProfile = () => {
       setLoading(false);
     }
   };
+  console.log("first", agencyData);
 
   // Get Sell Property
 
@@ -600,7 +601,12 @@ const AgencyProfile = () => {
                       </ul>
                       <h5 className="fw-bold">Idiomas</h5>
                       <ul className="list-inline language_sec">
-                        <li>Español</li>
+                        {/* {agencyData?.userDetails?.[0]?.languages?.map(
+                          (item, id) => (
+                            <li key={id}> {item}</li>
+                          )
+                        )} */}
+                        {/* <li>{agencyData?.userDetails?.[0]?.languages}</li> */}
                         <li>Ingles</li>
                         <li>Italiano</li>
                         <li>Portugues</li>

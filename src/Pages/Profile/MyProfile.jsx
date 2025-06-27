@@ -225,16 +225,69 @@ const MyProfile = () => {
     return "User";
   };
 
-  // language
+  // language options and Api
   const [languages, setLanguages] = useState([]);
 
   const languageOptions = [
-    { value: "es", label: "Español" },
-    { value: "en", label: "Inglés" },
-    { value: "fr", label: "Francés" },
-    { value: "de", label: "Alemán" },
-    { value: "it", label: "Italiano" },
+    { value: "Inglés", label: "Inglés" },
+    { value: "Chino mandarín", label: "Chino mandarín" },
+    { value: "Hindi", label: "Hindi" },
+    { value: "Español", label: "Español" },
+    { value: "Francés", label: "Francés" },
+    { value: "Árabe", label: "Árabe" },
+    { value: "Bengalí", label: "Bengalí" },
+    { value: "Portugués", label: "Portugués" },
+    { value: "Ruso", label: "Ruso" },
+    { value: "Urdu", label: "Urdu" },
+    { value: "Indonesio", label: "Indonesio" },
+    { value: "Alemán", label: "Alemán" },
+    { value: "Japonés", label: "Japonés" },
+    { value: "Swahili", label: "Swahili" },
+    { value: "Maratí", label: "Maratí" },
+    { value: "Telugu", label: "Telugu" },
+    { value: "Turco", label: "Turco" },
+    { value: "Tamil", label: "Tamil" },
+    { value: "Punjabi", label: "Punjabi" },
+    { value: "Coreano", label: "Coreano" },
+    { value: "Vietnamita", label: "Vietnamita" },
+    { value: "Italiano", label: "Italiano" },
+    { value: "Tailandés", label: "Tailandés" },
+    { value: "Persa (Farsi)", label: "Persa (Farsi)" },
+    { value: "Polaco", label: "Polaco" },
+    { value: "Malayo", label: "Malayo" },
+    { value: "Holandés", label: "Holandés" },
+    { value: "Griego", label: "Griego" },
+    { value: "Hebreo", label: "Hebreo" },
+    { value: "Checo", label: "Checo" },
+    { value: "Hausa", label: "Hausa" },
+    { value: "Birmano", label: "Birmano" },
+    { value: "Serbocroata", label: "Serbocroata" },
   ];
+
+  const initialLanguage = {
+    languages: [],
+    customerId: localStorage.getItem("tokenId") || "",
+    userType: localStorage.getItem("userType") || "",
+  };
+
+  const [language, setLanguage] = useState(initialLanguage);
+
+  const handleSubmitLanguages = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(`${apiUrl}/profile/add`, language, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success("Languages Updated", {
+        autoClose: 1000,
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
 
   return (
     <Fragment>
@@ -643,35 +696,36 @@ const MyProfile = () => {
                     </button>
                   </form>
                   <h4 className="mb-4">Idiomas</h4>
+                  <form onSubmit={handleSubmitLanguages}>
                   <div className="mb-4">
                     <label className="form-label">Selecciona idioma(s) </label>
                     <div className="input-group">
                       <span className="input-group-text bg-light border-0">
                         <i className="bi bi-translate primary-text" />
                       </span>
-                      {/* <select
-                        multiple
+
+                      <Select
+                        isMulti
+                        options={languageOptions}
                         className="form-control"
-                        value={languages}
-                        onChange={handleLanguagesChange}
-                      >
-                        <option value={0}>Seleccionar idioma(s)</option>
-                        <option value={1}>Seleccionar idioma(s)</option>
-                      </select> */}
-                      
-<Select
-  isMulti
-  options={languageOptions}
-  className="form-control"
-  classNamePrefix="select"
-  // placeholder="Selecciona idioma(s)"
-  onChange={(selected) => setLanguages(selected)}
-/>
+                        classNamePrefix="select"
+                        placeholder="Selecciona idioma(s)"
+                        onChange={(selected) => {
+                          setLanguages(selected);
+                          setLanguage((prev) => ({
+                            ...prev,
+                            languages: selected
+                              .map((lang) => lang.value)
+                              .join(", "),
+                          }));
+                        }}
+                      />
                     </div>
                   </div>
-                  <button className="btn btn-primary w-100 p-2 mb-4">
+                  <button type="submit" className="btn btn-primary w-100 p-2 mb-4">
                     Guardar cambios
                   </button>
+                  </form>
                   <h4 className="mb-4">Especialidades</h4>
                   <form onSubmit={handleSubmitSpecialties}>
                     <div className="mb-4">

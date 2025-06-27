@@ -883,7 +883,7 @@ const Main = () => {
                 >
                   <div className="row gy-4 justify-content-between">
                     <div
-                      className="col-xl-9 aos-init aos-animate"
+                      className="col-xl-9 col-lg-9 aos-init aos-animate"
                       data-aos="fade-up"
                       data-aos-delay={200}
                     >
@@ -959,13 +959,13 @@ const Main = () => {
                       </div>
                     </div>
                     <div
-                      className="col-xl-3 aos-init aos-animate"
+                      className="col-xl-3 col-lg-3 aos-init aos-animate"
                       data-aos="fade-up"
                       data-aos-delay={300}
                     >
                       <div className="image-wrapper">
                         <div
-                          className="images aos-init aos-animate image-view"
+                          className="images aos-init aos-animate image-view responsive-class"
                           data-aos="zoom-out"
                           data-aos-delay={400}
                         >

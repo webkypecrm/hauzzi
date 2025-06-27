@@ -521,7 +521,12 @@ const AgentProfile = () => {
                       </ul>
                       <h5 className="fw-bold">Idiomas</h5>
                       <ul className="list-inline language_sec">
-                        <li>Español</li>
+                        {/* {agentData?.userDetails?.[0]?.languages?.map(
+                          (item, id) => (
+                            <li key={id}> {item}</li>
+                          )
+                        )} */}
+                        <li>{agentData?.userDetails?.[0]?.languages}</li>
                         <li>Ingles</li>
                         <li>Italiano</li>
                       </ul>
