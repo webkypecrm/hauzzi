@@ -505,5 +505,9 @@ color: #1A1A1A;
 }
 
 
-
+@media (max-width:1200px){
+  .responsive-class{
+    width:99% !important;
+  }
+}
 
