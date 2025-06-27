@@ -517,5 +517,15 @@ color: #1A1A1A;
 
 }
 
+@media (max-width:1200px){
+  .responsive-class{
+    width:99% !important;
+  }
+}
 
+@media (min-width:1399px){
+  .responsive-class{
+    width:65% !important;
+  }
+}
 
