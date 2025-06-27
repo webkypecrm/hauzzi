@@ -511,3 +511,9 @@ color: #1A1A1A;
   }
 }
 
+@media (min-width:1399px){
+  .responsive-class{
+    width:65% !important;
+  }
+}
+
