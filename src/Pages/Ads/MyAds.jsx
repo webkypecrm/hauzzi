@@ -153,9 +153,8 @@ const MyAds = () => {
                                 <div className="title-price">
                                   <h4 className="line-clamp-1">{e.name}</h4>
                                   <span className="fp_price">
-                                    {/* ${e.maxPrice} */}
-                                    ${e.maxPrice ? e.maxPrice : e.rentalPrice}
-                                  </span>
+  ${e.maxPrice ? Number(e.maxPrice).toLocaleString() : Number(e.rentalPrice).toLocaleString()}
+</span>
                                 </div>
                                 <p className="line-clamp-1">
                                   <img src="img/my-img/vector.png" />{" "}

@@ -191,6 +191,7 @@ const PropertySell = () => {
                                         <li className="list-inline-item">
                                           <span>{e.purpose}</span>
                                         </li>{" "}
+                                        
                                         <li className="list-inline-item">
                                           <span>{e.tags}</span>
                                         </li>
@@ -235,11 +236,8 @@ const PropertySell = () => {
                                           {e.name}
                                         </h4>
                                         <span className="fp_price">
-                                          {/* ${e.maxPrice} */}$
-                                          {e.maxPrice
-                                            ? e.maxPrice
-                                            : e.rentalPrice}
-                                        </span>
+  ${e.maxPrice ? Number(e.maxPrice).toLocaleString() : Number(e.rentalPrice).toLocaleString()}
+</span>
                                       </div>
                                       <p className="line-clamp-1">
                                         <img src="img/my-img/vector.png" />

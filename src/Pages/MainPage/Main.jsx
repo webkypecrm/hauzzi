@@ -383,6 +383,7 @@ const Main = () => {
                                     <li className="list-inline-item">
                                       <span>{e.purpose}</span>
                                     </li>
+                                    
                                     <li className="list-inline-item">
                                       <span>{e.tags}</span>
                                     </li>
@@ -426,9 +427,8 @@ const Main = () => {
                                   <div className="title-price">
                                     <h4 className="line-clamp-2">{e.name}</h4>
                                     <span className="fp_price">
-                                      {/* ${e.maxPrice} */}$
-                                      {e.maxPrice ? e.maxPrice : e.rentalPrice}
-                                    </span>
+  ${e.maxPrice ? Number(e.maxPrice).toLocaleString() : Number(e.rentalPrice).toLocaleString()}
+</span>
                                   </div>
                                   <p className="line-clamp-1">
                                     <img

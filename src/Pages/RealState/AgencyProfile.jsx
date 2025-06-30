@@ -506,11 +506,8 @@ const AgencyProfile = () => {
                                         <div className="title-price">
                                           <h4>{e.name}</h4>
                                           <span className="fp_price">
-                                            {/* ${e.maxPrice} */}$
-                                            {e.maxPrice
-                                              ? e.maxPrice
-                                              : e.rentalPrice}
-                                          </span>
+  ${e.maxPrice ? Number(e.maxPrice).toLocaleString() : Number(e.rentalPrice).toLocaleString()}
+</span>
                                         </div>
                                         <p>
                                           <img src={location} alt="" />
@@ -937,11 +934,8 @@ const AgencyProfile = () => {
                                       <div className="title-price">
                                         <h4>{property.name}</h4>
                                         <span className="fp_price">
-                                          $
-                                          {property.maxPrice
-                                            ? property.maxPrice
-                                            : property.rentalPrice}
-                                        </span>
+  ${property.maxPrice ? Number(property.maxPrice).toLocaleString() : Number(property.rentalPrice).toLocaleString()}
+</span>
                                       </div>
                                       <p>
                                         <img src={location} alt="location" />
@@ -1110,11 +1104,8 @@ const AgencyProfile = () => {
                                       <div className="title-price">
                                         <h4>{prop.name}</h4>
                                         <span className="fp_price">
-                                          $
-                                          {prop.maxPrice
-                                            ? prop.maxPrice
-                                            : prop.rentalPrice}
-                                        </span>
+  ${prop.maxPrice ? Number(prop.maxPrice).toLocaleString() : Number(prop.rentalPrice).toLocaleString()}
+</span>
                                       </div>
                                       <p>
                                         <img src={location} alt="vector" />

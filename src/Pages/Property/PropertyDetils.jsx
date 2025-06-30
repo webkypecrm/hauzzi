@@ -922,12 +922,15 @@ const PropertyDetils = () => {
                     )}
                   </div>
                   <h3 className="mt-2">
-                    ${propertyData?.maxPrice || propertyData?.rentalPrice}{" "}
+                    ${propertyData.maxPrice
+                                    ? Number(propertyData.maxPrice).toLocaleString()
+                                    : Number(propertyData.rentalPrice).toLocaleString()}{" "}
                     <span style={{ fontSize: 13, color: "#00BF63" }}>
                       <img src={img11} style={{ width: 20 }} />
                       Ha bajado $5.000{" "}
                     </span>
                   </h3>
+                  
 
                   <h6 className="mt-4" style={{ fontWeight: 800 }}>
                     {propertyData?.name}
@@ -1595,7 +1598,10 @@ const PropertyDetils = () => {
                               <div className="title-price">
                                 <h4 className="line-clamp-2">{e.name}</h4>
                                 <span className="fp_price">
-                                  ${e.maxPrice ? e.maxPrice : e.rentalPrice}
+                                  $
+                                  {e.maxPrice
+                                    ? Number(e.maxPrice).toLocaleString()
+                                    : Number(e.rentalPrice).toLocaleString()}
                                 </span>
                               </div>
                               <p className="line-clamp-1">
