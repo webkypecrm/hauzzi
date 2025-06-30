@@ -70,6 +70,12 @@ const Footer = () => {
                 <li>
                   <Link to="/blog">Blog&nbsp;</Link>
                 </li>
+                <li>
+                  <Link to="/terms">Términos y Condiciones&nbsp;</Link>
+                </li>
+                <li>
+                  <Link to="/policyes">Política de Privacidad&nbsp;</Link>
+                </li>
               </ul>
             </div>
             <div className="col-lg-2 col-md-3 footer-links">

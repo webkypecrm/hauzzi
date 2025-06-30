@@ -23,16 +23,14 @@ import whatsapp from "../../assets/img/my-img/whatsapps.png";
 import telephn from "../../assets/img/my-img/call12.png";
 import msg from "../../assets/img/my-img/sms.svg";
 import global from "../../assets/img/my-img/global.png";
-// import discovery from "../../assets/img/my-img/discovery.png";
-// import location from "../../assets/img/my-img/vector.png";
-import msg2 from "../../assets/img/my-img/vector_2.png";
-import phn from "../../assets/img/my-img/call.png";
 import Map from "../../Map";
 import locationn from "../../assets/img/my-img/vector.png";
 import { toast } from "react-toastify";
 // import Calendar from "../../Calendar";
 import hauzzi from "../../assets/img/hauzziIcon.png";
 import share from "../../assets/img/my-img/share-icon.png";
+import call from "../../assets/img/blackCall.png";
+import mail from "../../assets/img/blackMail.png";
 
 const PropertyDetils = () => {
   // -------------lightbox---------
@@ -1570,9 +1568,8 @@ const PropertyDetils = () => {
                                   style={{ background: "unset" }}
                                 >
                                   <i
-                                    className="fa fa-heart"
+                                    className="fa fa-heart hrt-icon"
                                     aria-hidden="true"
-                                    style={{ color: "#FFBD59" }}
                                   />
                                 </li>
                               </ul>
@@ -1695,11 +1692,11 @@ const PropertyDetils = () => {
 
                             <div className="fp_pdate float-right d-flex">
                               <Link className="btn-getstarted gt" to="#">
-                                <img src={msg2} width="35%" alt="email" />
+                                <img src={mail} width="35%" alt="email" />
                                 Email
                               </Link>
                               <Link className="btn-getstarted gt" to="#">
-                                <img src={phn} width="25%" alt="call" />
+                                <img src={call} width="25%" alt="call" />
                                 Llamar
                               </Link>
                               <Link to="#">

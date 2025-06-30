@@ -34,6 +34,8 @@ import PrivateRoute from "./PrivateRoute";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PropertyEdit from "./Pages/Property/PropertyEdit.jsx";
+import Terms from "./Pages/Terms&Policy/Terms.jsx";
+import Policyes from "./Pages/Terms&Policy/Policyes.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -111,6 +113,8 @@ createRoot(document.getElementById("root")).render(
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/create-password" element={<CreatePassword />} />
+        <Route path="/terms" element={<Terms/>} />
+        <Route path="/policyes" element={<Policyes/>} />
       </Routes>
     </BrowserRouter>
     <ToastContainer style={{ padding: "20px" }} />

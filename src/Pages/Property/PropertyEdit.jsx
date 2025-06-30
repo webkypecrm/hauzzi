@@ -96,15 +96,6 @@ const PropertyEdit = () => {
     }
   };
 
-  // const handleSelectType = (type, index) => {
-  //   setActiveTypeIndex(index);
-  //   setPropertyData((prev) => ({
-  //     ...prev,
-  //     type: type.name,
-  //   }));
-  //   getPropertyCategory(type);
-  // };
-
   const handleSelectType = (type, index) => {
     setActiveTypeIndex(index);
     setPropertyData((prev) => ({
@@ -287,6 +278,23 @@ const PropertyEdit = () => {
           const fullData = { ...initialData, ...fetchedData, id };
           setOriginalData(fullData);
           setPropertyData(fullData);
+
+          if (fetchedData.photo1 || fetchedData.photo2 || fetchedData.photo3) {
+  const previewImages = [];
+
+  for (let i = 1; i <= 10; i++) {
+    const key = `photo${i}`;
+    if (fetchedData[key]) {
+      previewImages.push({
+        file: null, // Original file not accessible
+        preview: `${apiUrl}/uploads/property/${fetchedData[key]}`, // Adjust path as per backend
+      });
+    }
+  }
+
+  setImages(previewImages);
+}
+
         })
         .catch((err) => {
           toast.error("Failed to load property");

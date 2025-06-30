@@ -332,15 +332,40 @@ const PublishProperty = () => {
   };
 
   // country Get
-  const getCountries = async () => {
-    try {
-      const res = await axios.get(`${apiUrl}/employee/allCountries`);
+  // const getCountries = async () => {
+  //   try {
+  //     const res = await axios.get(`${apiUrl}/employee/allCountries`);
+  //     const countryList = res.data?.data || [];
 
-      setCountries(res.data?.data || []);
-    } catch (error) {
-      console.log(error);
+  //     setCountries(countryList);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  const getCountries = async () => {
+  try {
+    const res = await axios.get(`${apiUrl}/employee/allCountries`);
+    const countryList = res.data?.data || [];
+    setCountries(countryList);
+
+    // Check if country is not set and set Venezuela
+    const venezuela = countryList.find(
+      (c) => c.name.toLowerCase() === "venezuela"
+    );
+
+    if (venezuela && !propertyData.country) {
+      setPropertyData((prev) => ({
+        ...prev,
+        country: venezuela.id,
+      }));
+      setSelectedCountryId(venezuela.id);
+      getStates(venezuela.id); // auto-load states
     }
-  };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
   // state Get
   const getStates = async (countryId) => {

@@ -10,6 +10,8 @@ import apple from "../../assets/img/apple.png";
 import google from "../../assets/img/google.png";
 import hauzzi from "../../assets/img/hauzziIcon.png";
 import blackImg from "../../assets/img/my-img/back-img.png";
+import call from "../../assets/img/blackCall.png";
+import mail from "../../assets/img/blackMail.png";
 
 const Main = () => {
   const [mainData, setMainData] = useState([]);
@@ -397,9 +399,8 @@ const Main = () => {
                                       style={{ background: "unset" }}
                                     >
                                       <i
-                                        className="fa fa-heart"
+                                        className="fa fa-heart hrt-icon"
                                         aria-hidden="true"
-                                        style={{ color: "#FFBD59" }}
                                       />
                                     </li>
                                   </ul>
@@ -538,17 +539,17 @@ const Main = () => {
                                 </Link>
 
                                 <div className="fp_pdate float-right d-flex">
-                                  <Link className="btn-getstarted gt" to="#">
+                                  <Link className="btn-getstarted gt" to="#" style={{color: "black"}}>
                                     <img
-                                      src="img/my-img/vector_2.png"
-                                      width="35%"
+                                      src={mail}
+                                      width="25%"
                                       alt="email"
                                     />
                                     Email
                                   </Link>
                                   <Link className="btn-getstarted gt" to="#">
                                     <img
-                                      src="img/my-img/call.png"
+                                      src={call}
                                       width="25%"
                                       alt="call"
                                     />

@@ -10,6 +10,8 @@ import filter_2 from "../../assets/img/my-img/filter_2.png";
 import filter_3 from "../../assets/img/my-img/filter_3.png";
 import PropertyMap from "../Property/PropertyMap";
 import hauzzi from "../../assets/img/hauzziIcon.png";
+import call from "../../assets/img/blackCall.png";
+import mail from "../../assets/img/blackMail.png";
 
 const PropertySell = () => {
   const [allData, setAllData] = useState([]);
@@ -147,9 +149,12 @@ const PropertySell = () => {
                           <p className="mb-0">Ordenar:</p>
                           <select className="form-control" id="sel1">
                             <option>Más recientes</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
+                            <option>Más barato</option>
+                            <option>Más caro</option>
+                            <option>Más barato (USD/m²)</option>
+                            <option>Más grande (más m²)</option>
+                            <option>Más pequeño (menos m²)</option>
+                            <option>Más antigüo</option>
                           </select>
                           <img src={filter_2} style={{ marginLeft: 10 }} />
                           <img src={filter_3} style={{ marginLeft: 10 }} />
@@ -202,9 +207,8 @@ const PropertySell = () => {
                                           style={{ background: "unset" }}
                                         >
                                           <i
-                                            className="fa fa-heart"
+                                            className="fa fa-heart hrt-icon"
                                             aria-hidden="true"
-                                            style={{ color: "#FFBD59" }}
                                           />
                                         </li>
                                       </ul>
@@ -318,7 +322,7 @@ const PropertySell = () => {
                                         to="#"
                                       >
                                         <img
-                                          src="img/my-img/vector_2.png"
+                                          src={mail}
                                           width="25%"
                                         />
                                         Email{" "}
@@ -328,7 +332,7 @@ const PropertySell = () => {
                                         to="#"
                                       >
                                         <img
-                                          src="img/my-img/call.png"
+                                          src={call}
                                           width="25%"
                                         />
                                         Llamar{" "}
