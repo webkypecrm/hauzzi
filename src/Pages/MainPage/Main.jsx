@@ -13,6 +13,11 @@ import blackImg from "../../assets/img/my-img/back-img.png";
 import call from "../../assets/img/blackCall.png";
 import mail from "../../assets/img/blackMail.png";
 
+import { Swiper, SwiperSlide } from 'swiper/react';
+// import 'swiper/css';
+import 'swiper/css/pagination';
+import { Autoplay, Pagination } from 'swiper/modules';
+
 const Main = () => {
   const [mainData, setMainData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -24,10 +29,16 @@ const Main = () => {
   const [selectedSubCategoryId, setSelectedSubCategoryId] = useState("");
   const [selectCategory, setselectCategory] = useState("");
   const [search, setSearch] = useState("");
+  const [wishlistIds, setWishlistIds] = useState([]);
+  const [wishlistLoaded, setWishlistLoaded] = useState(false);
+   const [blogsData, setBlogsData] = useState([]);
+
+
+
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
-  // const token2 = localStorage.getItem("token");
-  // const customerId = localStorage.getItem("tokenId") || "";
+  const token2 = localStorage.getItem("token");
+  const customerId = localStorage.getItem("tokenId") || "";
 
   const getMainData = async () => {
     setLoading(true);
@@ -49,15 +60,15 @@ const Main = () => {
     }
   };
 
-  console.log("first", mainData);
+  console.log("first", mainData?.data);
 
   const handleLookingForChange = (e) => {
     const selectedText = e.target.options[e.target.selectedIndex].text.trim();
 
     const purposeMap = {
-      "Rent": "wantToRent",
-      "Sale": "wantToSell",
-      "Both": "bothSellRent",
+      Rent: "wantToRent",
+      Sale: "wantToSell",
+      Both: "bothSellRent",
     };
 
     const mappedValue = purposeMap[selectedText] || "";
@@ -81,20 +92,6 @@ const Main = () => {
   };
 
   // property subCategory GET
-  // const getSubCategory = async (categoryId) => {
-  //   try {
-  //     const res = await axios.get(
-  //       `${apiUrl}/category/getAllCategoryData/${categoryId}`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-  //     setSubCategory(res.data?.data || []);
-  //     console.log("subcat", subCategory);
-  //   } catch (error) {}
-  // };
 
   const handleCategoryChange = (e) => {
     const catId = e.target.value;
@@ -107,21 +104,12 @@ const Main = () => {
     // getSubCategory(catId);
   };
 
-  // const handleSubCategoryChange = (e) => {
-  //   const subId = e.target.value;
-  //   const selected = subCategory.find((sub) => sub.id.toString() === subId);
-  //   setSelectedSubCategoryId(subId);
-  //   setselectCategory(selected?.name || "");
-  // };
-
   // Search get api
   const handelSearchInput = (e) => {
     setSearch(e.target.value);
   };
 
   // get blogs api
-  const [blogsData, setBlogsData] = useState([]);
-
   const handelBlogData = async () => {
     setLoading(true);
     try {
@@ -140,12 +128,66 @@ const Main = () => {
     }
   };
 
-
   useEffect(() => {
     getMainData();
     getCategory();
     handelBlogData();
   }, []);
+
+   // Wishlist Api
+  
+    useEffect(() => {
+      const fetchWishlist = async () => {
+        try {
+          const res = await axios.get(
+            `${apiUrl}/property/getWishlist/${customerId}`,
+            {
+              headers: { Authorization: `Bearer ${token2}` },
+            }
+          );
+  
+          const ids = Array.isArray(res?.data?.data)
+            ? res?.data?.data.map((item) =>
+                typeof item === "object" && item !== null
+                  ? Number(item.id)
+                  : Number(item)
+              )
+            : [];
+          console.log("wishlistID", ids);
+  
+          setWishlistIds(ids);
+        } catch (err) {
+          setWishlistIds([]);
+        } finally {
+          setWishlistLoaded(true);
+        }
+      };
+  
+      if (customerId) fetchWishlist();
+    }, [customerId]);
+  
+    const handelWishlist = async (id) => {
+      try {
+        const response = await axios.get(
+          `${apiUrl}/property/addToWishlist/${customerId}-${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token2}`,
+            },
+          }
+        );
+  
+        toast.success(response.data.message);
+  
+        setWishlistIds((prev) =>
+          prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+        );
+      } catch (error) {
+        console.log(error);
+        toast.error(error.response.data.message);
+      }
+    };
+
 
   return (
     <Fragment>
@@ -372,18 +414,38 @@ const Main = () => {
                                 allProducts: mainData.data,
                               }}
                             >
-                              <div className="thumb">
-                                <img
+                              <div className="thumb" >
+                                {/* <img
                                   className="img-whp"
                                   src={e.images[0]}
                                   alt="property"
-                                />
-                                <div className="thmb_cntnt">
+                                /> */}
+
+<Swiper
+  modules={[Autoplay, Pagination]}
+  autoplay={{
+    delay: 3000,
+    disableOnInteraction: false,
+  }}
+  pagination={{ clickable: true }}
+  loop={true}
+  className="mySwiper"
+>
+  {e.images.map((img, index) => (
+    <SwiperSlide key={index}>
+      <img className="img-whp" src={img} alt={`property-${index}`} />
+    </SwiperSlide>
+  ))}
+</Swiper>
+
+
+
+                                <div className="thmb_cntnt" style={{zIndex: 1}}>
                                   <ul className="tag mb0 p-0">
                                     <li className="list-inline-item">
                                       <span>{e.purpose}</span>
                                     </li>
-                                    
+
                                     <li className="list-inline-item">
                                       <span>{e.tags}</span>
                                     </li>
@@ -402,6 +464,7 @@ const Main = () => {
                                       <i
                                         className="fa fa-heart hrt-icon"
                                         aria-hidden="true"
+                                        onClick={() => handelWishlist(e?.id)}
                                       />
                                     </li>
                                   </ul>
@@ -427,15 +490,20 @@ const Main = () => {
                                   <div className="title-price">
                                     <h4 className="line-clamp-2">{e.name}</h4>
                                     <span className="fp_price">
-  ${e.maxPrice ? Number(e.maxPrice).toLocaleString() : Number(e.rentalPrice).toLocaleString()}
-</span>
+                                      $
+                                      {e.maxPrice
+                                        ? Number(e.maxPrice).toLocaleString()
+                                        : Number(
+                                            e.rentalPrice
+                                          ).toLocaleString()}
+                                    </span>
                                   </div>
                                   <p className="line-clamp-1">
                                     <img
                                       src="img/my-img/vector.png"
                                       alt="location"
                                     />
-                                    <span style={{ marginLeft: 5 }} >
+                                    <span style={{ marginLeft: 5 }}>
                                       {e.address1}
                                     </span>
                                   </p>
@@ -539,20 +607,16 @@ const Main = () => {
                                 </Link>
 
                                 <div className="fp_pdate float-right d-flex">
-                                  <Link className="btn-getstarted gt" to="#" style={{color: "black"}}>
-                                    <img
-                                      src={mail}
-                                      width="25%"
-                                      alt="email"
-                                    />
+                                  <Link
+                                    className="btn-getstarted gt"
+                                    to="#"
+                                    style={{ color: "black" }}
+                                  >
+                                    <img src={mail} width="25%" alt="email" />
                                     Email
                                   </Link>
                                   <Link className="btn-getstarted gt" to="#">
-                                    <img
-                                      src={call}
-                                      width="25%"
-                                      alt="call"
-                                    />
+                                    <img src={call} width="25%" alt="call" />
                                     Llamar
                                   </Link>
                                   <Link to="#">
@@ -604,7 +668,6 @@ const Main = () => {
                                             Descartar
                                           </Link>
                                         </li>
-                                        
                                       </ul>
                                     </div>
                                   </Link>
@@ -793,7 +856,9 @@ const Main = () => {
                                     <span>Bienes raíces</span>
                                   </p>
                                   <div className="title-price">
-                                    <h4 className="line-clamp-2">{blog.title}</h4>
+                                    <h4 className="line-clamp-2">
+                                      {blog.title}
+                                    </h4>
                                   </div>
                                   <h5
                                     className="mt-2"
@@ -816,7 +881,7 @@ const Main = () => {
                                             src={hauzzi}
                                             alt="pposter1.png"
                                             className="profile-pic"
-                                          style={{ width: "40px" }}
+                                            style={{ width: "40px" }}
                                           />
                                           <span
                                             style={{

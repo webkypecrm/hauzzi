@@ -531,4 +531,15 @@ color: #1A1A1A;
 }
 
 
+/* Make Swiper pagination bullets white */
+.swiper-pagination-bullet {
+  background: white !important;
+  opacity: 0.5;
+}
+
+.swiper-pagination-bullet-active {
+  opacity: 1;
+}
+
+
 

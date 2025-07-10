@@ -31,6 +31,10 @@ import hauzzi from "../../assets/img/hauzziIcon.png";
 import share from "../../assets/img/my-img/share-icon.png";
 import call from "../../assets/img/blackCall.png";
 import mail from "../../assets/img/blackMail.png";
+import { Swiper, SwiperSlide } from 'swiper/react';
+// import 'swiper/css';
+import 'swiper/css/pagination';
+import { Autoplay, Pagination } from 'swiper/modules';
 
 const PropertyDetils = () => {
   // -------------lightbox---------
@@ -922,15 +926,15 @@ const PropertyDetils = () => {
                     )}
                   </div>
                   <h3 className="mt-2">
-                    ${propertyData.maxPrice
-                                    ? Number(propertyData.maxPrice).toLocaleString()
-                                    : Number(propertyData.rentalPrice).toLocaleString()}{" "}
+                    $
+                    {propertyData.maxPrice
+                      ? Number(propertyData.maxPrice).toLocaleString()
+                      : Number(propertyData.rentalPrice).toLocaleString()}{" "}
                     <span style={{ fontSize: 13, color: "#00BF63" }}>
                       <img src={img11} style={{ width: 20 }} />
                       Ha bajado $5.000{" "}
                     </span>
                   </h3>
-                  
 
                   <h6 className="mt-4" style={{ fontWeight: 800 }}>
                     {propertyData?.name}
@@ -1545,12 +1549,28 @@ const PropertyDetils = () => {
                           }}
                         >
                           <div className="thumb">
-                            <img
+                            {/* <img
                               className="img-whp"
                               src={e.images[0]}
                               alt="property"
-                            />
-                            <div className="thmb_cntnt">
+                            /> */}
+                            <Swiper
+                              modules={[Autoplay, Pagination]}
+                              autoplay={{
+                                delay: 3000,
+                                disableOnInteraction: false,
+                              }}
+                              pagination={{ clickable: true }}
+                              loop={true}
+                              className="mySwiper"
+                            >
+                              {e.images.map((img, index) => (
+                                <SwiperSlide key={index}>
+                                  <img className="img-whp" src={img} alt={`property-${index}`} />
+                                </SwiperSlide>
+                              ))}
+                            </Swiper>
+                            <div className="thmb_cntnt" style={{zIndex: 1}}>
                               <ul className="tag mb0 p-0">
                                 <li className="list-inline-item">
                                   <span>{e.purpose}</span>
@@ -1651,24 +1671,8 @@ const PropertyDetils = () => {
                                   style={{ marginRight: "0px" }}
                                 >
                                   <span>
-                                    {/* <img
-                                      src={e.Customer?.userDetails.map(
-                                        (item) => item.photoUrl
-                                      )}
-                                      // alt="poster"
-                                      className="profile-pic"
-                                    /> */}
+
                                     <img
-                                      // src={
-                                      //   e.Customer?.userDetails?.length > 0
-                                      //     ? e.Customer.userDetails[0].photoUrl
-                                      //     : e.Customer?.agentDetails?.length > 0
-                                      //     ? e.Customer.agentDetails[0].photoUrl
-                                      //     : e.Customer?.agencyDetails?.length >
-                                      //       0
-                                      //     ? e.Customer.agencyDetails[0].photoUrl
-                                      //     : "default.jpg"
-                                      // }
                                       src={
                                         e.Customer?.userDetails?.[0]
                                           ?.photoUrl ||
@@ -1769,8 +1773,6 @@ const PropertyDetils = () => {
 
           <Footer />
         </main>
-        {/* </Fragment>
-                )} */}
       </div>
     </Fragment>
   );
