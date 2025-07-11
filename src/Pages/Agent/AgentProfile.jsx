@@ -85,11 +85,12 @@ const AgentProfile = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [rentProperty, setRentProperty] = useState([]);
   const [sellProperty, setSellProperty] = useState([]);
-  // const [value, setValue] = useState();
   const [count1, setCount1] = useState();
   const [count2, setCount2] = useState();
   const [followedAgentIds, setFollowedAgentIds] = useState([]);
   const [agentListLoaded, setAgentListLoaded] = useState(false);
+  const [wishlistIds, setWishlistIds] = useState([]);
+  const [wishlistLoaded, setWishlistLoaded] = useState(false);
 
   const customerId = localStorage.getItem("tokenId") || "";
   const token = localStorage.getItem("token");
@@ -300,6 +301,60 @@ const AgentProfile = () => {
     }
   };
 
+  // Wishlist Api
+
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      try {
+        const res = await axios.get(
+          `${apiUrl}/property/getWishlist/${customerId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const ids = Array.isArray(res?.data?.data)
+          ? res?.data?.data.map((item) =>
+              typeof item === "object" && item !== null
+                ? Number(item.id)
+                : Number(item)
+            )
+          : [];
+        console.log("wishlistID", ids);
+
+        setWishlistIds(ids);
+      } catch (err) {
+        setWishlistIds([]);
+      } finally {
+        setWishlistLoaded(true);
+      }
+    };
+
+    if (customerId) fetchWishlist();
+  }, [customerId]);
+
+  const handelWishlist = async (id) => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}/property/addToWishlist/${customerId}-${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success(response.data.message);
+
+      setWishlistIds((prev) =>
+        prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+      );
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
+
   return (
     <Fragment>
       <div className="index-page">
@@ -411,53 +466,85 @@ const AgentProfile = () => {
                                             <i
                                               className="fa fa-heart"
                                               aria-hidden="true"
-                                              style={{ color: "#FFBD59" }}
+                                              onClick={() =>
+                                                handelWishlist(e?.id)
+                                              }
+                                              style={{
+                                                color: wishlistIds.includes(
+                                                  e?.id
+                                                )
+                                                  ? "red"
+                                                  : "#FFBD59",
+                                                fontSize: "21px",
+                                              }}
                                             ></i>
                                           </li>
                                         </ul>
                                       </div>
                                     </div>
                                     <div className="details">
-                                      <div className="tc_content">
-                                        <div className="title-price">
-                                          <h4>{e.name}</h4>
-                                          <span className="fp_price">
-  ${e.maxPrice ? Number(e.maxPrice).toLocaleString() : Number(e.rentalPrice).toLocaleString()}
-</span>
-                                        </div>
-                                        <p>
-                                          <img src={location} alt="" />
-                                          <span style={{ marginLeft: "5px" }}>
-                                            {e.address1}
-                                          </span>
-                                        </p>
-                                        <ul className="prop_details mb0 p-0">
-                                          <li className="list-inline-item">
-                                            <span>
-                                              <img src={hab} alt="" />{" "}
-                                              {e?.listingDetails?.Habitaciones}{" "}
-                                              Hab.
+                                      <Link
+                                        to={`/propert-details/${e.id}`}
+                                        state={{
+                                          lat: e.latitude,
+                                          lng: e.longitude,
+                                          name: e.name,
+                                          image: e.images[0],
+                                          allProducts: agentData.data,
+                                        }}
+                                      >
+                                        <div className="tc_content">
+                                          <div className="title-price">
+                                            <h4>{e.name}</h4>
+                                            <span className="fp_price">
+                                              $
+                                              {e.maxPrice
+                                                ? Number(
+                                                    e.maxPrice
+                                                  ).toLocaleString()
+                                                : Number(
+                                                    e.rentalPrice
+                                                  ).toLocaleString()}
                                             </span>
-                                          </li>{" "}
-                                          <li className="list-inline-item">
-                                            <span>
-                                              <img src={bath} alt="" />{" "}
-                                              {e?.listingDetails?.Baños} Baños
+                                          </div>
+                                          <p>
+                                            <img src={location} alt="" />
+                                            <span style={{ marginLeft: "5px" }}>
+                                              {e.address1}
                                             </span>
-                                          </li>
-                                          <li className="list-inline-item">
-                                            <span>
-                                              <img src={area} alt="" />{" "}
-                                              {e?.propertySize || e?.maxSize} m2
-                                            </span>
-                                          </li>
-                                        </ul>
-                                        {/* <p>
+                                          </p>
+                                          <ul className="prop_details mb0 p-0">
+                                            <li className="list-inline-item">
+                                              <span>
+                                                <img src={hab} alt="" />{" "}
+                                                {
+                                                  e?.listingDetails
+                                                    ?.Habitaciones
+                                                }{" "}
+                                                Hab.
+                                              </span>
+                                            </li>{" "}
+                                            <li className="list-inline-item">
+                                              <span>
+                                                <img src={bath} alt="" />{" "}
+                                                {e?.listingDetails?.Baños} Baños
+                                              </span>
+                                            </li>
+                                            <li className="list-inline-item">
+                                              <span>
+                                                <img src={area} alt="" />{" "}
+                                                {e?.propertySize || e?.maxSize}{" "}
+                                                m2
+                                              </span>
+                                            </li>
+                                          </ul>
+                                          {/* <p>
                                         <i className="bi bi-circle-fill"></i>{" "}
                                         <b>Vendido</b>
                                         &nbsp; hace 6 días
                                       </p> */}
-                                      </div>
+                                        </div>
+                                      </Link>
                                     </div>
                                   </div>
                                 </Link>
@@ -606,7 +693,12 @@ const AgentProfile = () => {
                                 style={{ marginTop: "10%" }}
                               >
                                 <p className="de-i"></p>
-                                <p style={{ marginLeft: "40px",marginRight:"22%" }}>
+                                <p
+                                  style={{
+                                    marginLeft: "40px",
+                                    marginRight: "22%",
+                                  }}
+                                >
                                   <img
                                     src={call}
                                     style={{ width: 18, marginRight: 9 }}
@@ -620,7 +712,12 @@ const AgentProfile = () => {
                               </div>
                               <div className="pr-det">
                                 <p className="de-i"></p>
-                                <p style={{ marginLeft: "40px",marginRight:"25%" }}>
+                                <p
+                                  style={{
+                                    marginLeft: "40px",
+                                    marginRight: "25%",
+                                  }}
+                                >
                                   <img
                                     src={sms}
                                     style={{ width: 18, marginRight: 9 }}
@@ -634,7 +731,12 @@ const AgentProfile = () => {
                               </div>
                               <div className="pr-det">
                                 <p className="de-i"></p>
-                                <p style={{ marginLeft: "40px",marginRight:"17%" }}>
+                                <p
+                                  style={{
+                                    marginLeft: "40px",
+                                    marginRight: "17%",
+                                  }}
+                                >
                                   <img
                                     src={global}
                                     style={{ width: 18, marginRight: 9 }}
@@ -777,54 +879,82 @@ const AgentProfile = () => {
                                           <i
                                             className="fa fa-heart"
                                             aria-hidden="true"
-                                            style={{ color: "#FFBD59" }}
+                                            onClick={() =>
+                                              handelWishlist(property?.id)
+                                            }
+                                            style={{
+                                              color: wishlistIds.includes(
+                                                property?.id
+                                              )
+                                                ? "red"
+                                                : "#FFBD59",
+                                              fontSize: "21px",
+                                            }}
                                           />
                                         </li>
                                       </ul>
                                     </div>
                                   </div>
                                   <div className="details">
-                                    <div className="tc_content">
-                                      <div className="title-price">
-                                        <h4>{property.name}</h4>
-                                        <span className="fp_price">
-  ${property.maxPrice ? Number(property.maxPrice).toLocaleString() : Number(property.rentalPrice).toLocaleString()}
-</span>
+                                    <Link
+                                      to={`/propert-details/${property.id}`}
+                                      state={{
+                                        lat: property.latitude,
+                                        lng: property.longitude,
+                                        name: property.name,
+                                        image: property.images[0],
+                                        allProducts: sellProperty.data,
+                                      }}
+                                    >
+                                      <div className="tc_content">
+                                        <div className="title-price">
+                                          <h4>{property.name}</h4>
+                                          <span className="fp_price">
+                                            $
+                                            {property.maxPrice
+                                              ? Number(
+                                                  property.maxPrice
+                                                ).toLocaleString()
+                                              : Number(
+                                                  property.rentalPrice
+                                                ).toLocaleString()}
+                                          </span>
+                                        </div>
+                                        <p>
+                                          <img src={location} alt="location" />
+                                          <span style={{ marginLeft: 5 }}>
+                                            {property.address1}
+                                          </span>
+                                        </p>
+                                        <ul className="prop_details mb-0 p-0">
+                                          <li className="list-inline-item">
+                                            <span>
+                                              <img src={hab} alt="" />{" "}
+                                              {
+                                                property?.listingDetails
+                                                  ?.Habitaciones
+                                              }{" "}
+                                              Hab.{" "}
+                                            </span>
+                                          </li>{" "}
+                                          <li className="list-inline-item">
+                                            <span>
+                                              <img src={bath} alt="" />{" "}
+                                              {property?.listingDetails?.Baños}{" "}
+                                              Baños{" "}
+                                            </span>
+                                          </li>
+                                          <li className="list-inline-item">
+                                            <span>
+                                              <img src={area} alt="" />{" "}
+                                              {property?.propertySize ||
+                                                property?.maxSize}{" "}
+                                              m2{" "}
+                                            </span>
+                                          </li>
+                                        </ul>
                                       </div>
-                                      <p>
-                                        <img src={location} alt="location" />
-                                        <span style={{ marginLeft: 5 }}>
-                                          {property.address1}
-                                        </span>
-                                      </p>
-                                      <ul className="prop_details mb-0 p-0">
-                                        <li className="list-inline-item">
-                                          <span>
-                                            <img src={hab} alt="" />{" "}
-                                            {
-                                              property?.listingDetails
-                                                ?.Habitaciones
-                                            }{" "}
-                                            Hab.{" "}
-                                          </span>
-                                        </li>{" "}
-                                        <li className="list-inline-item">
-                                          <span>
-                                            <img src={bath} alt="" />{" "}
-                                            {property?.listingDetails?.Baños}{" "}
-                                            Baños{" "}
-                                          </span>
-                                        </li>
-                                        <li className="list-inline-item">
-                                          <span>
-                                            <img src={area} alt="" />{" "}
-                                            {property?.propertySize ||
-                                              property?.maxSize}{" "}
-                                            m2{" "}
-                                          </span>
-                                        </li>
-                                      </ul>
-                                    </div>
+                                    </Link>
                                     <div className="fp_footer d-flex">
                                       <Link to="#">
                                         <ul className="fp_meta float-left mb-0 p-0">
@@ -969,50 +1099,82 @@ const AgentProfile = () => {
                                           <i
                                             className="fa fa-heart"
                                             aria-hidden="true"
-                                            style={{ color: "#FFBD59" }}
+                                            onClick={() =>
+                                              handelWishlist(prop?.id)
+                                            }
+                                            style={{
+                                              color: wishlistIds.includes(
+                                                prop?.id
+                                              )
+                                                ? "red"
+                                                : "#FFBD59",
+                                              fontSize: "21px",
+                                            }}
                                           />
                                         </li>
                                       </ul>
                                     </div>
                                   </div>
                                   <div className="details">
-                                    <div className="tc_content">
-                                      <div className="title-price">
-                                        <h4>{prop.name}</h4>
-                                        <span className="fp_price">
-  ${prop.maxPrice ? Number(prop.maxPrice).toLocaleString() : Number(prop.rentalPrice).toLocaleString()}
-</span>
+                                    <Link
+                                      to={`/propert-details/${prop.id}`}
+                                      state={{
+                                        lat: prop.latitude,
+                                        lng: prop.longitude,
+                                        name: prop.name,
+                                        image: prop.images[0],
+                                        allProducts: rentProperty.data,
+                                      }}
+                                    >
+                                      <div className="tc_content">
+                                        <div className="title-price">
+                                          <h4>{prop.name}</h4>
+                                          <span className="fp_price">
+                                            $
+                                            {prop.maxPrice
+                                              ? Number(
+                                                  prop.maxPrice
+                                                ).toLocaleString()
+                                              : Number(
+                                                  prop.rentalPrice
+                                                ).toLocaleString()}
+                                          </span>
+                                        </div>
+                                        <p>
+                                          <img src={location} alt="vector" />
+                                          <span style={{ marginLeft: 5 }}>
+                                            {prop.address1}
+                                          </span>
+                                        </p>
+                                        <ul className="prop_details mb-0 p-0">
+                                          <li className="list-inline-item">
+                                            <span>
+                                              <img src={hab} alt="hab" />{" "}
+                                              {
+                                                prop?.listingDetails
+                                                  ?.Habitaciones
+                                              }{" "}
+                                              Hab.
+                                            </span>
+                                          </li>{" "}
+                                          <li className="list-inline-item">
+                                            <span>
+                                              <img src={bath} alt="baños" />{" "}
+                                              {prop?.listingDetails?.Baños}{" "}
+                                              Baños
+                                            </span>
+                                          </li>
+                                          <li className="list-inline-item">
+                                            <span>
+                                              <img src={area} alt="size" />{" "}
+                                              {prop?.propertySize ||
+                                                prop?.maxSize}{" "}
+                                              m2
+                                            </span>
+                                          </li>
+                                        </ul>
                                       </div>
-                                      <p>
-                                        <img src={location} alt="vector" />
-                                        <span style={{ marginLeft: 5 }}>
-                                          {prop.address1}
-                                        </span>
-                                      </p>
-                                      <ul className="prop_details mb-0 p-0">
-                                        <li className="list-inline-item">
-                                          <span>
-                                            <img src={hab} alt="hab" />{" "}
-                                            {prop?.listingDetails?.Habitaciones}{" "}
-                                            Hab.
-                                          </span>
-                                        </li>{" "}
-                                        <li className="list-inline-item">
-                                          <span>
-                                            <img src={bath} alt="baños" />{" "}
-                                            {prop?.listingDetails?.Baños} Baños
-                                          </span>
-                                        </li>
-                                        <li className="list-inline-item">
-                                          <span>
-                                            <img src={area} alt="size" />{" "}
-                                            {prop?.propertySize ||
-                                              prop?.maxSize}{" "}
-                                            m2
-                                          </span>
-                                        </li>
-                                      </ul>
-                                    </div>
+                                    </Link>
                                     <div className="fp_footer d-flex">
                                       <Link to="#">
                                         <ul className="fp_meta float-left mb-0 p-0">
@@ -1501,7 +1663,7 @@ const AgentProfile = () => {
 
                       <div className="col-md-12 mb-3">
                         <label className="form-label">Review Content</label>
-                         <textarea
+                        <textarea
                           name="content"
                           value={reviewData.content}
                           onChange={handleInputChange}

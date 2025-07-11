@@ -12,13 +12,19 @@ import PropertyMap from "../Property/PropertyMap";
 import hauzzi from "../../assets/img/hauzziIcon.png";
 import call from "../../assets/img/blackCall.png";
 import mail from "../../assets/img/blackMail.png";
+import { toast } from "react-toastify";
 
 const PropertySell = () => {
   const [allData, setAllData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState("");
+  const [wishlistIds, setWishlistIds] = useState([]);
+  const [wishlistLoaded, setWishlistLoaded] = useState(false);
+
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
+  const token2 = localStorage.getItem("token");
+  const customerId2 = localStorage.getItem("tokenId") || "";
 
   // const { search } = useParams();
   const [searchParams] = useSearchParams();
@@ -59,6 +65,60 @@ const PropertySell = () => {
   useEffect(() => {
     getAllData();
   }, []);
+
+  // Wishlist Api
+
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      try {
+        const res = await axios.get(
+          `${apiUrl}/property/getWishlist/${customerId2}`,
+          {
+            headers: { Authorization: `Bearer ${token2}` },
+          }
+        );
+
+        const ids = Array.isArray(res?.data?.data)
+          ? res?.data?.data.map((item) =>
+              typeof item === "object" && item !== null
+                ? Number(item.id)
+                : Number(item)
+            )
+          : [];
+        console.log("wishlistID", ids);
+
+        setWishlistIds(ids);
+      } catch (err) {
+        setWishlistIds([]);
+      } finally {
+        setWishlistLoaded(true);
+      }
+    };
+
+    if (customerId2) fetchWishlist();
+  }, [customerId2]);
+
+  const handelWishlist = async (id) => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}/property/addToWishlist/${customerId2}-${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token2}`,
+          },
+        }
+      );
+
+      toast.success(response.data.message);
+
+      setWishlistIds((prev) =>
+        prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+      );
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
   return (
     <Fragment>
       <div className="index-page">
@@ -170,7 +230,8 @@ const PropertySell = () => {
                                 style={{ height: "427px" }}
                               >
                                 <Link
-                                  to={`/propert-details/${e.id}`}
+                                  // to={`/propert-details/${e.id}`}
+                                  to={""}
                                   state={{
                                     lat: e.latitude,
                                     lng: e.longitude,
@@ -191,7 +252,6 @@ const PropertySell = () => {
                                         <li className="list-inline-item">
                                           <span>{e.purpose}</span>
                                         </li>{" "}
-                                        
                                         <li className="list-inline-item">
                                           <span>{e.tags}</span>
                                         </li>
@@ -210,6 +270,14 @@ const PropertySell = () => {
                                           <i
                                             className="fa fa-heart hrt-icon"
                                             aria-hidden="true"
+                                            onClick={() =>
+                                              handelWishlist(e?.id)
+                                            }
+                                            style={{
+                                              color: wishlistIds.includes(e?.id)
+                                                ? "red"
+                                                : "",
+                                            }}
                                           />
                                         </li>
                                       </ul>
@@ -236,8 +304,15 @@ const PropertySell = () => {
                                           {e.name}
                                         </h4>
                                         <span className="fp_price">
-  ${e.maxPrice ? Number(e.maxPrice).toLocaleString() : Number(e.rentalPrice).toLocaleString()}
-</span>
+                                          $
+                                          {e.maxPrice
+                                            ? Number(
+                                                e.maxPrice
+                                              ).toLocaleString()
+                                            : Number(
+                                                e.rentalPrice
+                                              ).toLocaleString()}
+                                        </span>
                                       </div>
                                       <p className="line-clamp-1">
                                         <img src="img/my-img/vector.png" />
@@ -319,20 +394,14 @@ const PropertySell = () => {
                                         className="btn-getstarted gt"
                                         to="#"
                                       >
-                                        <img
-                                          src={mail}
-                                          width="25%"
-                                        />
+                                        <img src={mail} width="25%" />
                                         Email{" "}
                                       </Link>
                                       <Link
                                         className="btn-getstarted gt"
                                         to="#"
                                       >
-                                        <img
-                                          src={call}
-                                          width="25%"
-                                        />
+                                        <img src={call} width="25%" />
                                         Llamar{" "}
                                       </Link>
                                       <Link to="">

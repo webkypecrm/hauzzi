@@ -31,10 +31,10 @@ import hauzzi from "../../assets/img/hauzziIcon.png";
 import share from "../../assets/img/my-img/share-icon.png";
 import call from "../../assets/img/blackCall.png";
 import mail from "../../assets/img/blackMail.png";
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperSlide } from "swiper/react";
 // import 'swiper/css';
-import 'swiper/css/pagination';
-import { Autoplay, Pagination } from 'swiper/modules';
+import "swiper/css/pagination";
+import { Autoplay, Pagination } from "swiper/modules";
 
 const PropertyDetils = () => {
   // -------------lightbox---------
@@ -64,8 +64,6 @@ const PropertyDetils = () => {
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
   const token2 = localStorage.getItem("token");
   const customerId = localStorage.getItem("tokenId") || "";
-
-  // const lightboxImageRef = useRef();
 
   const openLightbox = (index) => {
     setCurrentIndex(index);
@@ -405,6 +403,7 @@ const PropertyDetils = () => {
                 : Number(item)
             )
           : [];
+
         console.log("compareIDs", ids);
 
         setCompareIds(ids);
@@ -429,6 +428,8 @@ const PropertyDetils = () => {
         }
       );
 
+      console.log("first", response.data);
+
       toast.success(response.data.message);
 
       // Toggle logic
@@ -441,7 +442,7 @@ const PropertyDetils = () => {
     }
   };
 
-  //----------------------Calender------------------
+  // ----------------------Calender------------------
 
   const today = new Date();
 
@@ -551,8 +552,6 @@ const PropertyDetils = () => {
       toast.error(error.response.data.message);
     }
   };
-
-  // for price up or down
 
   return (
     <Fragment>
@@ -797,24 +796,28 @@ const PropertyDetils = () => {
                     <Link className="btn-getstarted" to="#">
                       <i className="fa fa-share-alt p-2" /> Share{" "}
                     </Link>
-                    {/* <Link to="#" onClick={() => handleCompare(property.id)}>
-  <img
-    src={compareIds.includes(property.id) ? img1Active : img1}
-    alt="Compare"
-    style={{
-      width: "10%",
-      marginLeft: 15,
-      cursor: "pointer",
-      transition: "all 0.3s ease-in-out",
-    }}
-  />
-</Link> */}
-                    <Link to="#" onClick={() => handleCompare(propertyData.id)}>
+                    <Link
+                      className="btn-getstarted"
+                      to="#"
+                      onClick={() => handleCompare(propertyData?.id)}
+                    >
+                      <i
+                        key={compareIds.join(",")}
+                        className="fa fa-exchange p-2"
+                        style={{
+                          color: compareIds.includes(Number(propertyData?.id))
+                            ? "red"
+                            : "",
+                        }}
+                      />
+                      Comparar{" "}
+                    </Link>
+                    {/* <Link to="#" onClick={() => handleCompare(propertyData.id)}>
                       {compareIds.includes(propertyData.id) ? (
                         <FaBalanceScale
                           style={{
                             fontSize: "35px",
-                            color: "#6c63ff", // active color
+                            color: "#6c63ff", 
                             marginLeft: 15,
                             cursor: "pointer",
                           }}
@@ -830,7 +833,7 @@ const PropertyDetils = () => {
                           }}
                         />
                       )}
-                    </Link>
+                    </Link> */}
 
                     <Link to="">
                       <img
@@ -1539,7 +1542,8 @@ const PropertyDetils = () => {
                         style={{ height: "410px" }}
                       >
                         <Link
-                          to={`/propert-details/${e.id}`}
+                          // to={`/propert-details/${e.id}`}
+                          to={""}
                           state={{
                             lat: e.latitude,
                             lng: e.longitude,
@@ -1566,11 +1570,15 @@ const PropertyDetils = () => {
                             >
                               {e.images.map((img, index) => (
                                 <SwiperSlide key={index}>
-                                  <img className="img-whp" src={img} alt={`property-${index}`} />
+                                  <img
+                                    className="img-whp"
+                                    src={img}
+                                    alt={`property-${index}`}
+                                  />
                                 </SwiperSlide>
                               ))}
                             </Swiper>
-                            <div className="thmb_cntnt" style={{zIndex: 1}}>
+                            <div className="thmb_cntnt" style={{ zIndex: 1 }}>
                               <ul className="tag mb0 p-0">
                                 <li className="list-inline-item">
                                   <span>{e.purpose}</span>
@@ -1593,6 +1601,12 @@ const PropertyDetils = () => {
                                   <i
                                     className="fa fa-heart hrt-icon"
                                     aria-hidden="true"
+                                    onClick={() => handelWishlist(e?.id)}
+                                    style={{
+                                      color: wishlistIds.includes(e?.id)
+                                        ? "red"
+                                        : "",
+                                    }}
                                   />
                                 </li>
                               </ul>
@@ -1671,7 +1685,6 @@ const PropertyDetils = () => {
                                   style={{ marginRight: "0px" }}
                                 >
                                   <span>
-
                                     <img
                                       src={
                                         e.Customer?.userDetails?.[0]

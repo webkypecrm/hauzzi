@@ -13,10 +13,11 @@ import blackImg from "../../assets/img/my-img/back-img.png";
 import call from "../../assets/img/blackCall.png";
 import mail from "../../assets/img/blackMail.png";
 
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperSlide } from "swiper/react";
 // import 'swiper/css';
-import 'swiper/css/pagination';
-import { Autoplay, Pagination } from 'swiper/modules';
+import "swiper/css/pagination";
+import { Autoplay, Pagination } from "swiper/modules";
+import { toast } from "react-toastify";
 
 const Main = () => {
   const [mainData, setMainData] = useState([]);
@@ -31,9 +32,7 @@ const Main = () => {
   const [search, setSearch] = useState("");
   const [wishlistIds, setWishlistIds] = useState([]);
   const [wishlistLoaded, setWishlistLoaded] = useState(false);
-   const [blogsData, setBlogsData] = useState([]);
-
-
+  const [blogsData, setBlogsData] = useState([]);
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
@@ -134,60 +133,59 @@ const Main = () => {
     handelBlogData();
   }, []);
 
-   // Wishlist Api
-  
-    useEffect(() => {
-      const fetchWishlist = async () => {
-        try {
-          const res = await axios.get(
-            `${apiUrl}/property/getWishlist/${customerId}`,
-            {
-              headers: { Authorization: `Bearer ${token2}` },
-            }
-          );
-  
-          const ids = Array.isArray(res?.data?.data)
-            ? res?.data?.data.map((item) =>
-                typeof item === "object" && item !== null
-                  ? Number(item.id)
-                  : Number(item)
-              )
-            : [];
-          console.log("wishlistID", ids);
-  
-          setWishlistIds(ids);
-        } catch (err) {
-          setWishlistIds([]);
-        } finally {
-          setWishlistLoaded(true);
-        }
-      };
-  
-      if (customerId) fetchWishlist();
-    }, [customerId]);
-  
-    const handelWishlist = async (id) => {
+  // Wishlist Api
+
+  useEffect(() => {
+    const fetchWishlist = async () => {
       try {
-        const response = await axios.get(
-          `${apiUrl}/property/addToWishlist/${customerId}-${id}`,
+        const res = await axios.get(
+          `${apiUrl}/property/getWishlist/${customerId}`,
           {
-            headers: {
-              Authorization: `Bearer ${token2}`,
-            },
+            headers: { Authorization: `Bearer ${token2}` },
           }
         );
-  
-        toast.success(response.data.message);
-  
-        setWishlistIds((prev) =>
-          prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-        );
-      } catch (error) {
-        console.log(error);
-        toast.error(error.response.data.message);
+
+        const ids = Array.isArray(res?.data?.data)
+          ? res?.data?.data.map((item) =>
+              typeof item === "object" && item !== null
+                ? Number(item.id)
+                : Number(item)
+            )
+          : [];
+        console.log("wishlistID", ids);
+
+        setWishlistIds(ids);
+      } catch (err) {
+        setWishlistIds([]);
+      } finally {
+        setWishlistLoaded(true);
       }
     };
 
+    if (customerId) fetchWishlist();
+  }, [customerId]);
+
+  const handelWishlist = async (id) => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}/property/addToWishlist/${customerId}-${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token2}`,
+          },
+        }
+      );
+
+      toast.success(response.data.message);
+
+      setWishlistIds((prev) =>
+        prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+      );
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
 
   return (
     <Fragment>
@@ -403,9 +401,9 @@ const Main = () => {
                             className="feat_property"
                             style={{ height: "410px" }}
                           >
-                            {/* <Link to="/propert-details"> */}
                             <Link
-                              to={`/propert-details/${e.id}`}
+                              // to={`/propert-details/${e.id}`}
+                              to={""}
                               state={{
                                 lat: e.latitude,
                                 lng: e.longitude,
@@ -414,33 +412,38 @@ const Main = () => {
                                 allProducts: mainData.data,
                               }}
                             >
-                              <div className="thumb" >
+                              <div className="thumb">
                                 {/* <img
                                   className="img-whp"
                                   src={e.images[0]}
                                   alt="property"
                                 /> */}
 
-<Swiper
-  modules={[Autoplay, Pagination]}
-  autoplay={{
-    delay: 3000,
-    disableOnInteraction: false,
-  }}
-  pagination={{ clickable: true }}
-  loop={true}
-  className="mySwiper"
->
-  {e.images.map((img, index) => (
-    <SwiperSlide key={index}>
-      <img className="img-whp" src={img} alt={`property-${index}`} />
-    </SwiperSlide>
-  ))}
-</Swiper>
+                                <Swiper
+                                  modules={[Autoplay, Pagination]}
+                                  autoplay={{
+                                    delay: 3000,
+                                    disableOnInteraction: false,
+                                  }}
+                                  pagination={{ clickable: true }}
+                                  loop={true}
+                                  className="mySwiper"
+                                >
+                                  {e.images.map((img, index) => (
+                                    <SwiperSlide key={index}>
+                                      <img
+                                        className="img-whp"
+                                        src={img}
+                                        alt={`property-${index}`}
+                                      />
+                                    </SwiperSlide>
+                                  ))}
+                                </Swiper>
 
-
-
-                                <div className="thmb_cntnt" style={{zIndex: 1}}>
+                                <div
+                                  className="thmb_cntnt"
+                                  style={{ zIndex: 1 }}
+                                >
                                   <ul className="tag mb0 p-0">
                                     <li className="list-inline-item">
                                       <span>{e.purpose}</span>
@@ -465,6 +468,11 @@ const Main = () => {
                                         className="fa fa-heart hrt-icon"
                                         aria-hidden="true"
                                         onClick={() => handelWishlist(e?.id)}
+                                        style={{
+                                          color: wishlistIds.includes(e?.id)
+                                            ? "red"
+                                            : "",
+                                        }}
                                       />
                                     </li>
                                   </ul>
