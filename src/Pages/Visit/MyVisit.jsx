@@ -138,21 +138,24 @@ const MyVisit = () => {
 
   // const getDataForDate = (date) => {
   //   if (!date) return [];
-  //   const selectedStr = date.toISOString().split('T')[0];
-  //   return calendarData.filter(item => item.date?.startsWith(selectedStr));
+
+  //   const selectedStr = date.toISOString().split("T")[0]; // this is fine
+
+  //   return calendarData.filter((item) => {
+  //     const itemDate = new Date(item.date + "T00:00:00"); // ✅ Fix here
+  //     const itemStr = itemDate.toISOString().split("T")[0];
+  //     return itemStr === selectedStr;
+  //   });
   // };
 
   const getDataForDate = (date) => {
-    if (!date) return [];
+  if (!date) return [];
 
-    const selectedStr = date.toISOString().split("T")[0]; // this is fine
+  const selectedStr = date.toLocaleDateString('en-CA'); // returns YYYY-MM-DD
 
-    return calendarData.filter((item) => {
-      const itemDate = new Date(item.date + "T00:00:00"); // ✅ Fix here
-      const itemStr = itemDate.toISOString().split("T")[0];
-      return itemStr === selectedStr;
-    });
-  };
+  return calendarData.filter((item) => item.date === selectedStr);
+};
+
 
   const handleDateClick = (date) => {
     if (!date) return;

@@ -185,6 +185,8 @@ const AgencyProfile = () => {
   const [agencyListLoaded, setAgencyListLoaded] = useState(false);
   const [wishlistIds, setWishlistIds] = useState([]);
   const [wishlistLoaded, setWishlistLoaded] = useState(false);
+    const [compareIds, setCompareIds] = useState([]);
+    const [compareLoaded, setCompareLoaded] = useState(false);
 
   const customerId = localStorage.getItem("tokenId") || "";
   const token = localStorage.getItem("token");
@@ -333,7 +335,6 @@ const AgencyProfile = () => {
   }, []);
 
   // add My agency
-
   useEffect(() => {
     const fetchFollowedAgencys = async () => {
       try {
@@ -390,7 +391,6 @@ const AgencyProfile = () => {
   };
 
   // Wishlist Api
-
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
@@ -442,6 +442,63 @@ const AgencyProfile = () => {
       toast.error(error.response.data.message);
     }
   };
+
+   // compair api
+    useEffect(() => {
+      const fetchCompareList = async () => {
+        try {
+          const res = await axios.get(
+            `${apiUrl}/property/getCompare/${customerId}`,
+            {
+              headers: { Authorization: `Bearer ${token2}` },
+            }
+          );
+  
+          const ids = Array.isArray(res?.data?.data)
+            ? res?.data?.data.map((item) =>
+                typeof item === "object" && item !== null
+                  ? Number(item.id)
+                  : Number(item)
+              )
+            : [];
+  
+          console.log("compareIDs", ids);
+  
+          setCompareIds(ids);
+        } catch (err) {
+          setCompareIds([]);
+        } finally {
+          setCompareLoaded(true);
+        }
+      };
+  
+      if (customerId) fetchCompareList();
+    }, [customerId]);
+  
+    const handleCompare = async (id) => {
+      try {
+        const response = await axios.get(
+          `${apiUrl}/property/addToCompare/${customerId}-${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token2}`,
+            },
+          }
+        );
+  
+        console.log("first", response.data);
+  
+        toast.success(response.data.message);
+  
+        // Toggle logic
+        setCompareIds((prev) =>
+          prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+        );
+      } catch (error) {
+        console.log(error);
+        toast.error(error.response?.data?.message || "Something went wrong");
+      }
+    };
 
   return (
     <Fragment>
@@ -538,9 +595,17 @@ const AgencyProfile = () => {
                                         <ul className="icon mb-0">
                                           <li className="list-inline-item">
                                             <i
-                                              className="fa fa-exchange"
-                                              style={{ color: "#999191" }}
-                                            ></i>
+                                        key={compareIds.join(",")}
+                                        className="fa fa-exchange"
+                                        onClick={() => handleCompare(e?.id)}
+                                        style={{
+                                          color: compareIds.includes(
+                                            Number(e?.id)
+                                          )
+                                            ? "red"
+                                            : "gray",
+                                        }}
+                                      />
                                           </li>
                                           <li
                                             className="list-inline-item"
@@ -1013,9 +1078,17 @@ const AgencyProfile = () => {
                                       <ul className="icon mb-0">
                                         <li className="list-inline-item">
                                           <i
-                                            className="fa fa-exchange"
-                                            style={{ color: "#999191" }}
-                                          />
+                                        key={compareIds.join(",")}
+                                        className="fa fa-exchange"
+                                        onClick={() => handleCompare(property?.id)}
+                                        style={{
+                                          color: compareIds.includes(
+                                            Number(property?.id)
+                                          )
+                                            ? "red"
+                                            : "gray",
+                                        }}
+                                      />
                                         </li>
                                         <li
                                           className="list-inline-item"
@@ -1211,9 +1284,17 @@ const AgencyProfile = () => {
                                       <ul className="icon mb-0">
                                         <li className="list-inline-item">
                                           <i
-                                            className="fa fa-exchange"
-                                            style={{ color: "#999191" }}
-                                          />
+                                        key={compareIds.join(",")}
+                                        className="fa fa-exchange"
+                                        onClick={() => handleCompare(prop?.id)}
+                                        style={{
+                                          color: compareIds.includes(
+                                            Number(prop?.id)
+                                          )
+                                            ? "red"
+                                            : "gray",
+                                        }}
+                                      />
                                         </li>
                                         <li
                                           className="list-inline-item"

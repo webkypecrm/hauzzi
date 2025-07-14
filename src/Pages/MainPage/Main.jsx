@@ -449,7 +449,7 @@ const Main = () => {
                   className="container section-title aos-init aos-animate"
                   data-aos="fade-up"
                 >
-                  <h2>Descubre las propiedades más buscadas</h2>
+                  <h2 style={{fontFamily:"montserrat"}}>Descubre las propiedades más buscadas</h2>
                 </div>
 
                 {mainData?.data?.length > 0 ? (
@@ -784,7 +784,7 @@ const Main = () => {
                   className="container section-title aos-init aos-animate"
                   data-aos="fade-up"
                 >
-                  <h2 className="mb-0">
+                  <h2 className="mb-0" style={{fontFamily:"montserrat"}}>
                     Te acompañamos para que vendas o alquiles tu propiedad
                   </h2>
                   <h4 className="mb-4">
@@ -903,10 +903,10 @@ const Main = () => {
                   className="container section-title aos-init aos-animate"
                   data-aos="fade-up"
                 >
-                  <h2 className="mb-0">
+                  <h2 className="mb-0" style={{fontFamily:"montserrat"}}>
                     El espacio para aprender sobre el mercado inmobiliario
                   </h2>
-                  <h4 className="mb-4">
+                  <h4 className="mb-4" style={{fontFamily:"montserrat"}}>
                     Consejos prácticos y guías actualizadas para tomar
                     decisiones inteligentes
                   </h4>
@@ -1180,7 +1180,7 @@ const Main = () => {
                       <div className="instructor__item-two tg-svg d-flex justify-content-between imutable">
                         <div className="instructor__content-two">
                           <h3 className="title">
-                            <Link to="#">Inmuebles en venta</Link>
+                            <Link to="#">Inmuebles en alquiler</Link>
                           </h3>
                           <p className="mt-3 mb-5" style={{ color: "#1A1A1A" }}>
                             Descubre los mejores apartamentos en alquiler en
