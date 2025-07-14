@@ -1590,9 +1590,17 @@ const PropertyDetils = () => {
                               <ul className="icon mb0">
                                 <li className="list-inline-item">
                                   <i
-                                    className="fa fa-exchange"
-                                    style={{ color: "#999191" }}
-                                  />
+                                        key={compareIds.join(",")}
+                                        className="fa fa-exchange"
+                                        onClick={() => handleCompare(e?.id)}
+                                        style={{
+                                          color: compareIds.includes(
+                                            Number(e?.id)
+                                          )
+                                            ? "red"
+                                            : "gray",
+                                        }}
+                                      />
                                 </li>
                                 <li
                                   className="list-inline-item"

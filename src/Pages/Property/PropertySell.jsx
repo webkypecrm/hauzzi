@@ -20,6 +20,9 @@ const PropertySell = () => {
   const [count, setCount] = useState("");
   const [wishlistIds, setWishlistIds] = useState([]);
   const [wishlistLoaded, setWishlistLoaded] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
+  const [compareIds, setCompareIds] = useState([]);
+    const [compareLoaded, setCompareLoaded] = useState(false);
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
@@ -67,7 +70,6 @@ const PropertySell = () => {
   }, []);
 
   // Wishlist Api
-
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
@@ -119,6 +121,63 @@ const PropertySell = () => {
       toast.error(error.response.data.message);
     }
   };
+
+   // compair api
+    useEffect(() => {
+      const fetchCompareList = async () => {
+        try {
+          const res = await axios.get(
+            `${apiUrl}/property/getCompare/${customerId2}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+  
+          const ids = Array.isArray(res?.data?.data)
+            ? res?.data?.data.map((item) =>
+                typeof item === "object" && item !== null
+                  ? Number(item.id)
+                  : Number(item)
+              )
+            : [];
+  
+          console.log("compareIDs", ids);
+  
+          setCompareIds(ids);
+        } catch (err) {
+          setCompareIds([]);
+        } finally {
+          setCompareLoaded(true);
+        }
+      };
+  
+      if (customerId2) fetchCompareList();
+    }, [customerId2]);
+  
+    const handleCompare = async (id) => {
+      try {
+        const response = await axios.get(
+          `${apiUrl}/property/addToCompare/${customerId2}-${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        console.log("first", response.data);
+  
+        toast.success(response.data.message);
+  
+        // Toggle logic
+        setCompareIds((prev) =>
+          prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+        );
+      } catch (error) {
+        console.log(error);
+        toast.error(error.response?.data?.message || "Something went wrong");
+      }
+    };
   return (
     <Fragment>
       <div className="index-page">
@@ -185,10 +244,11 @@ const PropertySell = () => {
                         ¿Necesita más opciones de búsqueda?
                       </p>
                     </div>
-                    <div className="fil7">
+                    <div className="fil7"  onClick={() => setShowFilter(true)} style={{transition:"0.5 linear"}}>
                       <img src={filter_1} alt="filter" />
                     </div>
                   </div>
+
                 </div>
               </section>
 
@@ -259,9 +319,17 @@ const PropertySell = () => {
                                       <ul className="icon mb0">
                                         <li className="list-inline-item">
                                           <i
-                                            className="fa fa-exchange"
-                                            style={{ color: "#999191" }}
-                                          />
+                                        key={compareIds.join(",")}
+                                        className="fa fa-exchange"
+                                        onClick={() => handleCompare(e?.id)}
+                                        style={{
+                                          color: compareIds.includes(
+                                            Number(e?.id)
+                                          )
+                                            ? "red"
+                                            : "gray",
+                                        }}
+                                      />
                                         </li>{" "}
                                         <li
                                           className="list-inline-item"
@@ -469,6 +537,818 @@ const PropertySell = () => {
           </Fragment>
         )}
       </div>
+                        {/* filters sidebar */}
+                        <div className={`sidebar-filter ${showFilter ? 'active' : ''} p-0`}style={{zIndex: 1102}}>
+<div className="container">
+  <div className="row justify-content-center">
+    <div className="main-contaionet shadow-sm position-relative">
+      <div className="cross-section-decoayon ">
+  <span onClick={() => setShowFilter(false)}>
+    <svg
+      width={30}
+      height={30}
+      viewBox="0 0 37 33"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M23.45 12.15L13.55 20.85M13.55 12.15L23.45 20.85M35 16.5C35 24.5081 27.6127 31 18.5 31C9.3873 31 2 24.5081 2 16.5C2 8.49187 9.3873 2 18.5 2C27.6127 2 35 8.49187 35 16.5Z"
+        stroke="#FFBD59"
+        style={{
+          stroke: "color(display-p3 1.0000 0.7412 0.3490)",
+          strokeOpacity: 1
+        }}
+        strokeWidth={4}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  </span>
+</div>
+
+      <div className="mb-3">
+        <h5>Transacción</h5>
+        <div className="d-flex align-items-center gap-2 flex-wrap">
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="comprar"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="comprar">
+              Comprar
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="alquilar"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="alquilar">
+              Alquilar
+            </label>
+          </div>
+        </div>
+      </div>
+      <div className="mb-3">
+        <h5>Condición</h5>
+        <div className="d-flex align-items-center gap-2 flex-wrap">
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="nueva"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="nueva">
+              Obra nueva
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="Reformado"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="Reformado">
+              Reformado
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="estado"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="estado">
+              Buen estado
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="reformar"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="reformar">
+              A reformar
+            </label>
+          </div>
+        </div>
+      </div>
+      <div className="mb-3">
+        <h5>Tipo de inmueble</h5>
+        <div className="d-flex align-items-center gap-2 flex-wrap flex-wrap">
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="todos"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="todos">
+              Todos
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="apartamentos"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="apartamentos">
+              Apartamentos
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="casas"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="casas">
+              Casas
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="locales"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="locales">
+              Locales
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="haciendas"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="haciendas">
+              Haciendas y fincas
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="habitaciones"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="habitaciones">
+              Habitaciones
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="anexos"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="anexos">
+              Anexos
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="edificios"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="edificios">
+              Edificios
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="townhouses"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="townhouses">
+              Townhouses
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="terrenos"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="terrenos">
+              Terrenos
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="galpones"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="galpones">
+              Galpones
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="oficinas"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="oficinas">
+              Oficinas
+            </label>
+          </div>
+        </div>
+      </div>
+      {/* Precio y Superficie */}
+      <div className="row gy3 mb-3">
+        <div className="col-md-6">
+          <div className="section-title">Precio</div>
+          <div className="row g-2">
+            <div className="col">
+              <label htmlFor="">Mínimo</label>
+              <select className="form-select mt-2">
+                <option selected="">Indiferente</option>
+              </select>
+            </div>
+            <div className="col">
+              <label htmlFor="">Máximo</label>
+              <select className="form-select mt-2">
+                <option selected="">Indiferente</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-6">
+          <div className="section-title">Superficie</div>
+          <div className="row g-2">
+            <div className="col">
+              <label htmlFor="">Mínimo</label>
+              <select className="form-select mt-2">
+                <option selected="">Indiferente</option>
+              </select>
+            </div>
+            <div className="col">
+              <label htmlFor="">Máximo</label>
+              <select className="form-select mt-2">
+                <option selected="">Indiferente</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="row mb-3 gy-3 justify-content-between">
+        <div className="col-12">
+          <h5>Habitaciones</h5>
+          <div className="btn-group property-categories w-100" role="group">
+            {/* Todo styled as static orange button */}
+            <label className="btn btn-orange d-flex align-items-center">
+              Todo
+            </label>
+            <input
+              type="checkbox"
+              className="btn-check"
+              name="propertyCategory"
+              id="property1"
+              autoComplete="off"
+            />
+            <label className="btn Habitaciones" htmlFor="property1">
+              <span>+1</span>
+            </label>
+            <input
+              type="checkbox"
+              className="btn-check"
+              name="propertyCategory"
+              id="property2"
+              autoComplete="off"
+            />
+            <label className="btn Habitaciones" htmlFor="property2">
+              <span>+2</span>
+            </label>
+            <input
+              type="checkbox"
+              className="btn-check"
+              name="propertyCategory"
+              id="property3"
+              autoComplete="off"
+            />
+            <label className="btn Habitaciones" htmlFor="property3">
+              <span>+3</span>
+            </label>
+            <input
+              type="checkbox"
+              className="btn-check"
+              name="propertyCategory"
+              id="property4"
+              autoComplete="off"
+            />
+            <label className="btn Habitaciones" htmlFor="property4">
+              <span>+4</span>
+            </label>
+          </div>
+          <div className="form-check form-switch d-flex justify-content-between mt-3 p-0">
+            <label
+              className="form-check-label"
+              htmlFor="flexSwitchCheckDefault"
+            >
+              Indica el número exacto de habitaciones.
+            </label>
+            <input
+              className="form-check-input  new-border-clr"
+              type="checkbox"
+              id="flexSwitchCheckDefault"
+            />
+          </div>
+        </div>
+        <div className="col-12">
+          <h5>Baños</h5>
+          <div className="btn-group property-categories w-100" role="group">
+            {/* Todo styled as static orange button */}
+            <label className="btn btn-orange d-flex align-items-center">
+              Todo
+            </label>
+            <input
+              type="checkbox"
+              className="btn-check"
+              name="propertyCategory"
+              id="banos1"
+              autoComplete="off"
+            />
+            <label className="btn Habitaciones" htmlFor="banos1">
+              <span>+1</span>
+            </label>
+            <input
+              type="checkbox"
+              className="btn-check"
+              name="propertyCategory"
+              id="banos2"
+              autoComplete="off"
+            />
+            <label className="btn Habitaciones" htmlFor="banos2">
+              <span>+2</span>
+            </label>
+            <input
+              type="checkbox"
+              className="btn-check"
+              name="propertyCategory"
+              id="banos3"
+              autoComplete="off"
+            />
+            <label className="btn Habitaciones" htmlFor="banos3">
+              <span>+3</span>
+            </label>
+            <input
+              type="checkbox"
+              className="btn-check"
+              name="propertyCategory"
+              id="banos4"
+              autoComplete="off"
+            />
+            <label className="btn Habitaciones" htmlFor="banos4">
+              <span>+4</span>
+            </label>
+          </div>
+          <div className="form-check form-switch d-flex justify-content-between mt-3 p-0">
+            <label
+              className="form-check-label"
+              htmlFor="flexSwitchCheckDefault"
+            >
+              Indica el número exacto de habitaciones.
+            </label>
+            <input
+              className="form-check-input new-border-clr"
+              type="checkbox"
+              id="flexSwitchCheckDefault"
+            />
+          </div>
+        </div>
+        <div className="col-12">
+          <h5>Estacionamientos</h5>
+          <div className="btn-group property-categories w-100" role="group">
+            {/* Todo styled as static orange button */}
+            <label className="btn btn-orange d-flex align-items-center">
+              Todo
+            </label>
+            <input
+              type="checkbox"
+              className="btn-check"
+              name="propertyCategory"
+              id="banos1"
+              autoComplete="off"
+            />
+            <label className="btn Habitaciones" htmlFor="banos1">
+              <span>+1</span>
+            </label>
+            <input
+              type="checkbox"
+              className="btn-check"
+              name="propertyCategory"
+              id="banos2"
+              autoComplete="off"
+            />
+            <label className="btn Habitaciones" htmlFor="banos2">
+              <span>+2</span>
+            </label>
+            <input
+              type="checkbox"
+              className="btn-check"
+              name="propertyCategory"
+              id="banos3"
+              autoComplete="off"
+            />
+            <label className="btn Habitaciones" htmlFor="banos3">
+              <span>+3</span>
+            </label>
+            <input
+              type="checkbox"
+              className="btn-check"
+              name="propertyCategory"
+              id="banos4"
+              autoComplete="off"
+            />
+            <label className="btn Habitaciones" htmlFor="banos4">
+              <span>+4</span>
+            </label>
+          </div>
+          <div className="form-check form-switch d-flex justify-content-between mt-3 p-0">
+            <label
+              className="form-check-label"
+              htmlFor="flexSwitchCheckDefault"
+            >
+              Indica el número exacto de habitaciones.
+            </label>
+            <input
+              className="form-check-input new-border-clr"
+              type="checkbox"
+              id="flexSwitchCheckDefault"
+            />
+          </div>
+        </div>
+      </div>
+      <div className="mb-3">
+        <h5>Mobiliario</h5>
+        <div className="d-flex align-items-center gap-2 flex-wrap">
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="Amueblado"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="Amueblado">
+              Amueblado
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="Semiamueblado"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="Semiamueblado">
+              Semiamueblado
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="amueblado"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="amueblado">
+              No amueblado
+            </label>
+          </div>
+        </div>
+      </div>
+      <div className="mb-3">
+        <h5>Publicado por</h5>
+        <div className="d-flex align-items-center gap-2 flex-wrap">
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="nmobiliaria"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="nmobiliaria">
+              Agencia inmobiliaria
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="Agente-in"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="Agente-in">
+              Agente inmobiliario
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="Particular"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="Particular">
+              Particular
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="Constructor"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="Constructor">
+              Constructor o promotor
+            </label>
+          </div>
+        </div>
+      </div>
+      <div className="row g-4">
+        <div className="col-lg-6">
+          <label htmlFor="">Antigüedad</label>
+          <select className="form-select mt-2">
+            <option selected="">Indiferente</option>
+          </select>
+        </div>
+        <div className="col-lg-6">
+          <label htmlFor="">Tipo de suelo</label>
+          <select className="form-select mt-2">
+            <option selected="">Indiferente</option>
+          </select>
+        </div>
+        <div className="col-lg-6">
+          <label htmlFor="">Vistas</label>
+          <select className="form-select mt-2">
+            <option selected="">Indiferente</option>
+          </select>
+        </div>
+        <div className="col-lg-6">
+          <label htmlFor="">Orientación</label>
+          <select className="form-select mt-2">
+            <option selected="">Indiferente</option>
+          </select>
+        </div>
+      </div>
+      <div className="row mb-3 mt-3">
+        <h5 className="">Seguridad</h5>
+        <div className="col-lg-4">
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="alarma" />
+            <label className="form-check-label" htmlFor="alarma">
+              Alarma
+            </label>
+          </div>
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="vigilancia" />
+            <label className="form-check-label" htmlFor="vigilancia">
+              Vigilancia
+            </label>
+          </div>
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="sistema-de-videointercomunicador" />
+            <label className="form-check-label" htmlFor="sistema-de-videointercomunicador">
+              Sistema de videointercomunicador
+            </label>
+          </div>
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="cctv"
+            />
+            <label className="form-check-label" htmlFor="cctv">
+              Cámaras de vigilancia (CCTV)
+            </label>
+          </div>
+        </div>
+        <div className="col-lg-4">
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="cerco-eléctrico" />
+            <label className="form-check-label" htmlFor="cerco-eléctrico">
+              Cerco eléctrico
+            </label>
+          </div>
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="cerco-perimetral" />
+            <label className="form-check-label" htmlFor="cerco-perimetral">
+              Cerco perimetral
+            </label>
+          </div>
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="portón-eléctrico" />
+            <label className="form-check-label" htmlFor="portón-eléctrico">
+              Portón eléctrico
+            </label>
+          </div>
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="iluminación-de-seguridad" />
+            <label className="form-check-label" htmlFor="iluminación-de-seguridad">
+              Iluminación de seguridad
+            </label>
+          </div>
+        </div>
+        <div className="col-lg-4">
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="sistema-contra-incendios" />
+            <label className="form-check-label" htmlFor="sistema-contra-incendios">
+              Sistema contra incendios
+            </label>
+          </div>
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="caja-fuerte" />
+            <label className="form-check-label" htmlFor="caja-fuerte">
+              Caja fuerte
+            </label>
+          </div>
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="puerta-blindada"
+            />
+            <label className="form-check-label" htmlFor="puerta-blindada">
+              Puerta blindada
+            </label>
+          </div>
+        </div>
+      </div>
+      <div className="row mb-3 mt-3">
+        <h5 className="">Ambientes</h5>
+        <div className="col-lg-4">
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="piscina" />
+            <label className="form-check-label" htmlFor="piscina">
+              Piscina
+            </label>
+          </div>
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="barbacoa" />
+            <label className="form-check-label" htmlFor="barbacoa">
+              Área de barbacoa/parrillera
+            </label>
+          </div>
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="estudio" />
+            <label className="form-check-label" htmlFor="estudio">
+              Estudio u oficina
+            </label>
+          </div>
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="cuarto-servicio"
+            />
+            <label className="form-check-label" htmlFor="cuarto-servicio">
+              Cuarto de servicio
+            </label>
+          </div>
+        </div>
+        <div className="col-lg-4">
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="patio" />
+            <label className="form-check-label" htmlFor="patio">
+              Patio
+            </label>
+          </div>
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="mascotas" />
+            <label className="form-check-label" htmlFor="mascotas">
+              Área para mascotas
+            </label>
+          </div>
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="canchas" />
+            <label className="form-check-label" htmlFor="canchas">
+              Canchas de usos múltiples
+            </label>
+          </div>
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="eventos" />
+            <label className="form-check-label" htmlFor="eventos">
+              Salón de eventos
+            </label>
+          </div>
+        </div>
+        <div className="col-lg-4">
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="jacuzzi" />
+            <label className="form-check-label" htmlFor="jacuzzi">
+              Jacuzzi
+            </label>
+          </div>
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="jardines" />
+            <label className="form-check-label" htmlFor="jardines">
+              Jardines o áreas verdes
+            </label>
+          </div>
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="sala-reuniones"
+            />
+            <label className="form-check-label" htmlFor="sala-reuniones">
+              Sala de reuniones
+            </label>
+          </div>
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" id="cine" />
+            <label className="form-check-label" htmlFor="cine">
+              Área de cine
+            </label>
+          </div>
+        </div>
+      </div>
+      <div className="mb-3">
+        <h5>Extras</h5>
+        <div className="d-flex align-items-center gap-2 flex-wrap">
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="Negociable"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="Negociable">
+              Negociable
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="financiamiento"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="financiamiento">
+              Acepta financiamiento
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="compra"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="compra">
+              Opción a compra
+            </label>
+          </div>
+          <div className="new-container-box">
+            <input
+              type="checkbox"
+              className="btn-check"
+              id="intercambio"
+              autoComplete="off"
+            />
+            <label className="Transacción" htmlFor="intercambio">
+              Opción de intercambio
+            </label>
+          </div>
+        </div>
+      </div>
+      <div className="d-flex justify-content-center gap-3 ">
+        <button className="Resetear-filtros border-0">Aplicar filtros</button>
+        <button className="Resetear-filtros2 border-0">Resetear filtros</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+                  {/* filters sidebar */}
     </Fragment>
   );
 };
