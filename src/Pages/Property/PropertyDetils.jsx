@@ -35,6 +35,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 // import 'swiper/css';
 import "swiper/css/pagination";
 import { Autoplay, Pagination } from "swiper/modules";
+import link from "../../assets/img/link.png";
+import twitter from "../../assets/img/twitter.png";
+import face from "../../assets/img/facebook.png";
+import whats from "../../assets/img/whatsapp.png";
 
 const PropertyDetils = () => {
   // -------------lightbox---------
@@ -1590,17 +1594,15 @@ const PropertyDetils = () => {
                               <ul className="icon mb0">
                                 <li className="list-inline-item">
                                   <i
-                                        key={compareIds.join(",")}
-                                        className="fa fa-exchange"
-                                        onClick={() => handleCompare(e?.id)}
-                                        style={{
-                                          color: compareIds.includes(
-                                            Number(e?.id)
-                                          )
-                                            ? "red"
-                                            : "gray",
-                                        }}
-                                      />
+                                    key={compareIds.join(",")}
+                                    className="fa fa-exchange"
+                                    onClick={() => handleCompare(e?.id)}
+                                    style={{
+                                      color: compareIds.includes(Number(e?.id))
+                                        ? "red"
+                                        : "gray",
+                                    }}
+                                  />
                                 </li>
                                 <li
                                   className="list-inline-item"
@@ -1731,7 +1733,7 @@ const PropertyDetils = () => {
                                 Llamar
                               </Link>
                               <Link to="#">
-                                <div className="dropdown">
+                                <div className="dropdown position-relative">
                                   <button
                                     className="btn btn-link p-0 border-0 text-muted"
                                     type="button"
@@ -1744,20 +1746,116 @@ const PropertyDetils = () => {
                                       style={{ fontSize: 24 }}
                                     />
                                   </button>
+
                                   <ul
                                     className="dropdown-menu"
                                     aria-labelledby="dropdownMenuButton"
                                   >
-                                    <li>
-                                      <Link className="dropdown-item" to="#">
+                                    <li className="position-relative">
+                                      <button
+                                        className="dropdown-item"
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          e.stopPropagation();
+                                          const dropdown =
+                                            e.currentTarget.nextElementSibling;
+                                          dropdown.classList.toggle("d-none");
+                                        }}
+                                      >
                                         <img
                                           src={share}
                                           className="me-2"
                                           alt="Share"
-                                        />{" "}
+                                        />
                                         Compartir
-                                      </Link>
+                                      </button>
+
+                                      <div
+                                        className="share-tooltip d-none position-absolute bg-white shadow rounded p-2"
+                                        style={{
+                                          top: "100%",
+                                          left: "0",
+                                          zIndex: 1000,
+                                          minWidth: "150px",
+                                        }}
+                                      >
+                                        <div>
+                                          <button
+                                            className="btn btn-light btn-sm text-start mb-1"
+                                            onClick={() =>
+                                              window.open(
+                                                `https://wa.me/?text=${encodeURIComponent(
+                                                  window.location.href
+                                                )}`,
+                                                "_blank"
+                                              )
+                                            }
+                                          >
+                                            <img
+                                              src={whats}
+                                              width="16"
+                                            />
+                                            {/* WhatsApp */}
+                                          </button>
+
+                                          <button
+                                            className="btn btn-light btn-sm text-start mb-1"
+                                            onClick={() =>
+                                              window.open(
+                                                `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                                                  window.location.href
+                                                )}`,
+                                                "_blank"
+                                              )
+                                            }
+                                          >
+                                            <img
+                                              src={face}
+                                              width="16"
+                                            />
+                                            {/* Facebook */}
+                                          </button>
+
+                                          <button
+                                            className="btn btn-light btn-sm text-start mb-1"
+                                            onClick={() =>
+                                              window.open(
+                                                `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                                                  window.location.href
+                                                )}`,
+                                                "_blank"
+                                              )
+                                            }
+                                          >
+                                            <img
+                                              src={twitter}
+                                              width="16"
+                                            />
+                                            {/* Twitter */}
+                                          </button>
+
+                                          <button
+                                            className="btn btn-light btn-sm text-start"
+                                            onClick={() =>
+                                              window.open(
+                                                `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                                                  window.location.href
+                                                )}`,
+                                                "_blank"
+                                              )
+                                            }
+                                          >
+                                            <img
+                                              src={link}
+                                              width="16"
+                                            />
+                                            {/* LinkedIn */}
+                                          </button>
+                                        </div>
+                                      </div>
                                     </li>
+
                                     <li>
                                       <Link className="dropdown-item" to="#">
                                         <i className="bi bi-trash me-2" />{" "}

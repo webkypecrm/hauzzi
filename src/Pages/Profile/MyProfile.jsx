@@ -592,7 +592,6 @@ const MyProfile = () => {
                 <div className="col-lg-6">
                   <h4 className="mb-4">Redes sociales</h4>
                   <form onSubmit={handleSubmitSocialMedia}>
-                    {/* Nombre */}
                     <div className="mb-3">
                       <label className="form-label">Facebook</label>
                       <div className="input-group">
@@ -609,7 +608,6 @@ const MyProfile = () => {
                         />
                       </div>
                     </div>
-                    {/* Apellido */}
                     <div className="mb-3">
                       <label className="form-label">Instagram</label>
                       <div className="input-group">
@@ -626,7 +624,6 @@ const MyProfile = () => {
                         />
                       </div>
                     </div>
-                    {/* Email */}
                     <div className="mb-3">
                       <label className="form-label">Youtube</label>
                       <div className="input-group">
@@ -643,7 +640,6 @@ const MyProfile = () => {
                         />
                       </div>
                     </div>
-                    {/* Teléfono */}
                     <div className="mb-3">
                       <label className="form-label">TikTok</label>
                       <div className="input-group">

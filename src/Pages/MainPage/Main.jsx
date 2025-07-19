@@ -12,6 +12,8 @@ import hauzzi from "../../assets/img/hauzziIcon.png";
 import blackImg from "../../assets/img/my-img/back-img.png";
 import call from "../../assets/img/blackCall.png";
 import mail from "../../assets/img/blackMail.png";
+import link from "../../assets/img/link.png";
+import twitter from "../../assets/img/twitter.png";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 // import 'swiper/css';
@@ -449,7 +451,9 @@ const Main = () => {
                   className="container section-title aos-init aos-animate"
                   data-aos="fade-up"
                 >
-                  <h2 style={{fontFamily:"montserrat"}}>Descubre las propiedades más buscadas</h2>
+                  <h2 style={{ fontFamily: "montserrat" }}>
+                    Descubre las propiedades más buscadas
+                  </h2>
                 </div>
 
                 {mainData?.data?.length > 0 ? (
@@ -696,16 +700,7 @@ const Main = () => {
                                     Llamar
                                   </Link>
                                   <Link to="#">
-                                    {/* <i
-                                      className="fa fa-ellipsis-v"
-                                      aria-hidden="true"
-                                      style={{
-                                        marginLeft: 10,
-                                        marginTop: 8,
-                                        color: "#8a8a8a",
-                                      }}
-                                    /> */}
-                                    <div className="dropdown">
+                                    <div className="dropdown position-relative">
                                       <button
                                         className="btn btn-link p-0 border-0 text-muted"
                                         type="button"
@@ -718,23 +713,119 @@ const Main = () => {
                                           style={{ fontSize: 24 }}
                                         />
                                       </button>
+
                                       <ul
                                         className="dropdown-menu"
                                         aria-labelledby="dropdownMenuButton"
                                       >
-                                        <li>
-                                          <Link
+                                        <li className="position-relative">
+                                          <button
                                             className="dropdown-item"
-                                            to="#"
+                                            type="button"
+                                            onClick={(e) => {
+                                              e.preventDefault();
+                                              e.stopPropagation();
+                                              const dropdown =
+                                                e.currentTarget
+                                                  .nextElementSibling;
+                                              dropdown.classList.toggle(
+                                                "d-none"
+                                              );
+                                            }}
                                           >
                                             <img
                                               src="img/my-img/share-icon.png"
                                               className="me-2"
                                               alt="Share"
-                                            />{" "}
+                                            />
                                             Compartir
-                                          </Link>
+                                          </button>
+
+                                          <div
+                                            className="share-tooltip d-none position-absolute bg-white shadow rounded p-2"
+                                            style={{
+                                              top: "100%",
+                                              left: "0",
+                                              zIndex: 1000,
+                                              minWidth: "150px",
+                                            }}
+                                          >
+                                            <div>
+                                              <button
+                                                className="btn btn-light btn-sm text-start mb-1"
+                                                onClick={() =>
+                                                  window.open(
+                                                    `https://wa.me/?text=${encodeURIComponent(
+                                                      window.location.href
+                                                    )}`,
+                                                    "_blank"
+                                                  )
+                                                }
+                                              >
+                                                <img
+                                                  src="img/my-img/whatsapp.png"
+                                                  width="16"
+                                                />
+                                                {/* WhatsApp */}
+                                              </button>
+
+                                              <button
+                                                className="btn btn-light btn-sm text-start mb-1"
+                                                onClick={() =>
+                                                  window.open(
+                                                    `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                                                      window.location.href
+                                                    )}`,
+                                                    "_blank"
+                                                  )
+                                                }
+                                              >
+                                                <img
+                                                  src="img/my-img/facebook.png"
+                                                  width="16"
+                                                />
+                                                {/* Facebook */}
+                                              </button>
+
+                                              <button
+                                                className="btn btn-light btn-sm text-start mb-1"
+                                                onClick={() =>
+                                                  window.open(
+                                                    `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                                                      window.location.href
+                                                    )}`,
+                                                    "_blank"
+                                                  )
+                                                }
+                                              >
+                                                <img
+                                                  src={twitter}
+                                                  width="16"
+                                                />
+                                                {/* Twitter */}
+                                              </button>
+
+                                              <button
+                                                className="btn btn-light btn-sm text-start"
+                                                onClick={() =>
+                                                  window.open(
+                                                    `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                                                      window.location.href
+                                                    )}`,
+                                                    "_blank"
+                                                  )
+                                                }
+                                              >
+                                                <img
+                                                  src={link}
+                                                  width="16"
+                                                />
+                                                {/* LinkedIn */}
+                                              </button>
+                                            </div>
+                                          </div>
                                         </li>
+
                                         <li>
                                           <Link
                                             className="dropdown-item"
@@ -784,7 +875,7 @@ const Main = () => {
                   className="container section-title aos-init aos-animate"
                   data-aos="fade-up"
                 >
-                  <h2 className="mb-0" style={{fontFamily:"montserrat"}}>
+                  <h2 className="mb-0" style={{ fontFamily: "montserrat" }}>
                     Te acompañamos para que vendas o alquiles tu propiedad
                   </h2>
                   <h4 className="mb-4">
@@ -903,10 +994,10 @@ const Main = () => {
                   className="container section-title aos-init aos-animate"
                   data-aos="fade-up"
                 >
-                  <h2 className="mb-0" style={{fontFamily:"montserrat"}}>
+                  <h2 className="mb-0" style={{ fontFamily: "montserrat" }}>
                     El espacio para aprender sobre el mercado inmobiliario
                   </h2>
-                  <h4 className="mb-4" style={{fontFamily:"montserrat"}}>
+                  <h4 className="mb-4" style={{ fontFamily: "montserrat" }}>
                     Consejos prácticos y guías actualizadas para tomar
                     decisiones inteligentes
                   </h4>

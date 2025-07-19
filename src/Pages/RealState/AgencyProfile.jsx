@@ -26,149 +26,13 @@ import Typography from "@mui/material/Typography";
 import Loading from "../../Loading";
 import AgencyMap from "./AgencyMap";
 import { toast } from "react-toastify";
+import share from "../../assets/img/my-img/share-icon.png";
+import link from "../../assets/img/link.png";
+import twitter from "../../assets/img/twitter.png";
+import face from "../../assets/img/facebook.png";
+import whats from "../../assets/img/whatsapp.png";
 
 const AgencyProfile = () => {
-  // Slider 2
-  // const properties = [
-  //   {
-  //     image: "img/my-img/discovery.png",
-  //     title: "Eaton Garth Penthouse",
-  //     price: "$180,000",
-  //     address: "7722 18th Ave, Brooklyn",
-  //     hab: 4,
-  //     banos: 2,
-  //     size: "450 m2",
-  //     agentImage: "img/my-img/ellipse.png",
-  //     agentName: "Por Vectoria smith",
-  //   },
-  //   {
-  //     image: "img/my-img/agent-rent-img.jpeg",
-  //     title: "Diamond Manor Apartment",
-  //     price: "$259,000",
-  //     address: "7802 20th Ave, Brooklyn",
-  //     hab: 4,
-  //     banos: 2,
-  //     size: "500 m2",
-  //     agentImage: "img/my-img/ellipse_1.png",
-  //     agentName: "Por Jhon-smith",
-  //   },
-  //   {
-  //     image: "img/my-img/discovery.png",
-  //     title: "Eaton Garth Penthouse",
-  //     price: "$180,000",
-  //     address: "7722 18th Ave, Brooklyn",
-  //     hab: 4,
-  //     banos: 2,
-  //     size: "450 m2",
-  //     agentImage: "img/my-img/ellipse.png",
-  //     agentName: "Por Vectoria smith",
-  //   },
-  //   {
-  //     image: "img/my-img/agent-rent-img.jpeg",
-  //     title: "Diamond Manor Apartment",
-  //     price: "$259,000",
-  //     address: "7802 20th Ave, Brooklyn",
-  //     hab: 4,
-  //     banos: 2,
-  //     size: "500 m2",
-  //     agentImage: "img/my-img/ellipse_1.png",
-  //     agentName: "Por Jhon-smith",
-  //   },
-  // ];
-  // slider 3
-  // const properties2 = [
-  //   {
-  //     title: "Eaton Garth Penthouse",
-  //     price: "$180,000",
-  //     img: "img/my-img/discovery.png",
-  //     location: "7722 18th Ave, Brooklyn",
-  //     hab: "4 Hab.",
-  //     banos: "2 Baños",
-  //     size: "450 m2",
-  //     agentImg: "img/my-img/ellipse.png",
-  //     agentName: "Vectoria smith",
-  //   },
-  //   {
-  //     title: "Diamond Manor Apartment",
-  //     price: "$259,000",
-  //     img: "img/my-img/agent-rent-img.jpeg",
-  //     location: "7802 20th Ave, Brooklyn",
-  //     hab: "4 Hab.",
-  //     banos: "2 Baños",
-  //     size: "500 m2",
-  //     agentImg: "img/my-img/ellipse_1.png",
-  //     agentName: "Jhon-smith",
-  //   },
-  //   {
-  //     title: "Eaton Garth Penthouse",
-  //     price: "$180,000",
-  //     img: "img/my-img/discovery.png",
-  //     location: "7722 18th Ave, Brooklyn",
-  //     hab: "4 Hab.",
-  //     banos: "2 Baños",
-  //     size: "450 m2",
-  //     agentImg: "img/my-img/ellipse.png",
-  //     agentName: "Vectoria smith",
-  //   },
-  //   {
-  //     title: "Diamond Manor Apartment",
-  //     price: "$259,000",
-  //     img: "img/my-img/agent-rent-img.jpeg",
-  //     location: "7802 20th Ave, Brooklyn",
-  //     hab: "4 Hab.",
-  //     banos: "2 Baños",
-  //     size: "500 m2",
-  //     agentImg: "img/my-img/ellipse_1.png",
-  //     agentName: "Jhon-smith",
-  //   },
-  // ];
-  // Slider 4
-  // const toShareSlides = [
-  //   {
-  //     image: "img/my-img/discovery.png",
-  //     title: "Eaton Garth Penthouse",
-  //     price: "$180,000",
-  //     address: "7722 18th Ave, Brooklyn",
-  //     bedrooms: "4 Hab.",
-  //     bathrooms: "2 Baños",
-  //     size: "450 m2",
-  //     author: "Vectoria smith",
-  //     avatar: "img/my-img/ellipse.png",
-  //   },
-  //   {
-  //     image: "img/my-img/agent-rent-img.jpeg",
-  //     title: "Diamond Manor Apartment",
-  //     price: "$259,000",
-  //     address: "7802 20th Ave, Brooklyn",
-  //     bedrooms: "4 Hab.",
-  //     bathrooms: "2 Baños",
-  //     size: "500 m2",
-  //     author: "Jhon-smith",
-  //     avatar: "img/my-img/ellipse_1.png",
-  //   },
-  //   {
-  //     image: "img/my-img/discovery.png",
-  //     title: "Eaton Garth Penthouse",
-  //     price: "$180,000",
-  //     address: "7722 18th Ave, Brooklyn",
-  //     bedrooms: "4 Hab.",
-  //     bathrooms: "2 Baños",
-  //     size: "450 m2",
-  //     author: "Vectoria smith",
-  //     avatar: "img/my-img/ellipse.png",
-  //   },
-  //   {
-  //     image: "img/my-img/agent-rent-img.jpeg",
-  //     title: "Diamond Manor Apartment",
-  //     price: "$259,000",
-  //     address: "7802 20th Ave, Brooklyn",
-  //     bedrooms: "4 Hab.",
-  //     bathrooms: "2 Baños",
-  //     size: "500 m2",
-  //     author: "Jhon-smith",
-  //     avatar: "img/my-img/ellipse_1.png",
-  //   },
-  // ];
 
   const [agencyData, setAgencyData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -185,8 +49,8 @@ const AgencyProfile = () => {
   const [agencyListLoaded, setAgencyListLoaded] = useState(false);
   const [wishlistIds, setWishlistIds] = useState([]);
   const [wishlistLoaded, setWishlistLoaded] = useState(false);
-    const [compareIds, setCompareIds] = useState([]);
-    const [compareLoaded, setCompareLoaded] = useState(false);
+  const [compareIds, setCompareIds] = useState([]);
+  const [compareLoaded, setCompareLoaded] = useState(false);
 
   const customerId = localStorage.getItem("tokenId") || "";
   const token = localStorage.getItem("token");
@@ -443,62 +307,62 @@ const AgencyProfile = () => {
     }
   };
 
-   // compair api
-    useEffect(() => {
-      const fetchCompareList = async () => {
-        try {
-          const res = await axios.get(
-            `${apiUrl}/property/getCompare/${customerId}`,
-            {
-              headers: { Authorization: `Bearer ${token2}` },
-            }
-          );
-  
-          const ids = Array.isArray(res?.data?.data)
-            ? res?.data?.data.map((item) =>
-                typeof item === "object" && item !== null
-                  ? Number(item.id)
-                  : Number(item)
-              )
-            : [];
-  
-          console.log("compareIDs", ids);
-  
-          setCompareIds(ids);
-        } catch (err) {
-          setCompareIds([]);
-        } finally {
-          setCompareLoaded(true);
-        }
-      };
-  
-      if (customerId) fetchCompareList();
-    }, [customerId]);
-  
-    const handleCompare = async (id) => {
+  // compair api
+  useEffect(() => {
+    const fetchCompareList = async () => {
       try {
-        const response = await axios.get(
-          `${apiUrl}/property/addToCompare/${customerId}-${id}`,
+        const res = await axios.get(
+          `${apiUrl}/property/getCompare/${customerId}`,
           {
-            headers: {
-              Authorization: `Bearer ${token2}`,
-            },
+            headers: { Authorization: `Bearer ${token2}` },
           }
         );
-  
-        console.log("first", response.data);
-  
-        toast.success(response.data.message);
-  
-        // Toggle logic
-        setCompareIds((prev) =>
-          prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-        );
-      } catch (error) {
-        console.log(error);
-        toast.error(error.response?.data?.message || "Something went wrong");
+
+        const ids = Array.isArray(res?.data?.data)
+          ? res?.data?.data.map((item) =>
+              typeof item === "object" && item !== null
+                ? Number(item.id)
+                : Number(item)
+            )
+          : [];
+
+        console.log("compareIDs", ids);
+
+        setCompareIds(ids);
+      } catch (err) {
+        setCompareIds([]);
+      } finally {
+        setCompareLoaded(true);
       }
     };
+
+    if (customerId) fetchCompareList();
+  }, [customerId]);
+
+  const handleCompare = async (id) => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}/property/addToCompare/${customerId}-${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token2}`,
+          },
+        }
+      );
+
+      console.log("first", response.data);
+
+      toast.success(response.data.message);
+
+      // Toggle logic
+      setCompareIds((prev) =>
+        prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+      );
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  };
 
   return (
     <Fragment>
@@ -595,17 +459,19 @@ const AgencyProfile = () => {
                                         <ul className="icon mb-0">
                                           <li className="list-inline-item">
                                             <i
-                                        key={compareIds.join(",")}
-                                        className="fa fa-exchange"
-                                        onClick={() => handleCompare(e?.id)}
-                                        style={{
-                                          color: compareIds.includes(
-                                            Number(e?.id)
-                                          )
-                                            ? "red"
-                                            : "gray",
-                                        }}
-                                      />
+                                              key={compareIds.join(",")}
+                                              className="fa fa-exchange"
+                                              onClick={() =>
+                                                handleCompare(e?.id)
+                                              }
+                                              style={{
+                                                color: compareIds.includes(
+                                                  Number(e?.id)
+                                                )
+                                                  ? "red"
+                                                  : "gray",
+                                              }}
+                                            />
                                           </li>
                                           <li
                                             className="list-inline-item"
@@ -1078,17 +944,19 @@ const AgencyProfile = () => {
                                       <ul className="icon mb-0">
                                         <li className="list-inline-item">
                                           <i
-                                        key={compareIds.join(",")}
-                                        className="fa fa-exchange"
-                                        onClick={() => handleCompare(property?.id)}
-                                        style={{
-                                          color: compareIds.includes(
-                                            Number(property?.id)
-                                          )
-                                            ? "red"
-                                            : "gray",
-                                        }}
-                                      />
+                                            key={compareIds.join(",")}
+                                            className="fa fa-exchange"
+                                            onClick={() =>
+                                              handleCompare(property?.id)
+                                            }
+                                            style={{
+                                              color: compareIds.includes(
+                                                Number(property?.id)
+                                              )
+                                                ? "red"
+                                                : "gray",
+                                            }}
+                                          />
                                         </li>
                                         <li
                                           className="list-inline-item"
@@ -1214,15 +1082,148 @@ const AgencyProfile = () => {
                                           Llamar
                                         </Link>
                                         <Link to="#">
-                                          <i
-                                            className="fa fa-ellipsis-v"
-                                            aria-hidden="true"
-                                            style={{
-                                              marginLeft: "10px",
-                                              marginTop: "8px",
-                                              color: "#8a8a8a",
-                                            }}
-                                          />
+                                          <div className="dropdown position-relative">
+                                            <button
+                                              className="btn btn-link p-0 border-0 text-muted"
+                                              type="button"
+                                              id="dropdownMenuButton"
+                                              data-bs-toggle="dropdown"
+                                              aria-expanded="false"
+                                            >
+                                              <i
+                                                className="fa fa-ellipsis-v"
+                                                aria-hidden="true"
+                                                style={{
+                                                  marginLeft: 10,
+                                                  marginTop: 8,
+                                                  color: "#8a8a8a",
+                                                }}
+                                              />
+                                            </button>
+
+                                            <ul
+                                              className="dropdown-menu"
+                                              aria-labelledby="dropdownMenuButton"
+                                            >
+                                              <li className="position-relative">
+                                                <button
+                                                  className="dropdown-item"
+                                                  type="button"
+                                                  onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    const dropdown =
+                                                      e.currentTarget
+                                                        .nextElementSibling;
+                                                    dropdown.classList.toggle(
+                                                      "d-none"
+                                                    );
+                                                  }}
+                                                >
+                                                  <img
+                                                    src={share}
+                                                    className="me-2"
+                                                    alt="Share"
+                                                  />
+                                                  Compartir
+                                                </button>
+
+                                                <div
+                                                  className="share-tooltip d-none position-absolute bg-white shadow rounded p-2"
+                                                  style={{
+                                                    top: "100%",
+                                                    left: "0",
+                                                    zIndex: 1000,
+                                                    minWidth: "150px",
+                                                  }}
+                                                >
+                                                  <div>
+                                                    <button
+                                                      className="btn btn-light btn-sm text-start mb-1"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          `https://wa.me/?text=${encodeURIComponent(
+                                                            window.location.href
+                                                          )}`,
+                                                          "_blank"
+                                                        )
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={whats}
+                                                        width="16"
+                                                      />
+                                                      {/* WhatsApp */}
+                                                    </button>
+
+                                                    <button
+                                                      className="btn btn-light btn-sm text-start mb-1"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                                                            window.location.href
+                                                          )}`,
+                                                          "_blank"
+                                                        )
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={face}
+                                                        width="16"
+                                                      />
+                                                      {/* Facebook */}
+                                                    </button>
+
+                                                    <button
+                                                      className="btn btn-light btn-sm text-start mb-1"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                                                            window.location.href
+                                                          )}`,
+                                                          "_blank"
+                                                        )
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={twitter}
+                                                        width="16"
+                                                      />
+                                                      {/* Twitter */}
+                                                    </button>
+
+                                                    <button
+                                                      className="btn btn-light btn-sm text-start"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                                                            window.location.href
+                                                          )}`,
+                                                          "_blank"
+                                                        )
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={link}
+                                                        width="16"
+                                                      />
+                                                      {/* LinkedIn */}
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              </li>
+
+                                              <li>
+                                                <Link
+                                                  className="dropdown-item"
+                                                  to="#"
+                                                >
+                                                  <i className="bi bi-trash me-2" />{" "}
+                                                  Descartar
+                                                </Link>
+                                              </li>
+                                            </ul>
+                                          </div>
                                         </Link>
                                       </div>
                                     </div>
@@ -1284,17 +1285,19 @@ const AgencyProfile = () => {
                                       <ul className="icon mb-0">
                                         <li className="list-inline-item">
                                           <i
-                                        key={compareIds.join(",")}
-                                        className="fa fa-exchange"
-                                        onClick={() => handleCompare(prop?.id)}
-                                        style={{
-                                          color: compareIds.includes(
-                                            Number(prop?.id)
-                                          )
-                                            ? "red"
-                                            : "gray",
-                                        }}
-                                      />
+                                            key={compareIds.join(",")}
+                                            className="fa fa-exchange"
+                                            onClick={() =>
+                                              handleCompare(prop?.id)
+                                            }
+                                            style={{
+                                              color: compareIds.includes(
+                                                Number(prop?.id)
+                                              )
+                                                ? "red"
+                                                : "gray",
+                                            }}
+                                          />
                                         </li>
                                         <li
                                           className="list-inline-item"
@@ -1420,15 +1423,148 @@ const AgencyProfile = () => {
                                           Llamar
                                         </Link>
                                         <Link to="#">
-                                          <i
-                                            className="fa fa-ellipsis-v"
-                                            aria-hidden="true"
-                                            style={{
-                                              marginLeft: 10,
-                                              marginTop: 8,
-                                              color: "#8a8a8a",
-                                            }}
-                                          />
+                                          <div className="dropdown position-relative">
+                                            <button
+                                              className="btn btn-link p-0 border-0 text-muted"
+                                              type="button"
+                                              id="dropdownMenuButton"
+                                              data-bs-toggle="dropdown"
+                                              aria-expanded="false"
+                                            >
+                                              <i
+                                                className="fa fa-ellipsis-v"
+                                                aria-hidden="true"
+                                                style={{
+                                                  marginLeft: 10,
+                                                  marginTop: 8,
+                                                  color: "#8a8a8a",
+                                                }}
+                                              />
+                                            </button>
+
+                                            <ul
+                                              className="dropdown-menu"
+                                              aria-labelledby="dropdownMenuButton"
+                                            >
+                                              <li className="position-relative">
+                                                <button
+                                                  className="dropdown-item"
+                                                  type="button"
+                                                  onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    const dropdown =
+                                                      e.currentTarget
+                                                        .nextElementSibling;
+                                                    dropdown.classList.toggle(
+                                                      "d-none"
+                                                    );
+                                                  }}
+                                                >
+                                                  <img
+                                                    src={share}
+                                                    className="me-2"
+                                                    alt="Share"
+                                                  />
+                                                  Compartir
+                                                </button>
+
+                                                <div
+                                                  className="share-tooltip d-none position-absolute bg-white shadow rounded p-2"
+                                                  style={{
+                                                    top: "100%",
+                                                    left: "0",
+                                                    zIndex: 1000,
+                                                    minWidth: "150px",
+                                                  }}
+                                                >
+                                                  <div>
+                                                    <button
+                                                      className="btn btn-light btn-sm text-start mb-1"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          `https://wa.me/?text=${encodeURIComponent(
+                                                            window.location.href
+                                                          )}`,
+                                                          "_blank"
+                                                        )
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={whats}
+                                                        width="16"
+                                                      />
+                                                      {/* WhatsApp */}
+                                                    </button>
+
+                                                    <button
+                                                      className="btn btn-light btn-sm text-start mb-1"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                                                            window.location.href
+                                                          )}`,
+                                                          "_blank"
+                                                        )
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={face}
+                                                        width="16"
+                                                      />
+                                                      {/* Facebook */}
+                                                    </button>
+
+                                                    <button
+                                                      className="btn btn-light btn-sm text-start mb-1"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                                                            window.location.href
+                                                          )}`,
+                                                          "_blank"
+                                                        )
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={twitter}
+                                                        width="16"
+                                                      />
+                                                      {/* Twitter */}
+                                                    </button>
+
+                                                    <button
+                                                      className="btn btn-light btn-sm text-start"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                                                            window.location.href
+                                                          )}`,
+                                                          "_blank"
+                                                        )
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={link}
+                                                        width="16"
+                                                      />
+                                                      {/* LinkedIn */}
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              </li>
+
+                                              <li>
+                                                <Link
+                                                  className="dropdown-item"
+                                                  to="#"
+                                                >
+                                                  <i className="bi bi-trash me-2" />{" "}
+                                                  Descartar
+                                                </Link>
+                                              </li>
+                                            </ul>
+                                          </div>
                                         </Link>
                                       </div>
                                     </div>
@@ -1441,178 +1577,6 @@ const AgencyProfile = () => {
                       </div>
                     </div>
                   )}
-
-                  {/* To Share Slider Section */}
-                  {/* <div className="row mb-3">
-                    <div className="col-lg-7 col-md-7">
-                      <div className="d-flex justify-content-between">
-                        <h5 className="fw-bold">Para Compartir ( 20 )</h5>
-                        <Link to="javascript:void(0)" className="primary-text">
-                          Ver Todos
-                        </Link>
-                      </div>
-                      <div className="swiper" id="tosharecarousel">
-                        <Swiper
-                          modules={[Navigation, Autoplay]}
-                          autoplay
-                          loop
-                          breakpoints={{
-                            768: {
-                              slidesPerView: 1,
-                              spaceBetween: 10,
-                            },
-                            1024: {
-                              slidesPerView: 2,
-                              spaceBetween: 10,
-                            },
-                            1280: {
-                              slidesPerView: 2.1,
-                              spaceBetween: 10,
-                            },
-                          }}
-                        >
-                          {toShareSlides.map((item, index) => (
-                            <SwiperSlide key={index}>
-                              <div className="feat_property">
-                                <div className="thumb">
-                                  <img
-                                    className="img-whp"
-                                    src={item.image}
-                                    alt="property"
-                                  />
-                                  <div className="thmb_cntnt">
-                                    <ul className="tag mb-0 p-0">
-                                      <li className="list-inline-item">
-                                        <span>VENTA</span>
-                                      </li>
-                                      <li className="list-inline-item">
-                                        <span>Negociable</span>
-                                      </li>
-                                    </ul>
-                                    <ul className="icon mb-0">
-                                      <li className="list-inline-item">
-                                        <i
-                                          className="fa fa-exchange"
-                                          style={{ color: "#999191" }}
-                                        />
-                                      </li>
-                                      <li
-                                        className="list-inline-item"
-                                        style={{ background: "unset" }}
-                                      >
-                                        <i
-                                          className="fa fa-heart"
-                                          style={{ color: "#FFBD59" }}
-                                        />
-                                      </li>
-                                    </ul>
-                                  </div>
-                                </div>
-                                <div className="details">
-                                  <div className="tc_content">
-                                    <div className="title-price">
-                                      <h4>{item.title}</h4>
-                                      <span className="fp_price">
-                                        {item.price}
-                                      </span>
-                                    </div>
-                                    <p>
-                                      <img
-                                        src="img/my-img/vector.png"
-                                        alt="location"
-                                      />
-                                      <span style={{ marginLeft: 5 }}>
-                                        {item.address}
-                                      </span>
-                                    </p>
-                                    <ul className="prop_details mb-0 p-0">
-                                      <li className="list-inline-item">
-                                        <span>
-                                          <img
-                                            src="img/my-img/icon.png"
-                                            alt=""
-                                          />{" "}
-                                          {item.bedrooms}
-                                        </span>
-                                      </li>{" "}
-                                      <li className="list-inline-item">
-                                        <span>
-                                          <img
-                                            src="img/my-img/Vector_1.png"
-                                            alt=""
-                                          />{" "}
-                                          {item.bathrooms}
-                                        </span>
-                                      </li>
-                                      <li className="list-inline-item">
-                                        <span>
-                                          <img
-                                            src="img/my-img/icon_1.png"
-                                            alt=""
-                                          />{" "}
-                                          {item.size}
-                                        </span>
-                                      </li>
-                                    </ul>
-                                  </div>
-                                  <div className="fp_footer d-flex">
-                                    <Link to="#">
-                                      <ul className="fp_meta float-left mb-0 p-0">
-                                        <li className="list-inline-item">
-                                          <span>
-                                            <img
-                                              src={item.avatar}
-                                              alt="poster"
-                                              className="img-fluid img-width"
-                                            />
-                                            Por {item.author}
-                                          </span>
-                                        </li>
-                                      </ul>
-                                    </Link>
-                                    <div className="fp_pdate float-right d-flex">
-                                      <Link
-                                        className="btn-getstarted gt"
-                                        to="#"
-                                      >
-                                        <img
-                                          src="img/my-img/vector_2.png"
-                                          width="25%"
-                                          alt="email"
-                                        />
-                                        Email
-                                      </Link>
-                                      <Link
-                                        className="btn-getstarted gt"
-                                        to="#"
-                                      >
-                                        <img
-                                          src="img/my-img/call.png"
-                                          width="25%"
-                                          alt="call"
-                                        />
-                                        Llamar
-                                      </Link>
-                                      <Link to="#">
-                                        <i
-                                          className="fa fa-ellipsis-v"
-                                          style={{
-                                            marginLeft: "10px",
-                                            marginTop: "8px",
-                                            color: "#8a8a8a",
-                                          }}
-                                        />
-                                      </Link>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </SwiperSlide>
-                          ))}
-                        </Swiper>
-                      </div>
-                    </div>
-                  </div> */}
 
                   {/* Review Section */}
                   <div className="row">
@@ -1642,18 +1606,6 @@ const AgencyProfile = () => {
                               <option value={3}>Three</option>
                             </select>
                           </div>
-                          {/* <div className="col-xl-6 col-lg-6 col-md-6">
-                            <label className="mb-1">Odernar por</label>
-                            <select
-                              className="form-select form-select-lg"
-                              aria-label=".form-select-lg example"
-                            >
-                              <option selected="">Nuevas reseñas</option>
-                              <option value={1}>One</option>
-                              <option value={2}>Two</option>
-                              <option value={3}>Three</option>
-                            </select>
-                          </div> */}
                         </div>
                       </form>
                       {visibleReviews.map((item, index) => (

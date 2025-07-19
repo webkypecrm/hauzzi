@@ -737,7 +737,38 @@ color: #1A1A1A;
   z-index: 1049;
 }
 
+.share-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 15px;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 8px 10px;
+  border-radius: 8px;
+  display: flex;
+  gap: 12px;
+  z-index: 999;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
 
+.share-tooltip a {
+  text-decoration: none;
+}
+
+.share-tooltip i {
+  font-size: 18px;
+  color: #444;
+  transition: color 0.2s;
+  cursor: pointer;
+}
+
+.share-tooltip i:hover {
+  color: #000;
+}
+
+.share-wrapper {
+  position: relative;
+}
 
 
 

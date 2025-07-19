@@ -10,7 +10,6 @@ import AgentMap from "./AgentMap";
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import Typography from "@mui/material/Typography";
-import SimpleMDE from "react-simplemde-editor";
 import crown from "../../assets/img/my-img/crown.png";
 import start from "../../assets/img/my-img/start-small.png";
 import heart from "../../assets/img/my-img/heart.png";
@@ -26,10 +25,12 @@ import bath from "../../assets/img/my-img/Vector_1.png";
 import area from "../../assets/img/my-img/icon_1.png";
 import mail from "../../assets/img/my-img/vector_2.png";
 import call2 from "../../assets/img/my-img/call.png";
-import img1 from "../../assets/img/my-img/discovery.png";
-import img2 from "../../assets/img/my-img/agent-rent-img.jpeg";
-import icon1 from "../../assets/img/my-img/ellipse.png";
 import { toast } from "react-toastify";
+import share from "../../assets/img/my-img/share-icon.png";
+import link from "../../assets/img/link.png";
+import twitter from "../../assets/img/twitter.png";
+import face from "../../assets/img/facebook.png";
+import whats from "../../assets/img/whatsapp.png";
 
 const AgentProfile = () => {
   // agent profile data GET
@@ -45,8 +46,8 @@ const AgentProfile = () => {
   const [agentListLoaded, setAgentListLoaded] = useState(false);
   const [wishlistIds, setWishlistIds] = useState([]);
   const [wishlistLoaded, setWishlistLoaded] = useState(false);
-   const [compareIds, setCompareIds] = useState([]);
-      const [compareLoaded, setCompareLoaded] = useState(false);
+  const [compareIds, setCompareIds] = useState([]);
+  const [compareLoaded, setCompareLoaded] = useState(false);
 
   const customerId = localStorage.getItem("tokenId") || "";
   const token = localStorage.getItem("token");
@@ -114,10 +115,6 @@ const AgentProfile = () => {
     getSellProperty();
     getRentProperty();
   }, []);
-
-  // const [expanded, setExpanded] = useState(false);
-
-  // const handleToggle = () => setExpanded(!expanded);
 
   // --------Review Apis----------
   // post review
@@ -310,62 +307,62 @@ const AgentProfile = () => {
     }
   };
 
-    // compair api
-      useEffect(() => {
-        const fetchCompareList = async () => {
-          try {
-            const res = await axios.get(
-              `${apiUrl}/property/getCompare/${customerId}`,
-              {
-                headers: { Authorization: `Bearer ${token2}` },
-              }
-            );
-    
-            const ids = Array.isArray(res?.data?.data)
-              ? res?.data?.data.map((item) =>
-                  typeof item === "object" && item !== null
-                    ? Number(item.id)
-                    : Number(item)
-                )
-              : [];
-    
-            console.log("compareIDs", ids);
-    
-            setCompareIds(ids);
-          } catch (err) {
-            setCompareIds([]);
-          } finally {
-            setCompareLoaded(true);
+  // compair api
+  useEffect(() => {
+    const fetchCompareList = async () => {
+      try {
+        const res = await axios.get(
+          `${apiUrl}/property/getCompare/${customerId}`,
+          {
+            headers: { Authorization: `Bearer ${token2}` },
           }
-        };
-    
-        if (customerId) fetchCompareList();
-      }, [customerId]);
-    
-      const handleCompare = async (id) => {
-        try {
-          const response = await axios.get(
-            `${apiUrl}/property/addToCompare/${customerId}-${id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token2}`,
-              },
-            }
-          );
-    
-          console.log("first", response.data);
-    
-          toast.success(response.data.message);
-    
-          // Toggle logic
-          setCompareIds((prev) =>
-            prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-          );
-        } catch (error) {
-          console.log(error);
-          toast.error(error.response?.data?.message || "Something went wrong");
+        );
+
+        const ids = Array.isArray(res?.data?.data)
+          ? res?.data?.data.map((item) =>
+              typeof item === "object" && item !== null
+                ? Number(item.id)
+                : Number(item)
+            )
+          : [];
+
+        console.log("compareIDs", ids);
+
+        setCompareIds(ids);
+      } catch (err) {
+        setCompareIds([]);
+      } finally {
+        setCompareLoaded(true);
+      }
+    };
+
+    if (customerId) fetchCompareList();
+  }, [customerId]);
+
+  const handleCompare = async (id) => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}/property/addToCompare/${customerId}-${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token2}`,
+          },
         }
-      };
+      );
+
+      console.log("first", response.data);
+
+      toast.success(response.data.message);
+
+      // Toggle logic
+      setCompareIds((prev) =>
+        prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+      );
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  };
 
   return (
     <Fragment>
@@ -467,17 +464,19 @@ const AgentProfile = () => {
                                         <ul className="icon mb-0">
                                           <li className="list-inline-item">
                                             <i
-                                        key={compareIds.join(",")}
-                                        className="fa fa-exchange"
-                                        onClick={() => handleCompare(e?.id)}
-                                        style={{
-                                          color: compareIds.includes(
-                                            Number(e?.id)
-                                          )
-                                            ? "red"
-                                            : "gray",
-                                        }}
-                                      />
+                                              key={compareIds.join(",")}
+                                              className="fa fa-exchange"
+                                              onClick={() =>
+                                                handleCompare(e?.id)
+                                              }
+                                              style={{
+                                                color: compareIds.includes(
+                                                  Number(e?.id)
+                                                )
+                                                  ? "red"
+                                                  : "gray",
+                                              }}
+                                            />
                                           </li>
                                           <li
                                             className="list-inline-item"
@@ -888,17 +887,19 @@ const AgentProfile = () => {
                                       <ul className="icon mb-0">
                                         <li className="list-inline-item">
                                           <i
-                                        key={compareIds.join(",")}
-                                        className="fa fa-exchange"
-                                        onClick={() => handleCompare(property?.id)}
-                                        style={{
-                                          color: compareIds.includes(
-                                            Number(property?.id)
-                                          )
-                                            ? "red"
-                                            : "gray",
-                                        }}
-                                      />
+                                            key={compareIds.join(",")}
+                                            className="fa fa-exchange"
+                                            onClick={() =>
+                                              handleCompare(property?.id)
+                                            }
+                                            style={{
+                                              color: compareIds.includes(
+                                                Number(property?.id)
+                                              )
+                                                ? "red"
+                                                : "gray",
+                                            }}
+                                          />
                                         </li>
                                         <li
                                           className="list-inline-item"
@@ -1025,15 +1026,148 @@ const AgentProfile = () => {
                                           Llamar
                                         </Link>
                                         <Link to="#">
-                                          <i
-                                            className="fa fa-ellipsis-v"
-                                            aria-hidden="true"
-                                            style={{
-                                              marginLeft: "10px",
-                                              marginTop: "8px",
-                                              color: "#8a8a8a",
-                                            }}
-                                          />
+                                          <div className="dropdown position-relative">
+                                            <button
+                                              className="btn btn-link p-0 border-0 text-muted"
+                                              type="button"
+                                              id="dropdownMenuButton"
+                                              data-bs-toggle="dropdown"
+                                              aria-expanded="false"
+                                            >
+                                              <i
+                                                className="fa fa-ellipsis-v"
+                                                aria-hidden="true"
+                                                style={{
+                                                  marginLeft: 10,
+                                                  marginTop: 8,
+                                                  color: "#8a8a8a",
+                                                }}
+                                              />
+                                            </button>
+
+                                            <ul
+                                              className="dropdown-menu"
+                                              aria-labelledby="dropdownMenuButton"
+                                            >
+                                              <li className="position-relative">
+                                                <button
+                                                  className="dropdown-item"
+                                                  type="button"
+                                                  onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    const dropdown =
+                                                      e.currentTarget
+                                                        .nextElementSibling;
+                                                    dropdown.classList.toggle(
+                                                      "d-none"
+                                                    );
+                                                  }}
+                                                >
+                                                  <img
+                                                    src={share}
+                                                    className="me-2"
+                                                    alt="Share"
+                                                  />
+                                                  Compartir
+                                                </button>
+
+                                                <div
+                                                  className="share-tooltip d-none position-absolute bg-white shadow rounded p-2"
+                                                  style={{
+                                                    top: "100%",
+                                                    left: "0",
+                                                    zIndex: 1000,
+                                                    minWidth: "150px",
+                                                  }}
+                                                >
+                                                  <div>
+                                                    <button
+                                                      className="btn btn-light btn-sm text-start mb-1"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          `https://wa.me/?text=${encodeURIComponent(
+                                                            window.location.href
+                                                          )}`,
+                                                          "_blank"
+                                                        )
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={whats}
+                                                        width="16"
+                                                      />
+                                                      {/* WhatsApp */}
+                                                    </button>
+
+                                                    <button
+                                                      className="btn btn-light btn-sm text-start mb-1"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                                                            window.location.href
+                                                          )}`,
+                                                          "_blank"
+                                                        )
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={face}
+                                                        width="16"
+                                                      />
+                                                      {/* Facebook */}
+                                                    </button>
+
+                                                    <button
+                                                      className="btn btn-light btn-sm text-start mb-1"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                                                            window.location.href
+                                                          )}`,
+                                                          "_blank"
+                                                        )
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={twitter}
+                                                        width="16"
+                                                      />
+                                                      {/* Twitter */}
+                                                    </button>
+
+                                                    <button
+                                                      className="btn btn-light btn-sm text-start"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                                                            window.location.href
+                                                          )}`,
+                                                          "_blank"
+                                                        )
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={link}
+                                                        width="16"
+                                                      />
+                                                      {/* LinkedIn */}
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              </li>
+
+                                              <li>
+                                                <Link
+                                                  className="dropdown-item"
+                                                  to="#"
+                                                >
+                                                  <i className="bi bi-trash me-2" />{" "}
+                                                  Descartar
+                                                </Link>
+                                              </li>
+                                            </ul>
+                                          </div>
                                         </Link>
                                       </div>
                                     </div>
@@ -1116,17 +1250,19 @@ const AgentProfile = () => {
                                       <ul className="icon mb-0">
                                         <li className="list-inline-item">
                                           <i
-                                        key={compareIds.join(",")}
-                                        className="fa fa-exchange"
-                                        onClick={() => handleCompare(prop?.id)}
-                                        style={{
-                                          color: compareIds.includes(
-                                            Number(prop?.id)
-                                          )
-                                            ? "red"
-                                            : "gray",
-                                        }}
-                                      />
+                                            key={compareIds.join(",")}
+                                            className="fa fa-exchange"
+                                            onClick={() =>
+                                              handleCompare(prop?.id)
+                                            }
+                                            style={{
+                                              color: compareIds.includes(
+                                                Number(prop?.id)
+                                              )
+                                                ? "red"
+                                                : "gray",
+                                            }}
+                                          />
                                         </li>
                                         <li
                                           className="list-inline-item"
@@ -1252,15 +1388,148 @@ const AgentProfile = () => {
                                           Llamar
                                         </Link>
                                         <Link to="#">
-                                          <i
-                                            className="fa fa-ellipsis-v"
-                                            aria-hidden="true"
-                                            style={{
-                                              marginLeft: 10,
-                                              marginTop: 8,
-                                              color: "#8a8a8a",
-                                            }}
-                                          />
+                                          <div className="dropdown position-relative">
+                                            <button
+                                              className="btn btn-link p-0 border-0 text-muted"
+                                              type="button"
+                                              id="dropdownMenuButton"
+                                              data-bs-toggle="dropdown"
+                                              aria-expanded="false"
+                                            >
+                                              <i
+                                                className="fa fa-ellipsis-v"
+                                                aria-hidden="true"
+                                                style={{
+                                                  marginLeft: 10,
+                                                  marginTop: 8,
+                                                  color: "#8a8a8a",
+                                                }}
+                                              />
+                                            </button>
+
+                                            <ul
+                                              className="dropdown-menu"
+                                              aria-labelledby="dropdownMenuButton"
+                                            >
+                                              <li className="position-relative">
+                                                <button
+                                                  className="dropdown-item"
+                                                  type="button"
+                                                  onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    const dropdown =
+                                                      e.currentTarget
+                                                        .nextElementSibling;
+                                                    dropdown.classList.toggle(
+                                                      "d-none"
+                                                    );
+                                                  }}
+                                                >
+                                                  <img
+                                                    src={share}
+                                                    className="me-2"
+                                                    alt="Share"
+                                                  />
+                                                  Compartir
+                                                </button>
+
+                                                <div
+                                                  className="share-tooltip d-none position-absolute bg-white shadow rounded p-2"
+                                                  style={{
+                                                    top: "100%",
+                                                    left: "0",
+                                                    zIndex: 1000,
+                                                    minWidth: "150px",
+                                                  }}
+                                                >
+                                                  <div>
+                                                    <button
+                                                      className="btn btn-light btn-sm text-start mb-1"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          `https://wa.me/?text=${encodeURIComponent(
+                                                            window.location.href
+                                                          )}`,
+                                                          "_blank"
+                                                        )
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={whats}
+                                                        width="16"
+                                                      />
+                                                      {/* WhatsApp */}
+                                                    </button>
+
+                                                    <button
+                                                      className="btn btn-light btn-sm text-start mb-1"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                                                            window.location.href
+                                                          )}`,
+                                                          "_blank"
+                                                        )
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={face}
+                                                        width="16"
+                                                      />
+                                                      {/* Facebook */}
+                                                    </button>
+
+                                                    <button
+                                                      className="btn btn-light btn-sm text-start mb-1"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                                                            window.location.href
+                                                          )}`,
+                                                          "_blank"
+                                                        )
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={twitter}
+                                                        width="16"
+                                                      />
+                                                      {/* Twitter */}
+                                                    </button>
+
+                                                    <button
+                                                      className="btn btn-light btn-sm text-start"
+                                                      onClick={() =>
+                                                        window.open(
+                                                          `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                                                            window.location.href
+                                                          )}`,
+                                                          "_blank"
+                                                        )
+                                                      }
+                                                    >
+                                                      <img
+                                                        src={link}
+                                                        width="16"
+                                                      />
+                                                      {/* LinkedIn */}
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              </li>
+
+                                              <li>
+                                                <Link
+                                                  className="dropdown-item"
+                                                  to="#"
+                                                >
+                                                  <i className="bi bi-trash me-2" />{" "}
+                                                  Descartar
+                                                </Link>
+                                              </li>
+                                            </ul>
+                                          </div>
                                         </Link>
                                       </div>
                                     </div>
@@ -1487,42 +1756,7 @@ const AgentProfile = () => {
                           </div> */}
                         </div>
                       </form>
-                      {/* {getReviewData.map((item, index) => (
-                        <Fragment key={index}>
-                      <div className="d-flex justify-content-between align-items-center">
-                        <h5 className="fw-bold">
-                          {item.title}{" "}
-                          <span style={{ color: "#eceaea", fontWeight: 300 }}>
-                            |
-                          </span>{" "}
-                          {item.rating} <i className="fa fa-star primary-text" />
-                        </h5>
-                        <Link to="javascript:void(0)" className="text-grey">
-                          Reportar Problema
-                        </Link>
-                      </div>
-                      <p className="text-capitalize ps-3">
-                        <span className="me-3">{new Date(item.createdAt).toLocaleDateString("en-US")}</span> {item?.reviewer?.customer?.name}
-                      </p>
-                      <p
-                        className={`agent-description ${
-                          expanded ? "expanded" : ""
-                        }`}
-                      >
-                        {item.content}{" "}
-                      </p>
-                      
-                      <Link
-                        to="#"
-                        className="primary-text"
-                        onClick={handleToggle}
-                      >
-                        {expanded ? "Ver menos" : "Ver más"}
-                      </Link>
 
-                      <hr className="mt-5 mb-5" />
-                       </Fragment>
-                       ))} */}
                       {visibleReviews.map((item, index) => (
                         <Fragment key={index}>
                           <div className="d-flex justify-content-between align-items-center">
