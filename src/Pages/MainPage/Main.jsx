@@ -1245,7 +1245,7 @@ const Main = () => {
                           </p>
                           <Link
                             className="btn-getstarted mt-3"
-                            to={"/login"}
+                            to={`/propertysell?purpose=wantToSell&type=&category=&search=`}
                             style={{ padding: 16, margin: 0 }}
                           >
                             Ver inmuebles a la venta{" "}
@@ -1281,7 +1281,7 @@ const Main = () => {
                           </p>
                           <Link
                             className="btn-getstarted mt-3"
-                            to={"/login"}
+                            to={`/propertysell?purpose=wantToRent&type=&category=&search=`}
                             style={{ padding: 16, margin: 0 }}
                           >
                             Ver inmubles en alquiler{" "}
