@@ -248,6 +248,31 @@ const Main = () => {
     }
   };
 
+   // Discart Api
+      const handleDiscart = async (id) => {
+        const confirmDiscart = window.confirm(
+        "Are you sure you want to descartar this Property?"
+      );
+  
+      if (!confirmDiscart) return;
+        try {
+          const response = await axios.put(
+            `${apiUrl}/property/property-discard/${id}`,{},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+    
+          toast.success(response?.data?.message);
+          getMainData();
+        } catch (error) {
+          console.log(error);
+          toast.error(error.response?.data?.message || "Something went wrong");
+        }
+      };
+
   return (
     <Fragment>
       <div className="index-page">
@@ -756,7 +781,7 @@ const Main = () => {
                                                 onClick={() =>
                                                   window.open(
                                                     `https://wa.me/?text=${encodeURIComponent(
-                                                      window.location.href
+                                                      `https://new-hauzzi.vercel.app/propert-details/${e.id}`
                                                     )}`,
                                                     "_blank"
                                                   )
@@ -774,7 +799,7 @@ const Main = () => {
                                                 onClick={() =>
                                                   window.open(
                                                     `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                                                      window.location.href
+                                                      `https://new-hauzzi.vercel.app/propert-details/${e.id}`
                                                     )}`,
                                                     "_blank"
                                                   )
@@ -792,7 +817,7 @@ const Main = () => {
                                                 onClick={() =>
                                                   window.open(
                                                     `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-                                                      window.location.href
+                                                      `https://new-hauzzi.vercel.app/propert-details/${e.id}`
                                                     )}`,
                                                     "_blank"
                                                   )
@@ -810,7 +835,7 @@ const Main = () => {
                                                 onClick={() =>
                                                   window.open(
                                                     `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                                                      window.location.href
+                                                      `https://new-hauzzi.vercel.app/propert-details/${e.id}`
                                                     )}`,
                                                     "_blank"
                                                   )
@@ -830,6 +855,7 @@ const Main = () => {
                                           <Link
                                             className="dropdown-item"
                                             to="#"
+                                            onClick={() =>handleDiscart(e.id)}
                                           >
                                             <i className="bi bi-trash me-2" />{" "}
                                             Descartar
@@ -1245,7 +1271,7 @@ const Main = () => {
                           </p>
                           <Link
                             className="btn-getstarted mt-3"
-                            to={"/login"}
+                            to={`/propertysell?purpose=wantToSell&type=&category=&search=`}
                             style={{ padding: 16, margin: 0 }}
                           >
                             Ver inmuebles a la venta{" "}
@@ -1281,7 +1307,7 @@ const Main = () => {
                           </p>
                           <Link
                             className="btn-getstarted mt-3"
-                            to={"/login"}
+                            to={`/propertysell?purpose=wantToRent&type=&category=&search=`}
                             style={{ padding: 16, margin: 0 }}
                           >
                             Ver inmubles en alquiler{" "}

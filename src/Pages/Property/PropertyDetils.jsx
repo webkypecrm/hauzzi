@@ -276,7 +276,6 @@ const PropertyDetils = () => {
   }, [lat, lng, allProducts, name, image]);
 
   // Get three property
-
   const getMainData = async () => {
     setLoading(true);
     try {
@@ -445,6 +444,31 @@ const PropertyDetils = () => {
       toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
+
+   // Discart Api
+      const handleDiscart = async (id) => {
+        const confirmDiscart = window.confirm(
+        "Are you sure you want to descartar this Property?"
+      );
+  
+      if (!confirmDiscart) return;
+        try {
+          const response = await axios.put(
+            `${apiUrl}/property/property-discard/${id}`,{},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+    
+          toast.success(response?.data?.message);
+          getMainData();
+        } catch (error) {
+          console.log(error);
+          toast.error(error.response?.data?.message || "Something went wrong");
+        }
+      };
 
   // ----------------------Calender------------------
 
@@ -1786,7 +1810,7 @@ const PropertyDetils = () => {
                                             onClick={() =>
                                               window.open(
                                                 `https://wa.me/?text=${encodeURIComponent(
-                                                  window.location.href
+                                                  `https://new-hauzzi.vercel.app/propert-details/${e.id}`
                                                 )}`,
                                                 "_blank"
                                               )
@@ -1804,7 +1828,7 @@ const PropertyDetils = () => {
                                             onClick={() =>
                                               window.open(
                                                 `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                                                  window.location.href
+                                                  `https://new-hauzzi.vercel.app/propert-details/${e.id}`
                                                 )}`,
                                                 "_blank"
                                               )
@@ -1822,7 +1846,7 @@ const PropertyDetils = () => {
                                             onClick={() =>
                                               window.open(
                                                 `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-                                                  window.location.href
+                                                  `https://new-hauzzi.vercel.app/propert-details/${e.id}`
                                                 )}`,
                                                 "_blank"
                                               )
@@ -1840,7 +1864,7 @@ const PropertyDetils = () => {
                                             onClick={() =>
                                               window.open(
                                                 `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                                                  window.location.href
+                                                  `https://new-hauzzi.vercel.app/propert-details/${e.id}`
                                                 )}`,
                                                 "_blank"
                                               )
@@ -1857,7 +1881,9 @@ const PropertyDetils = () => {
                                     </li>
 
                                     <li>
-                                      <Link className="dropdown-item" to="#">
+                                      <Link className="dropdown-item" to="#" onClick={() =>
+                                                  handleDiscart(e.id)
+                                                }>
                                         <i className="bi bi-trash me-2" />{" "}
                                         Descartar
                                       </Link>

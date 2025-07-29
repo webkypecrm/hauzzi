@@ -116,73 +116,84 @@ const MyAds = () => {
                       {adsData?.data?.map((e) => (
                         <div className="col-lg-4 col-md-4" key={e.id}>
                           <div className="feat_property">
-                            <Link to={`/propert-details/${e.id}`} state={{
-                                  lat: e.latitude,
-                                  lng: e.longitude,
-                                  name: e.name,
-                                  image: e.images[0],
-                                  allProducts: adsData.data,
-                                }}>
-                            <div className="thumb">
-                              <img
-                                className="img-whp"
-                                src={e.images[0]}
-                                alt="fp1.jpg"
-                              />
-                              <div className="thmb_cntnt">
-                                <ul className="tag mb-0 p-0">
-                                  <li className="list-inline-item">
-                                    <span>{e.purpose}</span>
-                                  </li>{" "}
-                                  <li className="list-inline-item">
-                                    <span>{e.tags}</span>
-                                  </li>
-                                </ul>
+                            <Link
+                              to={`/propert-details/${e.id}`}
+                              state={{
+                                lat: e.latitude,
+                                lng: e.longitude,
+                                name: e.name,
+                                image: e.images[0],
+                                allProducts: adsData.data,
+                              }}
+                            >
+                              <div className="thumb">
+                                <img
+                                  className="img-whp"
+                                  src={e.images[0]}
+                                  alt="fp1.jpg"
+                                />
+                                <div className="thmb_cntnt">
+                                  <ul className="tag mb-0 p-0">
+                                    <li className="list-inline-item">
+                                      <span>{e.purpose}</span>
+                                    </li>{" "}
+                                    <li className="list-inline-item">
+                                      <span>{e.tags}</span>
+                                    </li>
+                                  </ul>
+                                </div>
                               </div>
-                            </div>
                             </Link>
                             <div className="details">
-                              <Link to={`/propert-details/${e.id}`} state={{
+                              <Link
+                                to={`/propert-details/${e.id}`}
+                                state={{
                                   lat: e.latitude,
                                   lng: e.longitude,
                                   name: e.name,
                                   image: e.images[0],
                                   allProducts: adsData.data,
-                                }}>
-                              <div className="tc_content">
-                                <div className="title-price">
-                                  <h4 className="line-clamp-1">{e.name}</h4>
-                                  <span className="fp_price">
-  ${e.maxPrice ? Number(e.maxPrice).toLocaleString() : Number(e.rentalPrice).toLocaleString()}
-</span>
+                                }}
+                              >
+                                <div className="tc_content">
+                                  <div className="title-price">
+                                    <h4 className="line-clamp-1">{e.name}</h4>
+                                    <span className="fp_price">
+                                      $
+                                      {e.maxPrice
+                                        ? Number(e.maxPrice).toLocaleString()
+                                        : Number(
+                                            e.rentalPrice
+                                          ).toLocaleString()}
+                                    </span>
+                                  </div>
+                                  <p className="line-clamp-1">
+                                    <img src="img/my-img/vector.png" />{" "}
+                                    <span style={{ marginLeft: 5 }}>
+                                      {e.address1}
+                                    </span>
+                                  </p>
+                                  <ul className="prop_details mb-0 p-0">
+                                    <li className="list-inline-item">
+                                      <span>
+                                        <img src="img/my-img/icon.png" />{" "}
+                                        {e?.listingDetails?.Habitaciones} Hab.{" "}
+                                      </span>
+                                    </li>{" "}
+                                    <li className="list-inline-item">
+                                      <span>
+                                        <img src="img/my-img/Vector_1.png" />{" "}
+                                        {e?.listingDetails?.Baños} Baños{" "}
+                                      </span>
+                                    </li>{" "}
+                                    <li className="list-inline-item">
+                                      <span>
+                                        <img src="img/my-img/icon_1.png" />{" "}
+                                        {e?.propertySize || e?.maxSize} m2{" "}
+                                      </span>
+                                    </li>
+                                  </ul>
                                 </div>
-                                <p className="line-clamp-1">
-                                  <img src="img/my-img/vector.png" />{" "}
-                                  <span style={{ marginLeft: 5 }}>
-                                    {e.address1}
-                                  </span>
-                                </p>
-                                <ul className="prop_details mb-0 p-0">
-                                  <li className="list-inline-item">
-                                    <span>
-                                      <img src="img/my-img/icon.png" />{" "}
-                                      {e?.listingDetails?.Habitaciones} Hab.{" "}
-                                    </span>
-                                  </li>{" "}
-                                  <li className="list-inline-item">
-                                    <span>
-                                      <img src="img/my-img/Vector_1.png" />{" "}
-                                      {e?.listingDetails?.Baños} Baños{" "}
-                                    </span>
-                                  </li>{" "}
-                                  <li className="list-inline-item">
-                                    <span>
-                                      <img src="img/my-img/icon_1.png" />{" "}
-                                      {e?.propertySize || e?.maxSize} m2{" "}
-                                    </span>
-                                  </li>
-                                </ul>
-                              </div>
                               </Link>
                               <div className="d-flex align-items-center p-2 border-top">
                                 <button className="btn highlight-btn d-flex align-items-center me-2">
@@ -192,7 +203,10 @@ const MyAds = () => {
                                 <div className="view-counter">
                                   <i className="bi bi-eye" /> Visto: {e.views}
                                 </div>
-                                <button className="icon-btn ms-2" onClick={() => handelNavigate(e.id)}>
+                                <button
+                                  className="icon-btn ms-2"
+                                  onClick={() => handelNavigate(e.id)}
+                                >
                                   <i className="bi bi-pencil-square" />
                                 </button>
                                 <button

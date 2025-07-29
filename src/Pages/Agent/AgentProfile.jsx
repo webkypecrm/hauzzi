@@ -364,6 +364,31 @@ const AgentProfile = () => {
     }
   };
 
+   // Discart Api
+      const handleDiscart = async (id) => {
+        const confirmDiscart = window.confirm(
+        "Are you sure you want to descartar this Property?"
+      );
+  
+      if (!confirmDiscart) return;
+        try {
+          const response = await axios.put(
+            `${apiUrl}/property/property-discard/${id}`,{},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+    
+          toast.success(response?.data?.message);
+          getAllData();
+        } catch (error) {
+          console.log(error);
+          toast.error(error.response?.data?.message || "Something went wrong");
+        }
+      };
+
   return (
     <Fragment>
       <div className="index-page">
@@ -1087,7 +1112,7 @@ const AgentProfile = () => {
                                                       onClick={() =>
                                                         window.open(
                                                           `https://wa.me/?text=${encodeURIComponent(
-                                                            window.location.href
+                                                            `https://new-hauzzi.vercel.app/propert-details/${property.id}`
                                                           )}`,
                                                           "_blank"
                                                         )
@@ -1105,7 +1130,7 @@ const AgentProfile = () => {
                                                       onClick={() =>
                                                         window.open(
                                                           `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                                                            window.location.href
+                                                            `https://new-hauzzi.vercel.app/propert-details/${property.id}`
                                                           )}`,
                                                           "_blank"
                                                         )
@@ -1123,7 +1148,7 @@ const AgentProfile = () => {
                                                       onClick={() =>
                                                         window.open(
                                                           `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-                                                            window.location.href
+                                                            `https://new-hauzzi.vercel.app/propert-details/${property.id}`
                                                           )}`,
                                                           "_blank"
                                                         )
@@ -1141,7 +1166,7 @@ const AgentProfile = () => {
                                                       onClick={() =>
                                                         window.open(
                                                           `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                                                            window.location.href
+                                                            `https://new-hauzzi.vercel.app/propert-details/${property.id}`
                                                           )}`,
                                                           "_blank"
                                                         )
@@ -1161,6 +1186,9 @@ const AgentProfile = () => {
                                                 <Link
                                                   className="dropdown-item"
                                                   to="#"
+                                                  onClick={() =>
+                                                  handleDiscart(property.id)
+                                                }
                                                 >
                                                   <i className="bi bi-trash me-2" />{" "}
                                                   Descartar
@@ -1449,7 +1477,7 @@ const AgentProfile = () => {
                                                       onClick={() =>
                                                         window.open(
                                                           `https://wa.me/?text=${encodeURIComponent(
-                                                            window.location.href
+                                                            `https://new-hauzzi.vercel.app/propert-details/${prop.id}`
                                                           )}`,
                                                           "_blank"
                                                         )
@@ -1467,7 +1495,7 @@ const AgentProfile = () => {
                                                       onClick={() =>
                                                         window.open(
                                                           `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                                                            window.location.href
+                                                            `https://new-hauzzi.vercel.app/propert-details/${prop.id}`
                                                           )}`,
                                                           "_blank"
                                                         )
@@ -1485,7 +1513,7 @@ const AgentProfile = () => {
                                                       onClick={() =>
                                                         window.open(
                                                           `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-                                                            window.location.href
+                                                            `https://new-hauzzi.vercel.app/propert-details/${prop.id}`
                                                           )}`,
                                                           "_blank"
                                                         )
@@ -1503,7 +1531,7 @@ const AgentProfile = () => {
                                                       onClick={() =>
                                                         window.open(
                                                           `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                                                            window.location.href
+                                                            `https://new-hauzzi.vercel.app/propert-details/${prop.id}`
                                                           )}`,
                                                           "_blank"
                                                         )
@@ -1523,6 +1551,9 @@ const AgentProfile = () => {
                                                 <Link
                                                   className="dropdown-item"
                                                   to="#"
+                                                  onClick={() =>
+                                                  handleDiscart(prop.id)
+                                                }
                                                 >
                                                   <i className="bi bi-trash me-2" />{" "}
                                                   Descartar
