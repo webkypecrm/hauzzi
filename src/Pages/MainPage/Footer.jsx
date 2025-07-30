@@ -64,9 +64,9 @@ const Footer = () => {
                 <li>
                   <Link to="/contact">Contacta con Hauzzi&nbsp;</Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link to="#">Preguntas frecuentes&nbsp;</Link>
-                </li>
+                </li> */}
                 <li>
                   <Link to="/blog">Blog&nbsp;</Link>
                 </li>
@@ -82,10 +82,13 @@ const Footer = () => {
               <h4>Particulares</h4>
               <ul style={{fontSize: 13}}>
                 <li>
-                  <Link to="#">Anuncia tu propiedad</Link>
+                  <Link to="/index2">Anuncia tu propiedad</Link>
                 </li>
                 <li>
-                  <Link to="#">Vende con un profesional</Link>
+                  <Link to="/index2">Vende con un profesional</Link>
+                </li>
+                <li>
+                  <Link to="/plans">Planes y precios</Link>
                 </li>
               </ul>
             </div>
@@ -98,9 +101,7 @@ const Footer = () => {
                 <li>
                   <Link to="#">Anuncia tu propiedad</Link>
                 </li>
-                <li>
-                  <Link to="#">Planes y precios</Link>
-                </li>
+                
                 <li>
                   <Link to="#">CRM Inmobiliario</Link>
                 </li>

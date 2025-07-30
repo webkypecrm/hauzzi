@@ -331,7 +331,7 @@ const Main = () => {
                                   className="form-select border-s"
                                   onChange={handleLookingForChange}
                                 >
-                                  <option value={1}>Looking For</option>
+                                  <option value={1}>Buscando</option>
                                   <option value={2}>Rent</option>
                                   <option value={3}>Sale</option>
                                   {/* <option value={4}>Both</option> */}
@@ -353,7 +353,7 @@ const Main = () => {
                                   value={selectedCategoryId}
                                   onChange={handleCategoryChange}
                                 >
-                                  <option value="">All Categories</option>
+                                  <option value="">Todas las categorías</option>
                                   {category.map((cat) => (
                                     <option key={cat.id} value={cat.id}>
                                       {cat.name}
@@ -943,7 +943,7 @@ const Main = () => {
                             </Link>
                             <Link
                               className="btn-getstarted mt-0"
-                              to={"/login"}
+                              to={"/index2"}
                               style={{ padding: 16, margin: 0 }}
                             >
                               Regístrate ahora{" "}
@@ -993,7 +993,7 @@ const Main = () => {
                             </Link>
                             <Link
                               className="btn-getstarted mt-0"
-                              to={"/login"}
+                              to={"/index3"}
                               style={{ padding: 16, margin: 0 }}
                             >
                               Publica tu inmueble gratis{" "}
@@ -1082,7 +1082,7 @@ const Main = () => {
                                               color: "#97989F",
                                             }}
                                           >
-                                            By Hauzzi
+                                            Por Hauzzi
                                           </span>
                                         </span>
                                       </li>
