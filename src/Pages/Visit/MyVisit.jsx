@@ -127,10 +127,10 @@ const MyVisit = () => {
     }
   };
 
-  console.log(
-    "first",
-    calendarData?.map((item) => item.property.name)
-  );
+  // console.log(
+  //   "first",
+  //   calendarData?.map((item) => item.property.name)
+  // );
 
   useEffect(() => {
     getCalendarData();

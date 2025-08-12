@@ -18,10 +18,6 @@ const LIBRARIES = ["places"];
 const defaultCenter = { lat: 28.6139, lng: 77.209 };
 
 const PublishProperty = () => {
-  const apiUrl = import.meta.env.VITE_API_URL;
-  const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
-  const token2 = localStorage.getItem("token");
-  const customerId = localStorage.getItem("tokenId") || "";
   // const [images, setImages] = useState(Array(10).fill(null));
   const [images, setImages] = useState([]);
   const [propertyTypes, setPropertyTypes] = useState([]);
@@ -39,6 +35,11 @@ const PublishProperty = () => {
   const [selectedStateId, setSelectedStateId] = useState("");
   const [allData, setAllData] = useState([]);
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
+  const token2 = localStorage.getItem("token");
+  const customerId = localStorage.getItem("tokenId") || "";
 
   const { id } = useParams();
 
@@ -698,7 +699,7 @@ const PublishProperty = () => {
                         </div>
                       </div>
 
-                      <div className="col-md-3 mb-3">
+                      {/* <div className="col-md-3 mb-3">
                         <label className="form-label">
                           Cargos de mantenimiento
                         </label>
@@ -713,9 +714,9 @@ const PublishProperty = () => {
                           />
                           <button className="dollar-btn">$</button>
                         </div>
-                      </div>
+                      </div> */}
 
-                      <div className="col-md-3 mb-3">
+                      {/* <div className="col-md-3 mb-3">
                         <label className="form-label">Monto de seguridad</label>
                         <div className="d-flex align-items-center position-relative">
                           <input
@@ -728,9 +729,9 @@ const PublishProperty = () => {
                           />
                           <button className="dollar-btn">$</button>
                         </div>
-                      </div>
+                      </div> */}
 
-                      <div className="col-md-3 mb-3">
+                      {/* <div className="col-md-3 mb-3">
                         <label className="form-label">
                           Tamaño del área de alquiler
                         </label>
@@ -744,7 +745,7 @@ const PublishProperty = () => {
                             onChange={handleInputChange}
                           />
                         </div>
-                      </div>
+                      </div> */}
                     </>
                   )}
                   <div className="col-md-3 mb-3">
@@ -1174,7 +1175,7 @@ const PublishProperty = () => {
                     </select>
                   </div>
 
-                  <div className="col-md-4">
+                  {/* <div className="col-md-4">
                     <label className="form-label">Nombre del constructor</label>
                     <input
                       type="text"
@@ -1184,8 +1185,8 @@ const PublishProperty = () => {
                       value={propertyData.builderName}
                       onChange={handleInputChange}
                     />
-                  </div>
-                  <div className="col-md-4">
+                  </div> */}
+                  {/* <div className="col-md-4">
                     <label className="form-label">Nombre de la sociedad</label>
                     <input
                       type="text"
@@ -1195,7 +1196,7 @@ const PublishProperty = () => {
                       value={propertyData.societyName}
                       onChange={handleInputChange}
                     />
-                  </div>
+                  </div> */}
 
                   <div className="col-md-4">
                     <label className="form-label">Código postal</label>

@@ -14,6 +14,7 @@ import call from "../../assets/img/blackCall.png";
 import mail from "../../assets/img/blackMail.png";
 import link from "../../assets/img/link.png";
 import twitter from "../../assets/img/twitter.png";
+import getApi from "../../Hook.js";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 // import 'swiper/css';
@@ -37,6 +38,9 @@ const Main = () => {
   const [blogsData, setBlogsData] = useState([]);
   const [compareIds, setCompareIds] = useState([]);
   const [compareLoaded, setCompareLoaded] = useState(false);
+  const [folderPopup, setFolderPopup] = useState(false);
+   const [folderData, setFolderData] = useState([]);
+   const [selectedFolderId, setSelectedFolderId] = useState("");
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
@@ -136,9 +140,8 @@ const Main = () => {
     getCategory();
     handelBlogData();
   }, []);
-
+// --------------------------------------------------------------------------------
   // Wishlist Api
-
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
@@ -156,7 +159,7 @@ const Main = () => {
                 : Number(item)
             )
           : [];
-        console.log("wishlistID", ids);
+        console.log("wishlistID", res?.data?.data);
 
         setWishlistIds(ids);
       } catch (err) {
@@ -181,7 +184,6 @@ const Main = () => {
       );
 
       toast.success(response.data.message);
-
       setWishlistIds((prev) =>
         prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
       );
@@ -190,7 +192,95 @@ const Main = () => {
       toast.error(error.response.data.message);
     }
   };
+  // fatch foldet true/false
+  const url = `${apiUrl}/profile/getById/${customerId}`;
+  const { data, error } = getApi(url);
+  const folder = data?.isFolder;
+  console.log("folder", folder);
 
+  // folder options
+  const getFolderData = async () => {
+    try {
+      const res = await axios.get(
+        `${apiUrl}/property/get-Folders-byCustomerId?customerId=${customerId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token2}`,
+          },
+        }
+      );
+      setFolderData(res?.data?.data);
+      console.log("folderData", res?.data.data);
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
+  useEffect(() => {
+    getFolderData();
+  }, []);
+
+// property add in folder
+
+   useEffect(() => {
+    const fetchFolderProperty = async () => {
+      try {
+        const res = await axios.get(
+          `${apiUrl}/property/getPropertyFolderData`,
+          {
+            headers: { Authorization: `Bearer ${token2}` },
+          }
+        );
+
+        const folderIds = Array.isArray(res?.data?.data)
+          ? res?.data?.data.map((item) =>
+              typeof item === "object" && item !== null
+                ? Number(item.propertyId)
+                : Number(item)
+            )
+          : [];
+        console.log("folderProperty", res?.data?.data);
+        console.log("folderPropertyids", folderIds);
+
+        setWishlistIds(ids);
+      } catch (err) {
+        setWishlistIds([]);
+      } finally {
+        setWishlistLoaded(true);
+      }
+    };
+
+ fetchFolderProperty();
+  }, []);
+
+
+
+const handleAddFolder = async (id) => {
+  try {
+    const response = await axios.post(
+      `${apiUrl}/property/addpropertyFolderData`,{
+        propertyId: id,
+        folderId: Number(selectedFolderId),
+        customerId: Number(customerId),
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token2}`,
+        },
+      }
+    );
+    setFolderPopup(false)
+    toast.success(response.data.message);
+  } catch (error) {
+    console.log(error);
+    toast.error(error.response.data.message);
+    setFolderPopup(false)
+  }
+};
+
+
+
+// ----------------------------------------------------------------------------------
   // compair api
   useEffect(() => {
     const fetchCompareList = async () => {
@@ -248,30 +338,31 @@ const Main = () => {
     }
   };
 
-   // Discart Api
-      const handleDiscart = async (id) => {
-        const confirmDiscart = window.confirm(
-        "Are you sure you want to descartar this Property?"
-      );
-  
-      if (!confirmDiscart) return;
-        try {
-          const response = await axios.put(
-            `${apiUrl}/property/property-discard/${id}`,{},
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-    
-          toast.success(response?.data?.message);
-          getMainData();
-        } catch (error) {
-          console.log(error);
-          toast.error(error.response?.data?.message || "Something went wrong");
+  // Discart property Api
+  const handleDiscart = async (id) => {
+    const confirmDiscart = window.confirm(
+      "Are you sure you want to descartar this Property?"
+    );
+
+    if (!confirmDiscart) return;
+    try {
+      const response = await axios.put(
+        `${apiUrl}/property/property-discard/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      };
+      );
+
+      toast.success(response?.data?.message);
+      getMainData();
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  };
 
   return (
     <Fragment>
@@ -564,7 +655,11 @@ const Main = () => {
                                       <i
                                         className="fa fa-heart hrt-icon"
                                         aria-hidden="true"
-                                        onClick={() => handelWishlist(e?.id)}
+                                        onClick={
+                                          folder
+                                            ? () => setFolderPopup(true)
+                                            : () => handelWishlist(e?.id)
+                                        }
                                         style={{
                                           color: wishlistIds.includes(e?.id)
                                             ? "red"
@@ -577,6 +672,68 @@ const Main = () => {
                               </div>
                             </Link>
 
+
+
+                            {/* select folder Modal  */}
+                            {folderPopup && (
+                              <div className="popup-overlay">
+                                <div
+                                  className="popup-content"
+                                  // onClick={(e) => e.stopPropagation()}
+                                >
+                                  <div className="d-flex justify-content-between mb-2">
+                                    <h5>Seleccionar carpeta </h5>
+                                    <img
+                                      src="img/my-img/X-circle.png"
+                                      alt=""
+                                      style={{
+                                        height: "20px",
+                                        width: "20px",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() => setFolderPopup(false)}
+                                    />
+                                  </div>
+                                  <div>
+                                    <select
+                                      className="mb-4 w-100 add-folder-modal"
+                                       name="folderId"
+  value={selectedFolderId}
+  onChange={(e) => setSelectedFolderId(e.target.value)}
+                                    >
+                                      <option value="">Seleccionar</option>
+                                      {folderData?.map((folder) => (
+                                        <option
+                                          key={folder.id}
+                                          value={folder.id}
+                                        >
+                                          {folder.name}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+
+                                  <div className="d-flex justify-content-between">
+                                    <button
+                                      className="cancelar-btn"
+                                      onClick={() => setFolderPopup(false)}
+                                    >
+                                      Cancelar
+                                    </button>
+                                    <button
+                                      className="crear-btn"
+                                      onClick={()=>handleAddFolder(e?.id)}
+                                    >
+                                      Agregar
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+
+
+                            {/* select folder Modal  */}
                             <div className="details">
                               <Link
                                 to={`/propert-details/${e.id}`}
@@ -661,28 +818,7 @@ const Main = () => {
                                       style={{ marginRight: "0px" }}
                                     >
                                       <span>
-                                        {/* <img
-                                          src={e.Customer?.userDetails.map(
-                                            (item) => item.photoUrl
-                                          )}
-                                          // alt="poster"
-                                          className="profile-pic"
-                                        /> */}
                                         <img
-                                          // src={
-                                          //   e.Customer?.userDetails?.length > 0
-                                          //     ? e.Customer.userDetails[0]
-                                          //         .photoUrl
-                                          //     : e.Customer?.agentDetails
-                                          //         ?.length > 0
-                                          //     ? e.Customer.agentDetails[0]
-                                          //         .photoUrl
-                                          //     : e.Customer?.agencyDetails
-                                          //         ?.length > 0
-                                          //     ? e.Customer.agencyDetails[0]
-                                          //         .photoUrl
-                                          //     : hauzzi
-                                          // }
                                           src={
                                             e.Customer?.userDetails?.[0]
                                               ?.photoUrl ||
@@ -823,10 +959,7 @@ const Main = () => {
                                                   )
                                                 }
                                               >
-                                                <img
-                                                  src={twitter}
-                                                  width="16"
-                                                />
+                                                <img src={twitter} width="16" />
                                                 {/* Twitter */}
                                               </button>
 
@@ -841,10 +974,7 @@ const Main = () => {
                                                   )
                                                 }
                                               >
-                                                <img
-                                                  src={link}
-                                                  width="16"
-                                                />
+                                                <img src={link} width="16" />
                                                 {/* LinkedIn */}
                                               </button>
                                             </div>
@@ -855,7 +985,7 @@ const Main = () => {
                                           <Link
                                             className="dropdown-item"
                                             to="#"
-                                            onClick={() =>handleDiscart(e.id)}
+                                            onClick={() => handleDiscart(e.id)}
                                           >
                                             <i className="bi bi-trash me-2" />{" "}
                                             Descartar

@@ -1903,6 +1903,7 @@ const PropertyEdit = () => {
                           className="spinner-border spinner-border-sm me-2"
                           role="status"
                           aria-hidden="true"
+                          type="submit"
                         ></span>
                         Actualizado...
                       </>
@@ -1910,14 +1911,14 @@ const PropertyEdit = () => {
                       "Actualizar Inmueble"
                     )}
                   </button>
-                  <button
+                  {/* <button
                     type="submit"
                     className="btn border-primary border w-auto ps-4 pe-4 text-capitalize"
                     name="action"
                     value="draft"
                   >
                     Guardar borrador
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </form>

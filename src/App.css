@@ -770,5 +770,43 @@ color: #1A1A1A;
   position: relative;
 }
 
+/* mis favoritos */
+.add-icon-favo{
+  background-color: #FFBD59;
+  border-radius: 4px;
+  height: 25px;
+  width: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.cancelar-btn{
+  background-color: transparent;
+  border: none;
+  color: #7C7C7C;
+  padding: 5px 10px;
+  border: 1px solid #FFBD59;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.crear-btn{
+  background-color: #FFBD59;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.add-folder-modal{
+  outline: none;
+  border: 1px solid #CBCBCB;
+  border-radius: 8px;
+  padding: 7px;
+}
+.add-folder-modal::placeholder{
+  font-size: 12px;
+  align-items: center;
+}
 
 
