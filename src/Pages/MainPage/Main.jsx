@@ -34,13 +34,15 @@ const Main = () => {
   const [selectCategory, setselectCategory] = useState("");
   const [search, setSearch] = useState("");
   const [wishlistIds, setWishlistIds] = useState([]);
+  const [wishlistFolderIds, setWishlistFolderIds] = useState([]);
   const [wishlistLoaded, setWishlistLoaded] = useState(false);
   const [blogsData, setBlogsData] = useState([]);
   const [compareIds, setCompareIds] = useState([]);
   const [compareLoaded, setCompareLoaded] = useState(false);
   const [folderPopup, setFolderPopup] = useState(false);
-   const [folderData, setFolderData] = useState([]);
-   const [selectedFolderId, setSelectedFolderId] = useState("");
+  const [folderData, setFolderData] = useState([]);
+  const [selectedFolderId, setSelectedFolderId] = useState("");
+  const [selectedPropertyId, setSelectedPropertyId] = useState(null);
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
@@ -59,7 +61,7 @@ const Main = () => {
         }
       );
 
-      setMainData(response?.data);
+      setMainData(response?.data?.data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -67,7 +69,10 @@ const Main = () => {
     }
   };
 
-  console.log("first", mainData?.data);
+  console.log(
+    "firstmainDATA",
+    mainData.map((item) => item.id)
+  );
 
   const handleLookingForChange = (e) => {
     const selectedText = e.target.options[e.target.selectedIndex].text.trim();
@@ -140,7 +145,7 @@ const Main = () => {
     getCategory();
     handelBlogData();
   }, []);
-// --------------------------------------------------------------------------------
+  // --------------------------------------------------------------------------------
   // Wishlist Api
   useEffect(() => {
     const fetchWishlist = async () => {
@@ -220,13 +225,12 @@ const Main = () => {
     getFolderData();
   }, []);
 
-// property add in folder
-
-   useEffect(() => {
+  // property add in folder
+  useEffect(() => {
     const fetchFolderProperty = async () => {
       try {
         const res = await axios.get(
-          `${apiUrl}/property/getPropertyFolderData`,
+          `${apiUrl}/property/getPropertyFolderData?customerId=${customerId}`,
           {
             headers: { Authorization: `Bearer ${token2}` },
           }
@@ -239,10 +243,10 @@ const Main = () => {
                 : Number(item)
             )
           : [];
-        console.log("folderProperty", res?.data?.data);
-        console.log("folderPropertyids", folderIds);
+        // console.log("folderProperty", res?.data?.data);
+        // console.log("folderPropertyids", folderIds);
 
-        setWishlistIds(ids);
+        setWishlistFolderIds(folderIds);
       } catch (err) {
         setWishlistIds([]);
       } finally {
@@ -250,37 +254,40 @@ const Main = () => {
       }
     };
 
- fetchFolderProperty();
+    fetchFolderProperty();
   }, []);
 
+  const handleAddFolder = async (pid) => {
+    // console.log(id)
+    try {
+      const response = await axios.post(
+        `${apiUrl}/property/addpropertyFolderData`,
 
-
-const handleAddFolder = async (id) => {
-  try {
-    const response = await axios.post(
-      `${apiUrl}/property/addpropertyFolderData`,{
-        propertyId: id,
-        folderId: Number(selectedFolderId),
-        customerId: Number(customerId),
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token2}`,
+        {
+          propertyId: pid,
+          folderId: Number(selectedFolderId),
+          customerId: Number(customerId),
         },
-      }
-    );
-    setFolderPopup(false)
-    toast.success(response.data.message);
-  } catch (error) {
-    console.log(error);
-    toast.error(error.response.data.message);
-    setFolderPopup(false)
-  }
-};
+        {
+          headers: {
+            Authorization: `Bearer ${token2}`,
+          },
+        }
+      );
 
+      // Update UI instantly
+    setWishlistFolderIds((prev) => [...prev, pid]);
 
+      setFolderPopup(false);
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+      setFolderPopup(false);
+    }
+  };
 
-// ----------------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------------
   // compair api
   useEffect(() => {
     const fetchCompareList = async () => {
@@ -572,10 +579,10 @@ const handleAddFolder = async (id) => {
                   </h2>
                 </div>
 
-                {mainData?.data?.length > 0 ? (
+                {mainData?.length > 0 ? (
                   <div className="container">
                     <div className="row gy-4">
-                      {mainData?.data?.map((e) => (
+                      {mainData?.map((e) => (
                         <div className="col-xl-4 col-md-6" key={e.id}>
                           <div
                             className="feat_property"
@@ -655,24 +662,34 @@ const handleAddFolder = async (id) => {
                                       <i
                                         className="fa fa-heart hrt-icon"
                                         aria-hidden="true"
-                                        onClick={
+                                        // onClick={
+                                        //   folder
+                                        //     ? () => setFolderPopup(true)
+                                        //     : () => handelWishlist(e?.id)
+                                        // }
+                                        onClick={() => {
+                                          setSelectedPropertyId(e.id); // yaha store hoga
                                           folder
-                                            ? () => setFolderPopup(true)
-                                            : () => handelWishlist(e?.id)
-                                        }
-                                        style={{
-                                          color: wishlistIds.includes(e?.id)
-                                            ? "red"
-                                            : "",
+                                            ? setFolderPopup(true)
+                                            : handelWishlist(e.id);
                                         }}
+                                        // style={{
+                                        //   color: wishlistIds.includes(e?.id)
+                                        //     ? "red"
+                                        //     : "",
+                                        // }}
+                                        style={{
+  color:
+    wishlistIds.includes(e?.id) || wishlistFolderIds.includes(e?.id)
+      ? "red"
+      : "",
+}}
                                       />
                                     </li>
                                   </ul>
                                 </div>
                               </div>
                             </Link>
-
-
 
                             {/* select folder Modal  */}
                             {folderPopup && (
@@ -697,9 +714,11 @@ const handleAddFolder = async (id) => {
                                   <div>
                                     <select
                                       className="mb-4 w-100 add-folder-modal"
-                                       name="folderId"
-  value={selectedFolderId}
-  onChange={(e) => setSelectedFolderId(e.target.value)}
+                                      name="folderId"
+                                      value={selectedFolderId}
+                                      onChange={(e) =>
+                                        setSelectedFolderId(e.target.value)
+                                      }
                                     >
                                       <option value="">Seleccionar</option>
                                       {folderData?.map((folder) => (
@@ -722,7 +741,9 @@ const handleAddFolder = async (id) => {
                                     </button>
                                     <button
                                       className="crear-btn"
-                                      onClick={()=>handleAddFolder(e?.id)}
+                                      onClick={() =>
+                                        handleAddFolder(selectedPropertyId)
+                                      }
                                     >
                                       Agregar
                                     </button>
@@ -730,8 +751,6 @@ const handleAddFolder = async (id) => {
                                 </div>
                               </div>
                             )}
-
-
 
                             {/* select folder Modal  */}
                             <div className="details">

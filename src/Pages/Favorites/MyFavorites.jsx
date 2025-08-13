@@ -8,6 +8,7 @@ import Slider from "react-slick";
 import addIcon from "../../assets/img/add.png";
 import hauzziPic from "../../assets/img/hauzziIcon.png";
 import { toast } from "react-toastify";
+import getApi from "../../Hook.js";
 
 const MyFavorites = () => {
   const [favPropertys, setFavProperties] = useState([]);
@@ -16,7 +17,8 @@ const MyFavorites = () => {
   const [loading, setLoading] = useState(true);
   const [popup, setPopup] = useState(false);
   const [folderData, setFolderData] = useState([]);
-  const [folderName, setFolderName] = useState("");   //for post api
+  const [folderName, setFolderName] = useState(""); //for post api
+  const [folderId, setFolderId] = useState("");
 
   const token = localStorage.getItem("token");
   const token2 = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
@@ -182,11 +184,14 @@ const MyFavorites = () => {
   // get folder data for create folder
   const getFolderData = async () => {
     try {
-      const res = await axios.get(`${apiUrl}/property/get-Folders-byCustomerId?customerId=${customerId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await axios.get(
+        `${apiUrl}/property/get-Folders-byCustomerId?customerId=${customerId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setFolderData(res?.data?.data);
       console.log("folderData", res?.data);
     } catch (error) {
@@ -194,14 +199,41 @@ const MyFavorites = () => {
     }
   };
 
+  // get folder property
+  const [folderPropertyData, setFolderPropertyData] = useState([]);
+  console.log("folderId", folderId);
+  const getFolderpropertyData = async () => {
+    try {
+      const res = await axios.get(
+        `${apiUrl}/property/getPropertyFolderData?customerId=${customerId}&folderId=${folderId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setFolderPropertyData(res?.data?.data);
+      console.log("setFolderPropertyData", res?.data);
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
   useEffect(() => {
     getFolderData();
-  }, []);
+    if (folderId){getFolderpropertyData();}
+    
+  }, [folderId]);
   // console.log("folderData", folderData);
+    // fatch foldet true/false
+    const url = `${apiUrl}/profile/getById/${customerId}`;
+    const { data, error } = getApi(url);
+    const folder = data?.isFolder;
+    console.log("folder", folder);
 
   // delete folder
   const deleteFolder = async (id) => {
-     const confirmDelete = window.confirm(
+    const confirmDelete = window.confirm(
       "Are you sure you want to delete this Folder?"
     );
 
@@ -211,13 +243,15 @@ const MyFavorites = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      })
+      });
       toast.success(res?.data?.message);
       getFolderData();
+      getFolderpropertyData();
+      handelFavProperty();
     } catch (error) {
       toast.error(error?.res?.data?.message);
     }
-  }
+  };
 
   return (
     <Fragment>
@@ -279,37 +313,67 @@ const MyFavorites = () => {
                     </div>
                   </div>
                   {folderData?.map((item) => (
-                    <div className="thumbnail justify-content-around" style={{width: "210px"}} key={item?.id}>
-                    <img src={hauzziPic} />
-                    <div>
-                      <p className="mb-0">{item.name}</p>
-                      <small className="text-muted d-block">1 inmueble</small>
+                    <div
+                      className="thumbnail justify-content-around"
+                      style={{ width: "210px" ,cursor:"pointer"}}
+                      key={item?.id}
+                      onClick={() => setFolderId(item?.id)}
+                    >
+                      <img src={hauzziPic} />
+                      <div>
+                        <p className="mb-0">{item.name}</p>
+                        <small className="text-muted d-block">1 inmueble</small>
+                      </div>
+                      <div
+                        className="d-flex flex-column"
+                        style={{ cursor: "pointer" }}
+                      >
+                        <i className="bi bi-person-plus-fill" />
+                        <i
+                          className="bi bi-trash"
+                          onClick={() => deleteFolder(item?.id)}
+                        />
+                      </div>
                     </div>
-                    <div className="d-flex flex-column" style={{ cursor: "pointer" }}>
-                      <i className="bi bi-person-plus-fill" />
-                      <i className="bi bi-trash" onClick={() => deleteFolder(item?.id)} />
-                    </div>
-                  </div>
-                    
                   ))}
-                  
-                  {/* <div className="thumbnail">
-                    <img src="img/my-img/myfav-2-sm.jpg" />
-                    <div>
-                      <p className="mb-0">No contactados</p>
-                      <small className="text-muted d-block">0 inmuebles</small>
-                    </div>
-                  </div> */}
-                  {/* <div className="thumbnail">
-                    <img src="img/my-img/myfav-3-sm.png" />
-                    <div>
-                      <p className="mb-0">Contactados</p>
-                      <small className="text-muted d-block">1 inmueble</small>
-                    </div>
-                  </div> */}
                 </div>
                 {/* Mis listas */}
-                {favPropertys?.length > 0 && (
+                {folder ? (folderPropertyData?.length > 0 && (
+                  <Fragment>
+                    <h4 className="mb-3">Mis listas</h4>
+                    <div className="row g-4">
+                      <Slider {...getSliderSettings(folderPropertyData.length)}>
+                        {folderPropertyData.map((item, index) => (
+                          <div className="p-2" key={index}>
+                            <div className="list-card">
+                              <img
+                                src={
+                                  item?.property?.images?.[0] ||
+                                  "img/default.jpg"
+                                }
+                                className="w-100"
+                                alt="House"
+                                style={{ height: "200px" }}
+                              />
+                              <div className="d-flex justify-content-between pt-2 align-items-start">
+                                <div>
+                                  <h6>{item?.property?.name}</h6>
+                                  {/* <small className="text-muted d-block mb-2">
+                                    1 inmueble
+                                  </small> */}
+                                </div>
+                                {/* <button className="btn btn-primary w-auto btn-sm">
+                                  <i className="bi bi-person-plus-fill" />{" "}
+                                  Invitar
+                                </button> */}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </Slider>
+                    </div>
+                  </Fragment>
+                )) : ( favPropertys?.length > 0 && (
                   <Fragment>
                     <h4 className="mb-3">Mis listas</h4>
                     <div className="row g-4">
@@ -321,7 +385,7 @@ const MyFavorites = () => {
                                 src={item?.images?.[0] || "img/default.jpg"}
                                 className="w-100"
                                 alt="House"
-                                style={{height:"200px"}}
+                                style={{ height: "200px" }}
                               />
                               <div className="d-flex justify-content-between pt-2 align-items-start">
                                 <div>
@@ -341,7 +405,9 @@ const MyFavorites = () => {
                       </Slider>
                     </div>
                   </Fragment>
-                )}
+                ))}
+               
+                
 
                 {/* Listas sugeridas */}
                 <h5 className="mt-5 mb-0">Listas sugeridas</h5>
