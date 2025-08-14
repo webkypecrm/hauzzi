@@ -322,7 +322,7 @@ const MyFavorites = () => {
                       <img src={hauzziPic} />
                       <div>
                         <p className="mb-0">{item.name}</p>
-                        <small className="text-muted d-block">1 inmueble</small>
+                        <small className="text-muted d-block">{item?.propertyFolderCount} inmueble</small>
                       </div>
                       <div
                         className="d-flex flex-column"
