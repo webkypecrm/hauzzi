@@ -1,9 +1,36 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Header from "../MainPage/Header";
 import Footer from "../MainPage/Footer";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const Messages = () => {
+  const [messageData, setMessageData] = useState([]);
+  const [messageType, setMessageType] = useState("");
+
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const token = localStorage.getItem("token");
+  const customerId = localStorage.getItem("tokenId") || "";
+
+  // get messageData
+  const getMessages = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/request-enquiry/getAll`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(
+        "first",
+        res.data.data
+      );
+      setMessageData(res.data?.data || []);
+      setMessageType(res.data?.enquiryType || "");
+    } catch (error) {}
+  };
+  useEffect(() => {
+    getMessages();
+  }, []);
   return (
     <Fragment>
       <div className="index-page">
@@ -12,16 +39,6 @@ const Messages = () => {
           <section className="top-btn12">
             <div className="container-lg py-3">
               {/* Navigation */}
-              {/* <div className="d-flex flex-wrap justify-content-center mb-2 myadsnav">
-                <button className="nav-button">Publicar inmueble</button>
-                <button className="nav-button">Mis anuncios</button>
-                <button className="nav-button">Mis favoritos</button>
-                <button className="nav-button">Mis alertas</button>
-                <button className="nav-button active">Mis mensajes</button>
-                <button className="nav-button">Mis comparaciones</button>
-                <button className="nav-button">Mis visitas</button>
-                <button className="nav-button">Mi perfil</button>
-              </div> */}
               <div className="d-flex flex-wrap justify-content-center mb-4 ">
                 <Link to={"/publish-propert"} className="nav-button ">
                   Publicar inmueble
@@ -315,10 +332,13 @@ const Messages = () => {
                   </div>
                 </div>
                 {/* Chat Panel */}
-                <div className="col-md-8 d-flex flex-column justify-content-between p-0">
+                <div className="col-md-8 d-flex flex-column justify-content-between">
                   {/* Header */}
-                  <div className="row chat-panel border-bottom p-3">
-                    <div className="col-lg-6">
+                  {messageData.length > 0 && (
+                    <Fragment>
+                      {/* {messageData.map((item) => (
+                      <div className="row chat-panel border-bottom">
+                    <div className="col-lg-6 p-3">
                       <div className="d-flex align-items-center">
                         <img
                           src="img/my-img/advertiser-profile.png"
@@ -328,7 +348,7 @@ const Messages = () => {
                         <h6 className="mb-0">Nombre del anunciante</h6>
                       </div>
                     </div>
-                    <div className="col-lg-6">
+                    <div className="col-lg-6 p-3">
                       <div className="ad-title">
                         <h6 className="mb-0 me-3">Titulo del anuncio</h6>
                         <img
@@ -339,6 +359,90 @@ const Messages = () => {
                       </div>
                     </div>
                   </div>
+                    ))} */}
+                      {messageData
+                        ?.filter((item) => item.enquiryType === "received")
+                        .map((item, index) => (
+                          <div
+                            key={index}
+                            className="row  border-bottom"
+                          >
+                            <div className="col-lg-6 p-3">
+                              <div className="d-flex align-items-center">
+                                {/* <img
+                                  src={item?.customer?.userDetails?.map((i) => i.photoUrl)}
+                                  className="chat-avatar me-3"
+                                  alt="avatar"
+                                /> */}
+                                {[
+  ...(item?.customer?.agencyDetails || []),
+  ...(item?.customer?.agentDetails || []),
+  ...(item?.customer?.userDetails || [])
+].map((i, index) => (
+  <img
+    key={index}
+    src={i.photoUrl}
+    alt="profile"
+    className="chat-avatar me-3"
+    style={{ width: "70px", height: "70px" }}
+  />
+))}
+                                <h6 className="mb-0">{item?.customer?.name}</h6>
+                              </div>
+                            </div>
+                            <div className="col-lg-6 p-3">
+                              <div className="ad-title">
+                                <h6 className="mb-0 me-3">
+                                  {item?.property?.name}
+                                </h6>
+                                <img
+                                  src={item?.property?.images[0]}
+                                  className="chat-photo"
+                                  alt="property"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+
+                      {messageData
+                        ?.filter((item) => item.enquiryType === "sent")
+                        .map((item, index) => (
+                          <div
+                            key={index}
+                            // className="row chat-panel border-bottom"
+                            className="row border-bottom"
+                          >
+                            <div className="col-lg-6 p-3">
+                              <div className=" d-flex align-items-center">
+                                
+                                <img
+                                  src={item?.property?.images[0]}
+                                  className="chat-photo  me-3"
+                                  alt="property"
+                                />
+                                <h6 className="mb-0 ">
+                                  {item?.property?.name}
+                                </h6>
+                              </div>
+                            </div>
+                            <div className="col-lg-6 p-3">
+                              <div className="ad-title">
+                                <h6 className="mb-0 me-3">{item?.property?.Customer?.name}</h6>
+                                <img
+                                  src={item?.property?.Customer?.userDetails?.map((i) => i.photoUrl)}
+                                  className="chat-avatar"
+                                  alt="avatar"
+                                  style={{ width: "70px", height: "70px" }}
+                                />
+                                
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                    </Fragment>
+                  )}
+
                   {/* Chat area (empty for now) */}
                   <div className="flex-grow-1" />
                   {/* Message input */}

@@ -25,11 +25,24 @@ const PropertySell = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [compareIds, setCompareIds] = useState([]);
   const [compareLoaded, setCompareLoaded] = useState(false);
+  // filter
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [purposeFilter, setPurposeFilter] = useState("");
+  const [advancedFilter, setAdvancedFilter] = useState({});
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
   const token2 = localStorage.getItem("token");
   const customerId2 = localStorage.getItem("tokenId") || "";
+
+  // filters
+  const updateAdvancedFilter = (key, value) => {
+    setAdvancedFilter((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
 
   // const { search } = useParams();
   const [searchParams] = useSearchParams();
@@ -46,8 +59,20 @@ const PropertySell = () => {
       if (search) url += `&search=${search}`;
       if (type) url += `&type=${type}`;
       if (category) url += `&category=${category}`;
-      if (purpose) url += `&purpose=${purpose}`;
+      // if (purpose) url += `&purpose=${purpose}`;
+      if (purposeFilter) {
+        url += `&purpose=${purposeFilter}`;
+      } else if (purpose) {
+        url += `&purpose=${purpose}`;
+      }
       if (customerId) url += `&customerId=${customerId}`;
+      if (minPrice) url += `&minPrice=${minPrice}`;
+      if (maxPrice) url += `&maxPrice=${maxPrice}`;
+      if (Object.keys(advancedFilter).length > 0) {
+        url += `&advancedFilter=${encodeURIComponent(
+          JSON.stringify(advancedFilter)
+        )}`;
+      }
 
       // category=Hotels
       const response = await axios.get(url, {
@@ -58,6 +83,7 @@ const PropertySell = () => {
 
       setAllData(response.data);
       setCount(response?.data?.totalcount);
+      setShowFilter(false);
     } catch (error) {
       console.log(error);
     } finally {
@@ -70,6 +96,27 @@ const PropertySell = () => {
   useEffect(() => {
     getAllData();
   }, []);
+  
+  // Reusable function for any advanced filter checkbox group
+const handleAdvancedCheckboxChange = (category, value, checked) => {
+  setAdvancedFilter((prev) => {
+    let selectedValues = prev[category] ? prev[category].split(",") : [];
+
+    if (checked) {
+      if (!selectedValues.includes(value)) {
+        selectedValues.push(value);
+      }
+    } else {
+      selectedValues = selectedValues.filter((item) => item !== value);
+    }
+
+    return {
+      ...prev,
+      [category]: selectedValues.join(","), // Store as comma-separated string
+    };
+  });
+};
+
 
   // Wishlist Api
   useEffect(() => {
@@ -181,30 +228,31 @@ const PropertySell = () => {
     }
   };
 
-    // Discart Api
-    const handleDiscart = async (id) => {
-      const confirmDiscart = window.confirm(
+  // Discart Api
+  const handleDiscart = async (id) => {
+    const confirmDiscart = window.confirm(
       "Are you sure you want to descartar this Property?"
     );
 
     if (!confirmDiscart) return;
-      try {
-        const response = await axios.put(
-          `${apiUrl}/property/property-discard/${id}`,{},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-  
-        toast.success(response?.data?.message);
-        getAllData();
-      } catch (error) {
-        console.log(error);
-        toast.error(error.response?.data?.message || "Something went wrong");
-      }
-    };
+    try {
+      const response = await axios.put(
+        `${apiUrl}/property/property-discard/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success(response?.data?.message);
+      getAllData();
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  };
   return (
     <Fragment>
       <div className="index-page">
@@ -613,7 +661,7 @@ const PropertySell = () => {
                                                     onClick={() =>
                                                       window.open(
                                                         `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                                                         `https://new-hauzzi.vercel.app/propert-details/${e.id}`
+                                                          `https://new-hauzzi.vercel.app/propert-details/${e.id}`
                                                         )}`,
                                                         "_blank"
                                                       )
@@ -705,27 +753,32 @@ const PropertySell = () => {
                     <input
                       type="checkbox"
                       className="btn-check"
-                      id="comprar"
+                      id="Vender"
                       autoComplete="off"
+                      onChange={(e) => setPurposeFilter(e.target.id)}
+                      checked={purposeFilter === "Vender"} // radio-like behavior
                     />
-                    <label className="Transacción" htmlFor="comprar">
-                      Comprar
+                    <label className="Transacción" htmlFor="Vender">
+                      Vender
                     </label>
                   </div>
                   <div className="new-container-box">
                     <input
                       type="checkbox"
                       className="btn-check"
-                      id="alquilar"
+                      id="Alquilar"
                       autoComplete="off"
+                      onChange={(e) => setPurposeFilter(e.target.id)}
+                      checked={purposeFilter === "Alquilar"} // radio-like behavior
                     />
-                    <label className="Transacción" htmlFor="alquilar">
+                    <label className="Transacción" htmlFor="Alquilar">
                       Alquilar
                     </label>
                   </div>
                 </div>
               </div>
-              <div className="mb-3">
+
+              {/* <div className="mb-3">
                 <h5>Condición</h5>
                 <div className="d-flex align-items-center gap-2 flex-wrap">
                   <div className="new-container-box">
@@ -773,7 +826,34 @@ const PropertySell = () => {
                     </label>
                   </div>
                 </div>
-              </div>
+              </div> */}
+              <div className="mb-3">
+  <h5>Condición</h5>
+  <div className="d-flex align-items-center gap-2 flex-wrap">
+    {[
+      "Obra nueva",
+      "Reformado",
+      "Buen estado",
+      "A reformar",
+    ].map((item) => (
+      <div className="new-container-box" key={item}>
+        <input
+          type="checkbox"
+          className="btn-check"
+          id={item}
+          autoComplete="off"
+          onChange={(e) =>
+            handleAdvancedCheckboxChange("Condición", item, e.target.checked)
+          }
+        />
+        <label className="Transacción" htmlFor={item}>
+          {item}
+        </label>
+      </div>
+    ))}
+  </div>
+</div>
+
               <div className="mb-3">
                 <h5>Tipo de inmueble</h5>
                 <div className="d-flex align-items-center gap-2 flex-wrap flex-wrap">
@@ -917,20 +997,31 @@ const PropertySell = () => {
                   <div className="section-title">Precio</div>
                   <div className="row g-2">
                     <div className="col">
-                      <label htmlFor="">Mínimo</label>
-                      <select className="form-select mt-2">
-                        <option selected="">Indiferente</option>
-                      </select>
+                      <label htmlFor="minimo">Mínimo</label>
+                      <input
+                        type="number"
+                        id="minimo"
+                        className="form-control mt-2"
+                        placeholder="0"
+                        value={minPrice}
+                        onChange={(e) => setMinPrice(e.target.value)}
+                      />
                     </div>
+
                     <div className="col">
-                      <label htmlFor="">Máximo</label>
-                      <select className="form-select mt-2">
-                        <option selected="">Indiferente</option>
-                      </select>
+                      <label htmlFor="maximo">Máximo</label>
+                      <input
+                        type="number"
+                        id="maximo"
+                        className="form-control mt-2"
+                        placeholder="0"
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(e.target.value)}
+                      />
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6">
+                {/* <div className="col-md-6">
                   <div className="section-title">Superficie</div>
                   <div className="row g-2">
                     <div className="col">
@@ -946,7 +1037,7 @@ const PropertySell = () => {
                       </select>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
               <div className="row mb-3 gy-3 justify-content-between">
                 <div className="col-12">
@@ -967,7 +1058,7 @@ const PropertySell = () => {
                       autoComplete="off"
                     />
                     <label className="btn Habitaciones" htmlFor="property1">
-                      <span>+1</span>
+                      <span>1</span>
                     </label>
                     <input
                       type="checkbox"
@@ -977,7 +1068,7 @@ const PropertySell = () => {
                       autoComplete="off"
                     />
                     <label className="btn Habitaciones" htmlFor="property2">
-                      <span>+2</span>
+                      <span>2</span>
                     </label>
                     <input
                       type="checkbox"
@@ -987,7 +1078,7 @@ const PropertySell = () => {
                       autoComplete="off"
                     />
                     <label className="btn Habitaciones" htmlFor="property3">
-                      <span>+3</span>
+                      <span>3</span>
                     </label>
                     <input
                       type="checkbox"
@@ -1032,7 +1123,7 @@ const PropertySell = () => {
                       autoComplete="off"
                     />
                     <label className="btn Habitaciones" htmlFor="banos1">
-                      <span>+1</span>
+                      <span>1</span>
                     </label>
                     <input
                       type="checkbox"
@@ -1042,7 +1133,7 @@ const PropertySell = () => {
                       autoComplete="off"
                     />
                     <label className="btn Habitaciones" htmlFor="banos2">
-                      <span>+2</span>
+                      <span>2</span>
                     </label>
                     <input
                       type="checkbox"
@@ -1052,7 +1143,7 @@ const PropertySell = () => {
                       autoComplete="off"
                     />
                     <label className="btn Habitaciones" htmlFor="banos3">
-                      <span>+3</span>
+                      <span>3</span>
                     </label>
                     <input
                       type="checkbox"
@@ -1097,7 +1188,7 @@ const PropertySell = () => {
                       autoComplete="off"
                     />
                     <label className="btn Habitaciones" htmlFor="banos1">
-                      <span>+1</span>
+                      <span>1</span>
                     </label>
                     <input
                       type="checkbox"
@@ -1107,7 +1198,7 @@ const PropertySell = () => {
                       autoComplete="off"
                     />
                     <label className="btn Habitaciones" htmlFor="banos2">
-                      <span>+2</span>
+                      <span>2</span>
                     </label>
                     <input
                       type="checkbox"
@@ -1117,7 +1208,7 @@ const PropertySell = () => {
                       autoComplete="off"
                     />
                     <label className="btn Habitaciones" htmlFor="banos3">
-                      <span>+3</span>
+                      <span>3</span>
                     </label>
                     <input
                       type="checkbox"
@@ -1237,6 +1328,13 @@ const PropertySell = () => {
                   <label htmlFor="">Antigüedad</label>
                   <select className="form-select mt-2">
                     <option selected="">Indiferente</option>
+                    <option selected="">A estrenar</option>
+                    <option selected="">1 a 5 años</option>
+                    <option selected="">6 a 10 años</option>
+                    <option selected="">11 a 15 años</option>
+                    <option selected="">16 a 25 años</option>
+                    <option selected="">26 a 40 años</option>
+                    <option selected="">40 años o ma</option>
                   </select>
                 </div>
                 <div className="col-lg-6">
@@ -1258,7 +1356,7 @@ const PropertySell = () => {
                   </select>
                 </div>
               </div>
-              <div className="row mb-3 mt-3">
+              {/* <div className="row mb-3 mt-3">
                 <h5 className="">Seguridad</h5>
                 <div className="col-lg-4">
                   <div className="form-check">
@@ -1397,8 +1495,42 @@ const PropertySell = () => {
                     </label>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="row mb-3 mt-3">
+  <h5 className="">Seguridad</h5>
+
+  {[
+    "Alarma",
+    "Vigilancia",
+    "Sistema de videointercomunicador",
+    "Cámaras de vigilancia (CCTV)",
+    "Cerco eléctrico",
+    "Cerco perimetral",
+    "Portón eléctrico",
+    "Iluminación de seguridad",
+    "Sistema contra incendios",
+    "Caja fuerte",
+    "Puerta blindada",
+  ].map((item, index) => (
+    <div className="col-lg-4" key={index}>
+      <div className="form-check">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          id={item}
+          onChange={(e) =>
+            handleAdvancedCheckboxChange("Seguridad", item, e.target.checked)
+          }
+        />
+        <label className="form-check-label" htmlFor={item}>
+          {item}
+        </label>
+      </div>
+    </div>
+  ))}
+</div>
+
+              {/* <div className="row mb-3 mt-3">
                 <h5 className="">Ambientes</h5>
                 <div className="col-lg-4">
                   <div className="form-check">
@@ -1444,6 +1576,62 @@ const PropertySell = () => {
                       Cuarto de servicio
                     </label>
                   </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="areadecomedor"
+                    />
+                    <label className="form-check-label" htmlFor="areadecomedor">
+                      Área de comedor
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="canchadebásquetbol"
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="canchadebásquetbol"
+                    >
+                      Cancha de básquetbol
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="cancha-de-paddle"
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="cancha-de-paddle"
+                    >
+                      Cancha de paddle
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="gimnasio"
+                    />
+                    <label className="form-check-label" htmlFor="gimnasio">
+                      Gimnasio
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="bar"
+                    />
+                    <label className="form-check-label" htmlFor="bar">
+                      Bar
+                    </label>
+                  </div>
                 </div>
                 <div className="col-lg-4">
                   <div className="form-check">
@@ -1484,6 +1672,59 @@ const PropertySell = () => {
                     />
                     <label className="form-check-label" htmlFor="eventos">
                       Salón de eventos
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="canchadefútbol"
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="canchadefútbol"
+                    >
+                      Cancha de fútbol
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="sauna"
+                    />
+                    <label className="form-check-label" htmlFor="sauna">
+                      Sauna
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="bañodevisitas"
+                    />
+                    <label className="form-check-label" htmlFor="bañodevisitas">
+                      Baño de visitas
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="armarios"
+                    />
+                    <label className="form-check-label" htmlFor="armarios">
+                      Armarios
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="saladejuegos"
+                    />
+                    <label className="form-check-label" htmlFor="saladejuegos">
+                      Sala de juegos
                     </label>
                   </div>
                 </div>
@@ -1531,8 +1772,627 @@ const PropertySell = () => {
                       Área de cine
                     </label>
                   </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="cocina"
+                    />
+                    <label className="form-check-label" htmlFor="cocina">
+                      Cocina
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="vestier"
+                    />
+                    <label className="form-check-label" htmlFor="vestier">
+                      Vestier
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="cuartode"
+                    />
+                    <label className="form-check-label" htmlFor="cuartode">
+                      Cuarto de lavado
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="paradesayunar"
+                    />
+                    <label className="form-check-label" htmlFor="paradesayunar">
+                      Área para desayunar
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="canchadetenis"
+                    />
+                    <label className="form-check-label" htmlFor="canchadetenis">
+                      Cancha de tenis
+                    </label>
+                  </div>
                 </div>
-              </div>
+              </div> */}
+              <div className="row mb-3 mt-3">
+  <h5 className="">Ambientes</h5>
+
+  {[
+    "Piscina",
+    "Área de barbacoa/parrillera",
+    "Estudio u oficina",
+    "Cuarto de servicio",
+    "Área de comedor",
+    "Cancha de básquetbol",
+    "Cancha de paddle",
+    "Gimnasio",
+    "Bar",
+    "Patio",
+    "Área para mascotas",
+    "Canchas de usos múltiples",
+    "Salón de eventos",
+    "Cancha de fútbol",
+    "Sauna",
+    "Baño de visitas",
+    "Armarios",
+    "Sala de juegos",
+    "Jacuzzi",
+    "Jardines o áreas verdes",
+    "Sala de reuniones",
+    "Área de cine",
+    "Cocina",
+    "Vestier",
+    "Cuarto de lavado",
+    "Área para desayunar",
+    "Cancha de tenis",
+  ].map((item, index) => (
+    <div className="col-lg-4" key={index}>
+      <div className="form-check">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          id={item}
+          onChange={(e) =>
+            handleAdvancedCheckboxChange("Ambientes", item, e.target.checked)
+          }
+        />
+        <label className="form-check-label" htmlFor={item}>
+          {item}
+        </label>
+      </div>
+    </div>
+  ))}
+</div>
+
+                {/* <div className="row mb-3 mt-3">
+                  <h5 className="">Equipamientos</h5>
+                  <div className="col-lg-4">
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="aire-acondicionado"
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="aire-acondicionado"
+                      >
+                        Aire acondicionado
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="ascendor"
+                      />
+                      <label className="form-check-label" htmlFor="ascendor">
+                        Ascendor
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="conexión-eléctrica-capacidadr"
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="conexión-eléctrica-capacidadr"
+                      >
+                        Conexión eléctrica de alta capacidad
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="calentador-gas-eléctrico"
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="calentador-gas-eléctrico"
+                      >
+                        Calentador a gas/eléctrico
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="ona-para-vehículos-eléctricos"
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="zona-para-vehículos-eléctricos"
+                      >
+                        Zona de carga para vehículos eléctricos
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="acceso-movilidad-reducida"
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="acceso-movilidad-reducida"
+                      >
+                        Acceso para movilidad reducida
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-lg-4">
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="calefacción"
+                      />
+                      <label className="form-check-label" htmlFor="calefacción">
+                        Calefacción
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="acceso-internet"
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="acceso-internet"
+                      >
+                        Acceso a internet
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="planta-eléctrica"
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="planta-eléctrica"
+                      >
+                        Planta eléctrica
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="cámara-frigorífica"
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="cámara-frigorífica"
+                      >
+                        Cámara frigorífica
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="chimenea"
+                      />
+                      <label className="form-check-label" htmlFor="chimenea">
+                        Chimenea
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="ventilador"
+                      />
+                      <label className="form-check-label" htmlFor="ventilador">
+                        Ventilador
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-lg-4">
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="TV"
+                      />
+                      <label className="form-check-label" htmlFor="TV">
+                        TV
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="sistema-de-domótica"
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="sistema-de-domótica"
+                      >
+                        Sistema de domótica
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="cisterna-de-agua"
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="cisterna-de-agua"
+                      >
+                        cisterna-de-agua
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="electrodomésticos"
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="electrodomésticos"
+                      >
+                        Electrodomésticos
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="sistema-de-ventilación"
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor="sistema-de-ventilación"
+                      >
+                        Sistema de ventilación
+                      </label>
+                    </div>
+                  </div>
+                </div> */}
+                <div className="row mb-3 mt-3">
+  <h5 className="">Equipamientos</h5>
+
+  {[
+    "Aire acondicionado",
+    "Ascensor",
+    "Conexión eléctrica de alta capacidad",
+    "Calentador a gas/eléctrico",
+    "Zona de carga para vehículos eléctricos",
+    "Acceso para movilidad reducida",
+    "Calefacción",
+    "Acceso a internet",
+    "Planta eléctrica",
+    "Cámara frigorífica",
+    "Chimenea",
+    "Ventilador",
+    "TV",
+    "Sistema de domótica",
+    "Cisterna de agua",
+    "Electrodomésticos",
+    "Sistema de ventilación",
+  ].map((item, index) => (
+    <div className="col-lg-4" key={index}>
+      <div className="form-check">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          id={item}
+          onChange={(e) =>
+            handleAdvancedCheckboxChange("Equipamientos", item, e.target.checked)
+          }
+        />
+        <label className="form-check-label" htmlFor={item}>
+          {item}
+        </label>
+      </div>
+    </div>
+  ))}
+</div>
+
+
+              {/* <div className="row mb-3 mt-3">
+                <h5 className="">Servicios</h5>
+                <div className="col-lg-4">
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="suministro-de-agua"
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="suministro-de-agua"
+                    >
+                      Suministro de agua
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="recolección-de-basura"
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="recolección-de-basura"
+                    >
+                      Recolección de basura
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="línea-telefónica"
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="línea-telefónica"
+                    >
+                      Línea telefónica
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="red-eléctrica"
+                    />
+                    <label className="form-check-label" htmlFor="red-eléctrica">
+                      Red eléctrica
+                    </label>
+                  </div>
+                </div>
+                <div className="col-lg-4">
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="alcantarillado-drenaje"
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="alcantarillado-drenaje"
+                    >
+                      Alcantarillado y drenaje
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="energía-solar"
+                    />
+                    <label className="form-check-label" htmlFor="energía-solar">
+                      Energía solar
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="gas"
+                    />
+                    <label className="form-check-label" htmlFor="gas">
+                      Gas
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="suministro-agua-potable"
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="suministro-agua-potable"
+                    >
+                      Suministro de agua potable
+                    </label>
+                  </div>
+                </div>
+              </div> */}
+              <div className="row mb-3 mt-3">
+  <h5 className="">Servicios</h5>
+
+  {[
+    "Suministro de agua",
+    "Recolección de basura",
+    "Línea telefónica",
+    "Red eléctrica",
+    "Alcantarillado y drenaje",
+    "Energía solar",
+    "Gas",
+    "Suministro de agua potable",
+  ].map((item, index) => (
+    <div className="col-lg-4" key={index}>
+      <div className="form-check">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          id={item}
+          onChange={(e) =>
+            handleAdvancedCheckboxChange("Servicios", item, e.target.checked)
+          }
+        />
+        <label className="form-check-label" htmlFor={item}>
+          {item}
+        </label>
+      </div>
+    </div>
+  ))}
+</div>
+
+
+              {/* <div className="row mb-3 mt-3">
+                <h5 className="">Localización</h5>
+                <div className="col-lg-4">
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="en-centro-comercial"
+                    />
+                    <label className="form-check-label" htmlFor="en-centro-comercial">
+                      En centro comercial
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="en-zona-tusrística"
+                    />
+                    <label className="form-check-label" htmlFor="en-zona-tusrística">
+                      En zona tusrística
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="en-planta-pisos-superiores"
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="en-planta-pisos-superiores"
+                    >
+                      En planta alta o pisos superiores
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="a-pie-de-calle"
+                    />
+                    <label className="form-check-label" htmlFor="a-pie-de-calle">
+                      A pie de calle
+                    </label>
+                  </div>
+                </div>
+                <div className="col-lg-4">
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="en-mercados-ferias"
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="en-mercados-ferias"
+                    >
+                      En mercados o ferias
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="en-zona-residencial"
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="en-zona-residencial"
+                    >
+                      En zona residencial
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="en-planta-baja-sótano"
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="en-planta-baja-sótano"
+                    >
+                      En planta baja o sótano
+                    </label>
+                  </div>
+                </div>
+              </div> */}
+
+              {/* <div className="row mb-3 mt-3">
+                <h5 className="">Forma del terreno</h5>
+                <div className="col-lg-4">
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="regular"
+                    />
+                    <label className="form-check-label" htmlFor="regular">
+                      Regular
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="irregular"
+                    />
+                    <label className="form-check-label" htmlFor="irregular">
+                      Irregular
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="plano"
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="plano"
+                    >
+                      Plano
+                    </label>
+                  </div>
+                </div>
+              </div> */}
+
               <div className="mb-3">
                 <h5>Extras</h5>
                 <div className="d-flex align-items-center gap-2 flex-wrap">
@@ -1583,12 +2443,16 @@ const PropertySell = () => {
                 </div>
               </div>
               <div className="d-flex justify-content-center gap-3 ">
-                <button className="Resetear-filtros border-0">
+                <button
+                  className="Resetear-filtros border-0"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    getAllData();
+                  }}
+                >
                   Aplicar filtros
                 </button>
-                <button className="Resetear-filtros2 border-0">
-                  Resetear filtros
-                </button>
+                <button className="Resetear-filtros2">Resetear filtros</button>
               </div>
             </div>
           </div>

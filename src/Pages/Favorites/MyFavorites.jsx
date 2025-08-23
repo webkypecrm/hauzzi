@@ -193,7 +193,7 @@ const MyFavorites = () => {
         }
       );
       setFolderData(res?.data?.data);
-      console.log("folderData", res?.data);
+      console.log("folderData", res?.data?.data);
     } catch (error) {
       toast.error(error?.response?.data?.message);
     }
@@ -256,11 +256,11 @@ const MyFavorites = () => {
   return (
     <Fragment>
       <div className="index-page">
-        {/* {loading ? (
+        {loading ? (
           <div style={{ marginTop: "20%" }}>
             <Loading />
           </div>
-        ) : ( */}
+        ) : (
         <Fragment>
           <Header />
           <main className="main">
@@ -322,7 +322,7 @@ const MyFavorites = () => {
                       <img src={hauzziPic} />
                       <div>
                         <p className="mb-0">{item.name}</p>
-                        <small className="text-muted d-block">1 inmueble</small>
+                        <small className="text-muted d-block">{item?.propertyFolderCount} inmueble</small>
                       </div>
                       <div
                         className="d-flex flex-column"
@@ -754,7 +754,7 @@ const MyFavorites = () => {
             <Footer />
           </main>
         </Fragment>
-        {/* )} */}
+    )}
       </div>
     </Fragment>
   );

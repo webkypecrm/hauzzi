@@ -639,6 +639,11 @@ color: #1A1A1A;
       box-shadow: none !important;
       border: 1px solid #FFBD59;
     }
+    .form-check{
+      font-size: 14px !important;
+    }
+
+
     .Resetear-filtros2{
       background-color: #fff;
       color: #222;
@@ -651,7 +656,7 @@ color: #1A1A1A;
       letter-spacing: 0%;
       text-align: center;
       border: 1px solid #EEEEEE !important;
-      border-radius: 16px;
+      border-radius: 6px;
       vertical-align: middle;
     }
      .Resetear-filtros{
@@ -665,7 +670,7 @@ color: #1A1A1A;
       line-height: 13.09px;
       letter-spacing: 0%;
       text-align: center;
-      border-radius: 16px;
+      border-radius: 6px;
       vertical-align: middle;
     }
      .new-border-clr{

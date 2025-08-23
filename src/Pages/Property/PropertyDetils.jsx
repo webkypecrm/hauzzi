@@ -168,7 +168,7 @@ const PropertyDetils = () => {
     profileType = "agency";
   }
 
-  console.log("propertyData", propertyData?.Customer);
+  console.log("propertyData", propertyData);
 
   useEffect(() => {
     setActiveTab("agendar");
@@ -580,6 +580,41 @@ const PropertyDetils = () => {
       toast.error(error.response.data.message);
     }
   };
+
+  // Request Information
+    const initialState2 = {
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+    propertyId: Number(id) || "",
+  };
+
+  const [msgSendDAta, setMsgSendDAta] = useState(initialState2);
+  const handelRequestInputChange = (e) => {
+    const { name, value } = e.target;
+    setMsgSendDAta((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handelMsgSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`${apiUrl}/request-enquiry/add`, msgSendDAta, {
+        headers: {
+          Authorization: `Bearer ${token2}`,
+        },
+      });
+      setMsgSendDAta(initialState2);
+      console.log("response", response);
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  }
 
   return (
     <Fragment>
@@ -1491,22 +1526,44 @@ const PropertyDetils = () => {
 
                     {activeTab === "solicitar" && (
                       <div id="solicitar" className="tabcontent mt-3">
+                        <form onSubmit={handelMsgSubmit}>
                         <div className="form-group mt-2">
-                          <label htmlFor="tus">Tus datos</label>
+                          <label htmlFor="nombre">Tus nombre</label>
                           <input
                             type="text"
-                            className="form-control"
-                            id="tus"
-                            placeholder="Ingresa tu correo electrónico"
+          className="form-control"
+          id="nombre"
+          name="name"
+          value={msgSendDAta.name}
+          onChange={handelRequestInputChange}
+          placeholder="Ingresa tu nombre"
+          required
+                          />
+                        </div>
+                        <div className="form-group mt-2">
+                          <label htmlFor="tus">Tus correo</label>
+                          <input
+                                 type="email"
+          className="form-control"
+          id="tus"
+          name="email"
+          value={msgSendDAta.email}
+          onChange={handelRequestInputChange}
+          placeholder="Ingresa tu correo electrónico"
+          required
                           />
                         </div>
                         <div className="form-group mt-3">
                           <label htmlFor="tu">Tu teléfono</label>
                           <input
                             type="text"
-                            className="form-control"
-                            id="tu"
-                            placeholder="Ingresa tu teléfono"
+          className="form-control"
+          id="tu"
+          name="phone"
+          value={msgSendDAta.phone}
+          onChange={handelRequestInputChange}
+          placeholder="Ingresa tu teléfono"
+          required
                           />
                         </div>
                         <div className="form-group mt-3">
@@ -1520,10 +1577,13 @@ const PropertyDetils = () => {
                         <div className="form-group mt-3">
                           <textarea
                             className="form-control"
-                            rows={5}
-                            id="comment"
-                            placeholder="Estoy buscando en Hauzzi y me gustaría recibir más información sobre el inmueble con referencia"
-                            defaultValue={""}
+          rows={5}
+          id="comment"
+          name="message"
+          value={msgSendDAta.message}
+          onChange={handelRequestInputChange}
+          placeholder="Estoy buscando en Hauzzi y me gustaría recibir más información sobre el inmueble con referencia"
+          required
                           />
                         </div>
                         <div className="checkbox mt-3 mb-3">
@@ -1536,13 +1596,14 @@ const PropertyDetils = () => {
                           {/* <Link class="btn-getstarted agendar-tour" to="#">
             Agendar tour </Link> */}
                           <button
-                            type="button"
+                            type="submit"
                             className="btn btn-warning"
                             style={{ width: "90%" }}
                           >
                             Contactar ahora
                           </button>
                         </div>
+                        </form>
                       </div>
                     )}
                   </div>
