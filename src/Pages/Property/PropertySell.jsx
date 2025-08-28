@@ -29,6 +29,8 @@ const PropertySell = () => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [purposeFilter, setPurposeFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
+  const [tagFilter, setTagFilter] = useState("");
   const [advancedFilter, setAdvancedFilter] = useState({});
 
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -36,13 +38,6 @@ const PropertySell = () => {
   const token2 = localStorage.getItem("token");
   const customerId2 = localStorage.getItem("tokenId") || "";
 
-  // filters
-  const updateAdvancedFilter = (key, value) => {
-    setAdvancedFilter((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
 
   // const { search } = useParams();
   const [searchParams] = useSearchParams();
@@ -57,7 +52,12 @@ const PropertySell = () => {
     try {
       let url = `${apiUrl}/property/property?isDraft=false`;
       if (search) url += `&search=${search}`;
-      if (type) url += `&type=${type}`;
+      // if (type) url += `&type=${type}`;
+      if (typeFilter) {
+        url += `&type=${typeFilter}`;
+      } else if (type) {
+        url += `&type=${type}`;
+      }
       if (category) url += `&category=${category}`;
       // if (purpose) url += `&purpose=${purpose}`;
       if (purposeFilter) {
@@ -65,6 +65,7 @@ const PropertySell = () => {
       } else if (purpose) {
         url += `&purpose=${purpose}`;
       }
+      if (tagFilter) url += `&tags=${tagFilter}`;
       if (customerId) url += `&customerId=${customerId}`;
       if (minPrice) url += `&minPrice=${minPrice}`;
       if (maxPrice) url += `&maxPrice=${maxPrice}`;
@@ -82,8 +83,25 @@ const PropertySell = () => {
       });
 
       setAllData(response.data);
-      setCount(response?.data?.totalcount);
+      setCount(response?.data?.totalcounts);
       setShowFilter(false);
+         // 🔹 API ke baad filters reset
+    setAdvancedFilter({
+      Habitaciones: "",
+      Banos: "",
+      Condición: "",
+      Estacionamientos: "",
+      Mobiliario: "",
+      Antigüedad: "",
+      "Tipo de suelo": "",
+      Orientación: "",
+      Vistas: "",
+      "Publicado por": "",
+      Seguridad: "",
+      Ambientes: "",
+      Equipamientos: "",
+      Servicios: "",
+    });
     } catch (error) {
       console.log(error);
     } finally {
@@ -96,27 +114,26 @@ const PropertySell = () => {
   useEffect(() => {
     getAllData();
   }, []);
-  
+
   // Reusable function for any advanced filter checkbox group
-const handleAdvancedCheckboxChange = (category, value, checked) => {
-  setAdvancedFilter((prev) => {
-    let selectedValues = prev[category] ? prev[category].split(",") : [];
+  const handleAdvancedCheckboxChange = (category, value, checked) => {
+    setAdvancedFilter((prev) => {
+      let selectedValues = prev[category] ? prev[category].split(",") : [];
 
-    if (checked) {
-      if (!selectedValues.includes(value)) {
-        selectedValues.push(value);
+      if (checked) {
+        if (!selectedValues.includes(value)) {
+          selectedValues.push(value);
+        }
+      } else {
+        selectedValues = selectedValues.filter((item) => item !== value);
       }
-    } else {
-      selectedValues = selectedValues.filter((item) => item !== value);
-    }
 
-    return {
-      ...prev,
-      [category]: selectedValues.join(","), // Store as comma-separated string
-    };
-  });
-};
-
+      return {
+        ...prev,
+        [category]: selectedValues.join(","), // Store as comma-separated string
+      };
+    });
+  };
 
   // Wishlist Api
   useEffect(() => {
@@ -253,6 +270,55 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
       toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
+
+  const handleAdvancedSelectChange = (category, value) => {
+    setAdvancedFilter((prev) => ({
+      ...prev,
+      [category]: value, // Direct value set karte hain dropdown ke liye
+    }));
+  };
+
+
+  const handleAdvancedSingleCheckboxChange = (field, value) => {
+    setAdvancedFilter((prev) => ({
+      ...prev,
+      [field]:
+        value === "Todo"
+          ? "" // "Todo" click hone par empty
+          : prev[field] === value
+          ? ""
+          : value,
+    }));
+  };
+
+  // Reset function
+const handleResetFilters = () => {
+  setAdvancedFilter({
+    Habitaciones: "",
+    Banos: "",
+    Condición: "",
+    Estacionamientos: "",
+    Mobiliario: "",
+    Antigüedad: "",
+    "Tipo de suelo": "",
+    Orientación: "",
+    Vistas: "",
+    "Publicado por": "",
+    Seguridad: "",
+    Ambientes: "",
+    Equipamientos: "",
+    Servicios:"",
+    
+  });
+  setTypeFilter("");
+  setPurposeFilter("");
+  setMaxPrice("");
+  setMinPrice("");
+  document
+    .querySelectorAll('input[type="checkbox"]')
+    .forEach((checkbox) => (checkbox.checked = false));
+};
+
   return (
     <Fragment>
       <div className="index-page">
@@ -828,31 +894,32 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                 </div>
               </div> */}
               <div className="mb-3">
-  <h5>Condición</h5>
-  <div className="d-flex align-items-center gap-2 flex-wrap">
-    {[
-      "Obra nueva",
-      "Reformado",
-      "Buen estado",
-      "A reformar",
-    ].map((item) => (
-      <div className="new-container-box" key={item}>
-        <input
-          type="checkbox"
-          className="btn-check"
-          id={item}
-          autoComplete="off"
-          onChange={(e) =>
-            handleAdvancedCheckboxChange("Condición", item, e.target.checked)
-          }
-        />
-        <label className="Transacción" htmlFor={item}>
-          {item}
-        </label>
-      </div>
-    ))}
-  </div>
-</div>
+                <h5>Condición</h5>
+                <div className="d-flex align-items-center gap-2 flex-wrap">
+                  {["Obra nueva", "Reformado", "Buen estado", "A reformar"].map(
+                    (item) => (
+                      <div className="new-container-box" key={item}>
+                        <input
+                          type="checkbox"
+                          className="btn-check"
+                          id={item}
+                          autoComplete="off"
+                          checked={advancedFilter["Condición"] === item} // sirf ek hi select rahega
+                          onChange={() =>
+                            handleAdvancedSingleCheckboxChange(
+                              "Condición",
+                              item
+                            )
+                          }
+                        />
+                        <label className="Transacción" htmlFor={item}>
+                          {item}
+                        </label>
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
 
               <div className="mb-3">
                 <h5>Tipo de inmueble</h5>
@@ -861,10 +928,12 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                     <input
                       type="checkbox"
                       className="btn-check"
-                      id="todos"
+                      id="Todos"
                       autoComplete="off"
+                      onChange={(e) => setTypeFilter(e.target.id)}
+                      checked={typeFilter === "Todos"}
                     />
-                    <label className="Transacción" htmlFor="todos">
+                    <label className="Transacción" htmlFor="Todos">
                       Todos
                     </label>
                   </div>
@@ -872,10 +941,12 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                     <input
                       type="checkbox"
                       className="btn-check"
-                      id="apartamentos"
+                      id="Apartamentos"
                       autoComplete="off"
+                      onChange={(e) => setTypeFilter(e.target.id)}
+                      checked={typeFilter === "Apartamentos"}
                     />
-                    <label className="Transacción" htmlFor="apartamentos">
+                    <label className="Transacción" htmlFor="Apartamentos">
                       Apartamentos
                     </label>
                   </div>
@@ -883,10 +954,12 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                     <input
                       type="checkbox"
                       className="btn-check"
-                      id="casas"
+                      id="Casas"
                       autoComplete="off"
+                      onChange={(e) => setTypeFilter(e.target.id)}
+                      checked={typeFilter === "Casas"}
                     />
-                    <label className="Transacción" htmlFor="casas">
+                    <label className="Transacción" htmlFor="Casas">
                       Casas
                     </label>
                   </div>
@@ -894,10 +967,12 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                     <input
                       type="checkbox"
                       className="btn-check"
-                      id="locales"
+                      id="Locales"
                       autoComplete="off"
+                      onChange={(e) => setTypeFilter(e.target.id)}
+                      checked={typeFilter === "Locales"}
                     />
-                    <label className="Transacción" htmlFor="locales">
+                    <label className="Transacción" htmlFor="Locales">
                       Locales
                     </label>
                   </div>
@@ -905,10 +980,12 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                     <input
                       type="checkbox"
                       className="btn-check"
-                      id="haciendas"
+                      id="Haciendas y fincas"
                       autoComplete="off"
+                      onChange={(e) => setTypeFilter(e.target.id)}
+                      checked={typeFilter === "Haciendas y fincas"}
                     />
-                    <label className="Transacción" htmlFor="haciendas">
+                    <label className="Transacción" htmlFor="Haciendas y fincas">
                       Haciendas y fincas
                     </label>
                   </div>
@@ -916,10 +993,12 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                     <input
                       type="checkbox"
                       className="btn-check"
-                      id="habitaciones"
+                      id="Habitaciones"
                       autoComplete="off"
+                      onChange={(e) => setTypeFilter(e.target.id)}
+                      checked={typeFilter === "Habitaciones"}
                     />
-                    <label className="Transacción" htmlFor="habitaciones">
+                    <label className="Transacción" htmlFor="Habitaciones">
                       Habitaciones
                     </label>
                   </div>
@@ -927,10 +1006,12 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                     <input
                       type="checkbox"
                       className="btn-check"
-                      id="anexos"
+                      id="Anexos"
                       autoComplete="off"
+                      onChange={(e) => setTypeFilter(e.target.id)}
+                      checked={typeFilter === "Anexos"}
                     />
-                    <label className="Transacción" htmlFor="anexos">
+                    <label className="Transacción" htmlFor="Anexos">
                       Anexos
                     </label>
                   </div>
@@ -938,10 +1019,12 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                     <input
                       type="checkbox"
                       className="btn-check"
-                      id="edificios"
+                      id="Edificios"
                       autoComplete="off"
+                      onChange={(e) => setTypeFilter(e.target.id)}
+                      checked={typeFilter === "Edificios"}
                     />
-                    <label className="Transacción" htmlFor="edificios">
+                    <label className="Transacción" htmlFor="Edificios">
                       Edificios
                     </label>
                   </div>
@@ -949,10 +1032,12 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                     <input
                       type="checkbox"
                       className="btn-check"
-                      id="townhouses"
+                      id="Townhouses"
                       autoComplete="off"
+                      onChange={(e) => setTypeFilter(e.target.id)}
+                      checked={typeFilter === "Townhouses"}
                     />
-                    <label className="Transacción" htmlFor="townhouses">
+                    <label className="Transacción" htmlFor="Townhouses">
                       Townhouses
                     </label>
                   </div>
@@ -960,10 +1045,12 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                     <input
                       type="checkbox"
                       className="btn-check"
-                      id="terrenos"
+                      id="Terrenos"
                       autoComplete="off"
+                      onChange={(e) => setTypeFilter(e.target.id)}
+                      checked={typeFilter === "Terrenos"}
                     />
-                    <label className="Transacción" htmlFor="terrenos">
+                    <label className="Transacción" htmlFor="Terrenos">
                       Terrenos
                     </label>
                   </div>
@@ -971,10 +1058,12 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                     <input
                       type="checkbox"
                       className="btn-check"
-                      id="galpones"
+                      id="Galpones"
                       autoComplete="off"
+                      onChange={(e) => setTypeFilter(e.target.id)}
+                      checked={typeFilter === "Galpones"}
                     />
-                    <label className="Transacción" htmlFor="galpones">
+                    <label className="Transacción" htmlFor="Galpones">
                       Galpones
                     </label>
                   </div>
@@ -982,15 +1071,18 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                     <input
                       type="checkbox"
                       className="btn-check"
-                      id="oficinas"
+                      id="Oficinas"
                       autoComplete="off"
+                      onChange={(e) => setTypeFilter(e.target.id)}
+                      checked={typeFilter === "Oficinas"}
                     />
-                    <label className="Transacción" htmlFor="oficinas">
+                    <label className="Transacción" htmlFor="Oficinas">
                       Oficinas
                     </label>
                   </div>
                 </div>
               </div>
+
               {/* Precio y Superficie */}
               <div className="row gy3 mb-3">
                 <div className="col-md-6">
@@ -1040,13 +1132,12 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                 </div> */}
               </div>
               <div className="row mb-3 gy-3 justify-content-between">
-                <div className="col-12">
+                {/* <div className="col-12">
                   <h5>Habitaciones</h5>
                   <div
                     className="btn-group property-categories w-100"
                     role="group"
                   >
-                    {/* Todo styled as static orange button */}
                     <label className="btn btn-orange d-flex align-items-center">
                       Todo
                     </label>
@@ -1104,7 +1195,125 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                       id="flexSwitchCheckDefault"
                     />
                   </div>
+                </div> */}
+                <div className="col-12">
+                  <h5>Habitaciones</h5>
+                  <div
+                    className="btn-group property-categories w-100"
+                    role="group"
+                  >
+                    {/* Todo styled as static orange button */}
+                    <label className="btn btn-orange d-flex align-items-center">
+                      Todo
+                    </label>
+
+                    <input
+                      type="checkbox"
+                      className="btn-check"
+                      name="propertyCategory"
+                      id="property1"
+                      autoComplete="off"
+                      checked={advancedFilter.Habitaciones === "1"}
+                      onChange={() =>
+                        handleAdvancedSingleCheckboxChange("Habitaciones", "1")
+                      }
+                    />
+                    <label
+                      className="btn Habitaciones"
+                      htmlFor="property1"
+                      style={{
+                        backgroundColor:
+                          advancedFilter.Habitaciones === "1" ? "#FFBD59" : "",
+                        color:
+                          advancedFilter.Habitaciones === "1" ? "white" : "",
+                      }}
+                    >
+                      <span>1</span>
+                    </label>
+
+                    <input
+                      type="checkbox"
+                      className="btn-check"
+                      name="propertyCategory"
+                      id="property2"
+                      autoComplete="off"
+                      checked={advancedFilter.Habitaciones === "2"}
+                      onChange={() =>
+                        handleAdvancedSingleCheckboxChange("Habitaciones", "2")
+                      }
+                    />
+                    <label className="btn Habitaciones" htmlFor="property2"  style={{
+                        backgroundColor:
+                          advancedFilter.Habitaciones === "2" ? "#FFBD59" : "",
+                        color:
+                          advancedFilter.Habitaciones === "2" ? "white" : "",
+                      }}>
+                      <span>2</span>
+                    </label>
+
+                    <input
+                      type="checkbox"
+                      className="btn-check"
+                      name="propertyCategory"
+                      id="property3"
+                      autoComplete="off"
+                      checked={advancedFilter.Habitaciones === "3"}
+                      onChange={() =>
+                        handleAdvancedSingleCheckboxChange("Habitaciones", "3")
+                      }
+                    />
+                    <label className="btn Habitaciones" htmlFor="property3"  style={{
+                        backgroundColor:
+                          advancedFilter.Habitaciones === "3" ? "#FFBD59" : "",
+                        color:
+                          advancedFilter.Habitaciones === "3" ? "white" : "",
+                      }}>
+                      <span>3</span>
+                    </label>
+
+                    <input
+                      type="checkbox"
+                      className="btn-check"
+                      name="propertyCategory"
+                      id="property4"
+                      autoComplete="off"
+                      checked={advancedFilter.Habitaciones === "4+"}
+                      onChange={() =>
+                        handleAdvancedSingleCheckboxChange("Habitaciones", "4+")
+                      }
+                    />
+                    <label className="btn Habitaciones" htmlFor="property4"  style={{
+                        backgroundColor:
+                          advancedFilter.Habitaciones === "4+" ? "#FFBD59" : "",
+                        color:
+                          advancedFilter.Habitaciones === "4+" ? "white" : "",
+                      }}>
+                      <span>+4</span>
+                    </label>
+                  </div>
+
+                  <div className="form-check form-switch d-flex justify-content-between mt-3 p-0">
+                    <label
+                      className="form-check-label"
+                      htmlFor="flexSwitchCheckDefault"
+                    >
+                      Indica el número exacto de habitaciones.
+                    </label>
+                    <input
+                      className="form-check-input new-border-clr"
+                      type="checkbox"
+                      id="flexSwitchCheckDefault"
+                      checked={advancedFilter.exactHabitaciones || false}
+                      onChange={(e) =>
+                        setAdvancedFilter((prev) => ({
+                          ...prev,
+                          exactHabitaciones: e.target.checked,
+                        }))
+                      }
+                    />
+                  </div>
                 </div>
+
                 <div className="col-12">
                   <h5>Baños</h5>
                   <div
@@ -1121,8 +1330,17 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                       name="propertyCategory"
                       id="banos1"
                       autoComplete="off"
+                      checked={advancedFilter.Baños === "1"}
+                      onChange={() =>
+                        handleAdvancedSingleCheckboxChange("Baños", "1")
+                      }
                     />
-                    <label className="btn Habitaciones" htmlFor="banos1">
+                    <label className="btn Habitaciones" htmlFor="banos1" style={{
+                        backgroundColor:
+                          advancedFilter.Baños === "1" ? "#FFBD59" : "",
+                        color:
+                          advancedFilter.Baños === "1" ? "white" : "",
+                      }}>
                       <span>1</span>
                     </label>
                     <input
@@ -1131,8 +1349,17 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                       name="propertyCategory"
                       id="banos2"
                       autoComplete="off"
+                      checked={advancedFilter.Baños === "2"}
+                      onChange={() =>
+                        handleAdvancedSingleCheckboxChange("Baños", "2")
+                      }
                     />
-                    <label className="btn Habitaciones" htmlFor="banos2">
+                    <label className="btn Habitaciones" htmlFor="banos2" style={{
+                        backgroundColor:
+                          advancedFilter.Baños === "2" ? "#FFBD59" : "",
+                        color:
+                          advancedFilter.Baños === "2" ? "white" : "",
+                      }}>
                       <span>2</span>
                     </label>
                     <input
@@ -1141,8 +1368,17 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                       name="propertyCategory"
                       id="banos3"
                       autoComplete="off"
+                      checked={advancedFilter.Baños === "3"}
+                      onChange={() =>
+                        handleAdvancedSingleCheckboxChange("Baños", "3")
+                      }
                     />
-                    <label className="btn Habitaciones" htmlFor="banos3">
+                    <label className="btn Habitaciones" htmlFor="banos3" style={{
+                        backgroundColor:
+                          advancedFilter.Baños === "3" ? "#FFBD59" : "",
+                        color:
+                          advancedFilter.Baños === "3" ? "white" : "",
+                      }}>
                       <span>3</span>
                     </label>
                     <input
@@ -1151,8 +1387,17 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                       name="propertyCategory"
                       id="banos4"
                       autoComplete="off"
+                      checked={advancedFilter.Baños === "+4"}
+                      onChange={() =>
+                        handleAdvancedSingleCheckboxChange("Baños", "+4")
+                      }
                     />
-                    <label className="btn Habitaciones" htmlFor="banos4">
+                    <label className="btn Habitaciones" htmlFor="banos4" style={{
+                        backgroundColor:
+                          advancedFilter.Baños === "+4" ? "#FFBD59" : "",
+                        color:
+                          advancedFilter.Baños === "+4" ? "white" : "",
+                      }}>
                       <span>+4</span>
                     </label>
                   </div>
@@ -1184,40 +1429,76 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                       type="checkbox"
                       className="btn-check"
                       name="propertyCategory"
-                      id="banos1"
+                      id="estacionamientos1"
                       autoComplete="off"
+                        checked={advancedFilter.Estacionamientos === "1"}
+                      onChange={() =>
+                        handleAdvancedSingleCheckboxChange("Estacionamientos", "1")
+                      }
                     />
-                    <label className="btn Habitaciones" htmlFor="banos1">
+                    <label className="btn Habitaciones" htmlFor="estacionamientos1"  style={{
+                        backgroundColor:
+                          advancedFilter.Estacionamientos === "1" ? "#FFBD59" : "",
+                        color:
+                          advancedFilter.Estacionamientos === "1" ? "white" : "",
+                      }}>
                       <span>1</span>
                     </label>
                     <input
                       type="checkbox"
                       className="btn-check"
                       name="propertyCategory"
-                      id="banos2"
+                      id="estacionamientos2"
                       autoComplete="off"
+                         checked={advancedFilter.Estacionamientos === "2"}
+                      onChange={() =>
+                        handleAdvancedSingleCheckboxChange("Estacionamientos", "2")
+                      }
                     />
-                    <label className="btn Habitaciones" htmlFor="banos2">
+                    <label className="btn Habitaciones" htmlFor="estacionamientos2" style={{
+                        backgroundColor:
+                          advancedFilter.Estacionamientos === "2" ? "#FFBD59" : "",
+                        color:
+                          advancedFilter.Estacionamientos === "2" ? "white" : "",
+                      }}>
                       <span>2</span>
                     </label>
                     <input
                       type="checkbox"
                       className="btn-check"
                       name="propertyCategory"
-                      id="banos3"
+                      id="estacionamientos3"
                       autoComplete="off"
+                         checked={advancedFilter.Estacionamientos === "3"}
+                      onChange={() =>
+                        handleAdvancedSingleCheckboxChange("Estacionamientos", "3")
+                      }
                     />
-                    <label className="btn Habitaciones" htmlFor="banos3">
+                    <label className="btn Habitaciones" htmlFor="estacionamientos3" style={{
+                        backgroundColor:
+                          advancedFilter.Estacionamientos === "3" ? "#FFBD59" : "",
+                        color:
+                          advancedFilter.Estacionamientos === "3" ? "white" : "",
+                      }}>
                       <span>3</span>
                     </label>
                     <input
                       type="checkbox"
                       className="btn-check"
                       name="propertyCategory"
-                      id="banos4"
+                      id="estacionamientos4"
                       autoComplete="off"
+                         checked={advancedFilter.Estacionamientos === "+4"}
+                      onChange={() =>
+                        handleAdvancedSingleCheckboxChange("Estacionamientos", "+4")
+                      }
                     />
-                    <label className="btn Habitaciones" htmlFor="banos4">
+                    <label className="btn Habitaciones" htmlFor="estacionamientos4" style={{
+                        backgroundColor:
+                          advancedFilter.Estacionamientos === "+4" ? "#FFBD59" : "",
+                        color:
+                          advancedFilter.Estacionamientos === "+4" ? "white" : "",
+                      }}>
                       <span>+4</span>
                     </label>
                   </div>
@@ -1238,7 +1519,7 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
               </div>
               <div className="mb-3">
                 <h5>Mobiliario</h5>
-                <div className="d-flex align-items-center gap-2 flex-wrap">
+                {/* <div className="d-flex align-items-center gap-2 flex-wrap">
                   <div className="new-container-box">
                     <input
                       type="checkbox"
@@ -1272,11 +1553,35 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                       No amueblado
                     </label>
                   </div>
+                </div> */}
+                <div className="d-flex align-items-center gap-2 flex-wrap">
+                  {["Amueblado", "Semiamueblado", "No amueblado"].map(
+                    (item) => (
+                      <div className="new-container-box" key={item}>
+                        <input
+                          type="checkbox"
+                          className="btn-check"
+                          id={item}
+                          autoComplete="off"
+                          checked={advancedFilter["Mobiliario"] === item}
+                          onChange={() =>
+                            handleAdvancedSingleCheckboxChange(
+                              "Mobiliario",
+                              item
+                            )
+                          }
+                        />
+                        <label className="Transacción" htmlFor={item}>
+                          {item}
+                        </label>
+                      </div>
+                    )
+                  )}
                 </div>
               </div>
               <div className="mb-3">
                 <h5>Publicado por</h5>
-                <div className="d-flex align-items-center gap-2 flex-wrap">
+                {/* <div className="d-flex align-items-center gap-2 flex-wrap">
                   <div className="new-container-box">
                     <input
                       type="checkbox"
@@ -1321,10 +1626,37 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                       Constructor o promotor
                     </label>
                   </div>
+                </div> */}
+                <div className="d-flex align-items-center gap-2 flex-wrap">
+                  {[
+                    "Agencia inmobiliaria",
+                    "Agente inmobiliario",
+                    "Particular",
+                    "Constructor o promotor",
+                  ].map((item) => (
+                    <div className="new-container-box" key={item}>
+                      <input
+                        type="checkbox"
+                        className="btn-check"
+                        id={item}
+                        autoComplete="off"
+                        checked={advancedFilter["Publicadopor"] === item}
+                        onChange={() =>
+                          handleAdvancedSingleCheckboxChange(
+                            "Publicadopor",
+                            item
+                          )
+                        }
+                      />
+                      <label className="Transacción" htmlFor={item}>
+                        {item}
+                      </label>
+                    </div>
+                  ))}
                 </div>
               </div>
               <div className="row g-4">
-                <div className="col-lg-6">
+                {/* <div className="col-lg-6">
                   <label htmlFor="">Antigüedad</label>
                   <select className="form-select mt-2">
                     <option selected="">Indiferente</option>
@@ -1336,23 +1668,72 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                     <option selected="">26 a 40 años</option>
                     <option selected="">40 años o ma</option>
                   </select>
+                </div> */}
+                <div className="col-lg-6">
+                  <label htmlFor="">Antigüedad</label>
+                  <select
+                    name="Antigüedad"
+                    className="form-select mt-2"
+                    value={advancedFilter["Antigüedad"] || ""}
+                    onChange={(e) =>
+                      handleAdvancedSelectChange("Antigüedad", e.target.value)
+                    }
+                  >
+                    <option value="">Indiferente</option>
+                    <option value="A estrenar">A estrenar</option>
+                    <option value="1 a 5 años">1 a 5 años</option>
+                    <option value="6 a 10 años">6 a 10 años</option>
+                    <option value="11 a 15 años">11 a 15 años</option>
+                    <option value="16 a 25 años">16 a 25 años</option>
+                    <option value="26 a 40 años">26 a 40 años</option>
+                    <option value="40 años o ma">40 años o ma</option>
+                  </select>
                 </div>
+
                 <div className="col-lg-6">
                   <label htmlFor="">Tipo de suelo</label>
-                  <select className="form-select mt-2">
-                    <option selected="">Indiferente</option>
+                  <select className="form-select mt-2" name="Tipo de suelo"  value={advancedFilter["Tipo de suelo"] || ""}
+                    onChange={(e) =>
+                      handleAdvancedSelectChange("Tipo de suelo", e.target.value)
+                    }>
+                    <option value="">Indiferente</option>
+                    <option selected="Madera">Madera</option>
+                    <option selected="Cerámica o Porcelanato">Cerámica o Porcelanato</option>
+                    <option selected="Granito">Granito</option>
+                    <option selected="Cemento">Cemento</option>
+                    <option selected="Vinil o PVC">Vinil o PVC</option>
+                    <option selected="Marmol">Marmol</option>
+                    <option selected="Terrazzo">Terrazzo</option>
+                    <option selected="Alfombra">Alfombra</option>
+                    <option selected="Piedra Natural">Piedra Natural</option>
                   </select>
                 </div>
                 <div className="col-lg-6">
                   <label htmlFor="">Vistas</label>
-                  <select className="form-select mt-2">
+                  <select className="form-select mt-2" name="Vistas"  value={advancedFilter["Vistas"] || ""}
+                    onChange={(e) =>
+                      handleAdvancedSelectChange("Vistas", e.target.value)
+                    }>
                     <option selected="">Indiferente</option>
+                    <option selected="Vista al mar">Vista al mar</option>
+                    <option selected="Vista a la montaña">Vista a la montaña</option>
+                    <option selected="Vista a la ciudad">Vista a la ciudad</option>
+                    <option selected="Vista al lago">Vista al lago</option>
+                    <option selected="Vista al bosque">Vista al bosque</option>
+                    <option selected="Vista al río">Vista al río</option>
                   </select>
                 </div>
                 <div className="col-lg-6">
                   <label htmlFor="">Orientación</label>
-                  <select className="form-select mt-2">
+                  <select className="form-select mt-2" name="Orientación"  value={advancedFilter["Orientación"] || ""}
+                    onChange={(e) =>
+                      handleAdvancedSelectChange("Orientación", e.target.value)
+                    }>
                     <option selected="">Indiferente</option>
+                    <option selected="Norte">Norte</option>
+                    <option selected="Sur">Sur</option>
+                    <option selected="Este">Este</option>
+                    <option selected="Oeste">Oeste</option>
                   </select>
                 </div>
               </div>
@@ -1497,38 +1878,42 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                 </div>
               </div> */}
               <div className="row mb-3 mt-3">
-  <h5 className="">Seguridad</h5>
+                <h5 className="">Seguridad</h5>
 
-  {[
-    "Alarma",
-    "Vigilancia",
-    "Sistema de videointercomunicador",
-    "Cámaras de vigilancia (CCTV)",
-    "Cerco eléctrico",
-    "Cerco perimetral",
-    "Portón eléctrico",
-    "Iluminación de seguridad",
-    "Sistema contra incendios",
-    "Caja fuerte",
-    "Puerta blindada",
-  ].map((item, index) => (
-    <div className="col-lg-4" key={index}>
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          id={item}
-          onChange={(e) =>
-            handleAdvancedCheckboxChange("Seguridad", item, e.target.checked)
-          }
-        />
-        <label className="form-check-label" htmlFor={item}>
-          {item}
-        </label>
-      </div>
-    </div>
-  ))}
-</div>
+                {[
+                  "Alarma",
+                  "Vigilancia",
+                  "Sistema de videointercomunicador",
+                  "Cámaras de vigilancia (CCTV)",
+                  "Cerco eléctrico",
+                  "Cerco perimetral",
+                  "Portón eléctrico",
+                  "Iluminación de seguridad",
+                  "Sistema contra incendios",
+                  "Caja fuerte",
+                  "Puerta blindada",
+                ].map((item, index) => (
+                  <div className="col-lg-4" key={index}>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={item}
+                        onChange={(e) =>
+                          handleAdvancedCheckboxChange(
+                            "Seguridad",
+                            item,
+                            e.target.checked
+                          )
+                        }
+                      />
+                      <label className="form-check-label" htmlFor={item}>
+                        {item}
+                      </label>
+                    </div>
+                  </div>
+                ))}
+              </div>
 
               {/* <div className="row mb-3 mt-3">
                 <h5 className="">Ambientes</h5>
@@ -1825,56 +2210,60 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                 </div>
               </div> */}
               <div className="row mb-3 mt-3">
-  <h5 className="">Ambientes</h5>
+                <h5 className="">Ambientes</h5>
 
-  {[
-    "Piscina",
-    "Área de barbacoa/parrillera",
-    "Estudio u oficina",
-    "Cuarto de servicio",
-    "Área de comedor",
-    "Cancha de básquetbol",
-    "Cancha de paddle",
-    "Gimnasio",
-    "Bar",
-    "Patio",
-    "Área para mascotas",
-    "Canchas de usos múltiples",
-    "Salón de eventos",
-    "Cancha de fútbol",
-    "Sauna",
-    "Baño de visitas",
-    "Armarios",
-    "Sala de juegos",
-    "Jacuzzi",
-    "Jardines o áreas verdes",
-    "Sala de reuniones",
-    "Área de cine",
-    "Cocina",
-    "Vestier",
-    "Cuarto de lavado",
-    "Área para desayunar",
-    "Cancha de tenis",
-  ].map((item, index) => (
-    <div className="col-lg-4" key={index}>
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          id={item}
-          onChange={(e) =>
-            handleAdvancedCheckboxChange("Ambientes", item, e.target.checked)
-          }
-        />
-        <label className="form-check-label" htmlFor={item}>
-          {item}
-        </label>
-      </div>
-    </div>
-  ))}
-</div>
+                {[
+                  "Piscina",
+                  "Área de barbacoa/parrillera",
+                  "Estudio u oficina",
+                  "Cuarto de servicio",
+                  "Área de comedor",
+                  "Cancha de básquetbol",
+                  "Cancha de paddle",
+                  "Gimnasio",
+                  "Bar",
+                  "Patio",
+                  "Área para mascotas",
+                  "Canchas de usos múltiples",
+                  "Salón de eventos",
+                  "Cancha de fútbol",
+                  "Sauna",
+                  "Baño de visitas",
+                  "Armarios",
+                  "Sala de juegos",
+                  "Jacuzzi",
+                  "Jardines o áreas verdes",
+                  "Sala de reuniones",
+                  "Área de cine",
+                  "Cocina",
+                  "Vestier",
+                  "Cuarto de lavado",
+                  "Área para desayunar",
+                  "Cancha de tenis",
+                ].map((item, index) => (
+                  <div className="col-lg-4" key={index}>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={item}
+                        onChange={(e) =>
+                          handleAdvancedCheckboxChange(
+                            "Ambientes",
+                            item,
+                            e.target.checked
+                          )
+                        }
+                      />
+                      <label className="form-check-label" htmlFor={item}>
+                        {item}
+                      </label>
+                    </div>
+                  </div>
+                ))}
+              </div>
 
-                {/* <div className="row mb-3 mt-3">
+              {/* <div className="row mb-3 mt-3">
                   <h5 className="">Equipamientos</h5>
                   <div className="col-lg-4">
                     <div className="form-check">
@@ -2089,46 +2478,49 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                     </div>
                   </div>
                 </div> */}
-                <div className="row mb-3 mt-3">
-  <h5 className="">Equipamientos</h5>
+              <div className="row mb-3 mt-3">
+                <h5 className="">Equipamientos</h5>
 
-  {[
-    "Aire acondicionado",
-    "Ascensor",
-    "Conexión eléctrica de alta capacidad",
-    "Calentador a gas/eléctrico",
-    "Zona de carga para vehículos eléctricos",
-    "Acceso para movilidad reducida",
-    "Calefacción",
-    "Acceso a internet",
-    "Planta eléctrica",
-    "Cámara frigorífica",
-    "Chimenea",
-    "Ventilador",
-    "TV",
-    "Sistema de domótica",
-    "Cisterna de agua",
-    "Electrodomésticos",
-    "Sistema de ventilación",
-  ].map((item, index) => (
-    <div className="col-lg-4" key={index}>
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          id={item}
-          onChange={(e) =>
-            handleAdvancedCheckboxChange("Equipamientos", item, e.target.checked)
-          }
-        />
-        <label className="form-check-label" htmlFor={item}>
-          {item}
-        </label>
-      </div>
-    </div>
-  ))}
-</div>
-
+                {[
+                  "Aire acondicionado",
+                  "Ascensor",
+                  "Conexión eléctrica de alta capacidad",
+                  "Calentador a gas/eléctrico",
+                  "Zona de carga para vehículos eléctricos",
+                  "Acceso para movilidad reducida",
+                  "Calefacción",
+                  "Acceso a internet",
+                  "Planta eléctrica",
+                  "Cámara frigorífica",
+                  "Chimenea",
+                  "Ventilador",
+                  "TV",
+                  "Sistema de domótica",
+                  "Cisterna de agua",
+                  "Electrodomésticos",
+                  "Sistema de ventilación",
+                ].map((item, index) => (
+                  <div className="col-lg-4" key={index}>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={item}
+                        onChange={(e) =>
+                          handleAdvancedCheckboxChange(
+                            "Equipamientos",
+                            item,
+                            e.target.checked
+                          )
+                        }
+                      />
+                      <label className="form-check-label" htmlFor={item}>
+                        {item}
+                      </label>
+                    </div>
+                  </div>
+                ))}
+              </div>
 
               {/* <div className="row mb-3 mt-3">
                 <h5 className="">Servicios</h5>
@@ -2233,36 +2625,39 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                 </div>
               </div> */}
               <div className="row mb-3 mt-3">
-  <h5 className="">Servicios</h5>
+                <h5 className="">Servicios</h5>
 
-  {[
-    "Suministro de agua",
-    "Recolección de basura",
-    "Línea telefónica",
-    "Red eléctrica",
-    "Alcantarillado y drenaje",
-    "Energía solar",
-    "Gas",
-    "Suministro de agua potable",
-  ].map((item, index) => (
-    <div className="col-lg-4" key={index}>
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          id={item}
-          onChange={(e) =>
-            handleAdvancedCheckboxChange("Servicios", item, e.target.checked)
-          }
-        />
-        <label className="form-check-label" htmlFor={item}>
-          {item}
-        </label>
-      </div>
-    </div>
-  ))}
-</div>
-
+                {[
+                  "Suministro de agua",
+                  "Recolección de basura",
+                  "Línea telefónica",
+                  "Red eléctrica",
+                  "Alcantarillado y drenaje",
+                  "Energía solar",
+                  "Gas",
+                  "Suministro de agua potable",
+                ].map((item, index) => (
+                  <div className="col-lg-4" key={index}>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={item}
+                        onChange={(e) =>
+                          handleAdvancedCheckboxChange(
+                            "Servicios",
+                            item,
+                            e.target.checked
+                          )
+                        }
+                      />
+                      <label className="form-check-label" htmlFor={item}>
+                        {item}
+                      </label>
+                    </div>
+                  </div>
+                ))}
+              </div>
 
               {/* <div className="row mb-3 mt-3">
                 <h5 className="">Localización</h5>
@@ -2395,7 +2790,7 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
 
               <div className="mb-3">
                 <h5>Extras</h5>
-                <div className="d-flex align-items-center gap-2 flex-wrap">
+                {/* <div className="d-flex align-items-center gap-2 flex-wrap">
                   <div className="new-container-box">
                     <input
                       type="checkbox"
@@ -2440,6 +2835,30 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                       Opción de intercambio
                     </label>
                   </div>
+                </div> */}
+                <div className="d-flex align-items-center gap-2 flex-wrap">
+                  {[
+                    "Negociable",
+                    "Acepta financiamiento",
+                    "Opción a compra",
+                    "Opción de intercambio",
+                  ].map((item) => (
+                    <div className="new-container-box" key={item}>
+                      <input
+                        type="checkbox"
+                        className="btn-check"
+                        id={item}
+                        autoComplete="off"
+                        checked={tagFilter === item}
+                         onChange={() =>
+          setTagFilter(tagFilter === item ? "" : item) // ✅ single select checkbox
+        }
+                      />
+                      <label className="Transacción" htmlFor={item}>
+                        {item}
+                      </label>
+                    </div>
+                  ))}
                 </div>
               </div>
               <div className="d-flex justify-content-center gap-3 ">
@@ -2452,7 +2871,8 @@ const handleAdvancedCheckboxChange = (category, value, checked) => {
                 >
                   Aplicar filtros
                 </button>
-                <button className="Resetear-filtros2">Resetear filtros</button>
+                <button className="Resetear-filtros2"  type="button"
+  onClick={handleResetFilters}>Resetear filtros</button>
               </div>
             </div>
           </div>
