@@ -24,7 +24,7 @@ const Messages = () => {
 
   // get messageData
   const getMessages = async () => {
-    setLoading(true);
+    // setLoading(true);
     try {
       const res = await axios.get(
         `${apiUrl}/request-enquiry/getAll?userType=${userType}`,
@@ -39,9 +39,10 @@ const Messages = () => {
       setMessageType(res.data?.enquiryType || "");
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false);
     }
+    // finally {
+    //   setLoading(false);
+    // }
   };
 
   useEffect(() => {
