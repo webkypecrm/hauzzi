@@ -15,6 +15,8 @@ import mail from "../../assets/img/blackMail.png";
 import { toast } from "react-toastify";
 import link from "../../assets/img/link.png";
 import twitter from "../../assets/img/twitter.png";
+import getApi from "../../Hook.js";
+import cancel from "../../assets/img/X-circle.png";
 
 const PropertySell = () => {
   const [allData, setAllData] = useState([]);
@@ -32,6 +34,12 @@ const PropertySell = () => {
   const [typeFilter, setTypeFilter] = useState("");
   const [tagFilter, setTagFilter] = useState("");
   const [advancedFilter, setAdvancedFilter] = useState({});
+
+  const [wishlistFolderIds, setWishlistFolderIds] = useState([]);
+    const [folderPopup, setFolderPopup] = useState(false);
+    const [selectedPropertyId, setSelectedPropertyId] = useState(null);
+    const [selectedFolderId, setSelectedFolderId] = useState("");
+    const [folderData, setFolderData] = useState([]);
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
@@ -187,6 +195,101 @@ const PropertySell = () => {
       toast.error(error.response.data.message);
     }
   };
+
+
+      // fatch foldet true/false
+      const url = `${apiUrl}/profile/getById/${customerId2}`;
+      const { data, error } = getApi(url);
+      const folder = data?.isFolder;
+      console.log("folder", folder);
+    
+      // folder options
+      const getFolderData = async () => {
+        try {
+          const res = await axios.get(
+            `${apiUrl}/property/get-Folders-byCustomerId?customerId=${customerId2}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token2}`,
+              },
+            }
+          );
+          setFolderData(res?.data?.data);
+          console.log("folderData", res?.data.data);
+        } catch (error) {
+          toast.error(error?.response?.data?.message);
+        }
+      };
+    
+      useEffect(() => {
+        getFolderData();
+      }, []);
+    
+      // property add in folder
+      useEffect(() => {
+        const fetchFolderProperty = async () => {
+          try {
+            const res = await axios.get(
+              `${apiUrl}/property/getPropertyFolderData?customerId=${customerId2}`,
+              {
+                headers: { Authorization: `Bearer ${token2}` },
+              }
+            );
+    
+            const folderIds = Array.isArray(res?.data?.data)
+              ? res?.data?.data.map((item) =>
+                  typeof item === "object" && item !== null
+                    ? Number(item.propertyId)
+                    : Number(item)
+                )
+              : [];
+            // console.log("folderProperty", res?.data?.data);
+            // console.log("folderPropertyids", folderIds);
+    
+            setWishlistFolderIds(folderIds);
+          } catch (err) {
+            setWishlistIds([]);
+          } finally {
+            setWishlistLoaded(true);
+          }
+        };
+    
+        fetchFolderProperty();
+      }, []);
+    
+      const handleAddFolder = async (pid) => {
+        // console.log(id)
+        try {
+          const response = await axios.post(
+            `${apiUrl}/property/addpropertyFolderData`,
+    
+            {
+              propertyId: pid,
+              folderId: Number(selectedFolderId),
+              customerId: Number(customerId2),
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token2}`,
+              },
+            }
+          );
+    
+          // Update UI instantly
+        setWishlistFolderIds((prev) => [...prev, pid]);
+    
+          setFolderPopup(false);
+          toast.success(response.data.message);
+        } catch (error) {
+          console.log(error);
+          toast.error(error.response.data.message);
+          setFolderPopup(false);
+        }
+      };
+
+
+
+
 
   // compair api
   useEffect(() => {
@@ -482,14 +585,27 @@ const handleResetFilters = () => {
                                           <i
                                             className="fa fa-heart hrt-icon"
                                             aria-hidden="true"
-                                            onClick={() =>
-                                              handelWishlist(e?.id)
-                                            }
+                                            // onClick={() =>
+                                            //   handelWishlist(e?.id)
+                                            // }
+                                            onClick={() => {
+                                          setSelectedPropertyId(e.id); // yaha store hoga
+                                          folder
+                                            ? setFolderPopup(true)
+                                            : handelWishlist(e.id);
+                                        }}
+                                            // style={{
+                                            //   color: wishlistIds.includes(e?.id)
+                                            //     ? "red"
+                                            //     : "",
+                                            // }}
                                             style={{
-                                              color: wishlistIds.includes(e?.id)
-                                                ? "red"
-                                                : "",
-                                            }}
+                                          color:
+                                            wishlistIds.includes(e?.id) ||
+                                            wishlistFolderIds.includes(e?.id)
+                                              ? "red"
+                                              : "",
+                                        }}
                                           />
                                         </li>
                                       </ul>
@@ -2880,6 +2996,66 @@ const handleResetFilters = () => {
       </div>
 
       {/* filters sidebar */}
+      {/* select folder Modal  */}
+                                  {folderPopup && (
+                                    <div className="popup-overlay">
+                                      <div
+                                        className="popup-content"
+                                      >
+                                        <div className="d-flex justify-content-between mb-2">
+                                          <h5>Seleccionar carpeta </h5>
+                                          <img
+                                            src={cancel}
+                                            alt=""
+                                            style={{
+                                              height: "20px",
+                                              width: "20px",
+                                              cursor: "pointer",
+                                            }}
+                                            onClick={() => setFolderPopup(false)}
+                                          />
+                                        </div>
+                                        <div>
+                                          <select
+                                            className="mb-4 w-100 add-folder-modal"
+                                            name="folderId"
+                                            value={selectedFolderId}
+                                            onChange={(e) =>
+                                              setSelectedFolderId(e.target.value)
+                                            }
+                                          >
+                                            <option value="">Seleccionar</option>
+                                            {folderData?.map((folder) => (
+                                              <option
+                                                key={folder.id}
+                                                value={folder.id}
+                                              >
+                                                {folder.name}
+                                              </option>
+                                            ))}
+                                          </select>
+                                        </div>
+      
+                                        <div className="d-flex justify-content-between">
+                                          <button
+                                            className="cancelar-btn"
+                                            onClick={() => setFolderPopup(false)}
+                                          >
+                                            Cancelar
+                                          </button>
+                                          <button
+                                            className="crear-btn"
+                                            onClick={() =>
+                                              handleAddFolder(selectedPropertyId)
+                                            }
+                                          >
+                                            Agregar
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                  {/* select folder Modal  */}
     </Fragment>
   );
 };

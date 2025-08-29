@@ -145,6 +145,7 @@ const Main = () => {
     getCategory();
     handelBlogData();
   }, []);
+
   // --------------------------------------------------------------------------------
   // Wishlist Api
   useEffect(() => {
@@ -197,6 +198,7 @@ const Main = () => {
       toast.error(error.response.data.message);
     }
   };
+
   // fatch foldet true/false
   const url = `${apiUrl}/profile/getById/${customerId}`;
   const { data, error } = getApi(url);
@@ -276,7 +278,7 @@ const Main = () => {
       );
 
       // Update UI instantly
-    setWishlistFolderIds((prev) => [...prev, pid]);
+      setWishlistFolderIds((prev) => [...prev, pid]);
 
       setFolderPopup(false);
       toast.success(response.data.message);
@@ -679,11 +681,12 @@ const Main = () => {
                                         //     : "",
                                         // }}
                                         style={{
-  color:
-    wishlistIds.includes(e?.id) || wishlistFolderIds.includes(e?.id)
-      ? "red"
-      : "",
-}}
+                                          color:
+                                            wishlistIds.includes(e?.id) ||
+                                            wishlistFolderIds.includes(e?.id)
+                                              ? "red"
+                                              : "",
+                                        }}
                                       />
                                     </li>
                                   </ul>
@@ -751,7 +754,6 @@ const Main = () => {
                                 </div>
                               </div>
                             )}
-
                             {/* select folder Modal  */}
                             <div className="details">
                               <Link
