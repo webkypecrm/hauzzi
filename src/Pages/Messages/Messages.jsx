@@ -39,7 +39,11 @@ const Messages = () => {
       setMessageType(res.data?.enquiryType || "");
     } catch (error) {
       console.log(error);
-    }
+// <<<<<<< divakar_dev
+//     } 
+// =======
+//     }
+// >>>>>>> main
     // finally {
     //   setLoading(false);
     // }

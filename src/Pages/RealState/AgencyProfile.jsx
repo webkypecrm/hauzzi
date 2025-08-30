@@ -31,6 +31,8 @@ import link from "../../assets/img/link.png";
 import twitter from "../../assets/img/twitter.png";
 import face from "../../assets/img/facebook.png";
 import whats from "../../assets/img/whatsapp.png";
+import getApi from "../../Hook.js";
+import cancel from "../../assets/img/X-circle.png";
 
 const AgencyProfile = () => {
   const [agencyData, setAgencyData] = useState([]);
@@ -50,6 +52,11 @@ const AgencyProfile = () => {
   const [wishlistLoaded, setWishlistLoaded] = useState(false);
   const [compareIds, setCompareIds] = useState([]);
   const [compareLoaded, setCompareLoaded] = useState(false);
+  const [wishlistFolderIds, setWishlistFolderIds] = useState([]);
+      const [folderPopup, setFolderPopup] = useState(false);
+      const [selectedPropertyId, setSelectedPropertyId] = useState(null);
+      const [selectedFolderId, setSelectedFolderId] = useState("");
+      const [folderData, setFolderData] = useState([]);
 
   const customerId = localStorage.getItem("tokenId") || "";
   const token = localStorage.getItem("token");
@@ -76,7 +83,6 @@ const AgencyProfile = () => {
   console.log("first", agencyData);
 
   // Get Sell Property
-
   const getSellProperty = async () => {
     try {
       const res = await axios.get(
@@ -88,7 +94,8 @@ const AgencyProfile = () => {
         }
       );
       setSellProperty(res.data?.data || []);
-      setCount1(res?.data?.totalcount);
+      setCount1(res?.data?.totalcounts);
+      console.log("setCount1", res.data);
     } catch (error) {
       console.log(error);
     }
@@ -106,7 +113,7 @@ const AgencyProfile = () => {
         }
       );
       setRentProperty(res.data?.data || []);
-      setCount2(res?.data?.totalcount);
+      setCount2(res?.data?.totalcounts);
     } catch (error) {
       console.log(error);
     }
@@ -303,6 +310,99 @@ const AgencyProfile = () => {
       toast.error(error.response.data.message);
     }
   };
+
+    // fatch foldet true/false
+      const url = `${apiUrl}/profile/getById/${customerId}`;
+      const { data, error } = getApi(url);
+      const folder = data?.isFolder;
+      console.log("folder", folder);
+    
+      // folder options
+      const getFolderData = async () => {
+        try {
+          const res = await axios.get(
+            `${apiUrl}/property/get-Folders-byCustomerId?customerId=${customerId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setFolderData(res?.data?.data);
+          console.log("folderData", res?.data.data);
+        } catch (error) {
+          toast.error(error?.response?.data?.message);
+        }
+      };
+    
+      useEffect(() => {
+        getFolderData();
+      }, []);
+    
+      // property add in folder
+      useEffect(() => {
+        const fetchFolderProperty = async () => {
+          try {
+            const res = await axios.get(
+              `${apiUrl}/property/getPropertyFolderData?customerId=${customerId}`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            );
+    
+            const folderIds = Array.isArray(res?.data?.data)
+              ? res?.data?.data.map((item) =>
+                  typeof item === "object" && item !== null
+                    ? Number(item.propertyId)
+                    : Number(item)
+                )
+              : [];
+            // console.log("folderProperty", res?.data?.data);
+            // console.log("folderPropertyids", folderIds);
+    
+            setWishlistFolderIds(folderIds);
+          } catch (err) {
+            setWishlistIds([]);
+          } finally {
+            setWishlistLoaded(true);
+          }
+        };
+    
+        fetchFolderProperty();
+      }, []);
+    
+      const handleAddFolder = async (pid) => {
+        // console.log(id)
+        try {
+          const response = await axios.post(
+            `${apiUrl}/property/addpropertyFolderData`,
+    
+            {
+              propertyId: pid,
+              folderId: Number(selectedFolderId),
+              customerId: Number(customerId),
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+    
+          // Update UI instantly
+          setWishlistFolderIds((prev) => [...prev, pid]);
+    
+          setFolderPopup(false);
+          toast.success(response.data.message);
+        } catch (error) {
+          console.log(error);
+          toast.error(error.response.data.message);
+          setFolderPopup(false);
+        }
+      };
+
+
+
 
   // compair api
   useEffect(() => {
@@ -503,13 +603,18 @@ const AgencyProfile = () => {
                                             <i
                                               className="fa fa-heart"
                                               aria-hidden="true"
-                                              onClick={() =>
-                                                handelWishlist(e?.id)
-                                              }
+                                              // onClick={() =>
+                                              //   handelWishlist(e?.id)
+                                              // }
+                                               onClick={() => {
+                                          setSelectedPropertyId(e.id); // yaha store hoga
+                                          folder
+                                            ? setFolderPopup(true)
+                                            : handelWishlist(e.id);
+                                        }}
                                               style={{
-                                                color: wishlistIds.includes(
-                                                  e?.id
-                                                )
+                                                color: wishlistIds.includes(e?.id) ||
+                                            wishlistFolderIds.includes(e?.id)
                                                   ? "red"
                                                   : "#FFBD59",
                                                 fontSize: "21px",
@@ -988,17 +1093,22 @@ const AgencyProfile = () => {
                                           <i
                                             className="fa fa-heart"
                                             aria-hidden="true"
-                                            onClick={() =>
-                                              handelWishlist(property?.id)
-                                            }
+                                            // onClick={() =>
+                                            //   handelWishlist(property?.id)
+                                            // }
+                                             onClick={() => {
+                                          setSelectedPropertyId(property.id); // yaha store hoga
+                                          folder
+                                            ? setFolderPopup(true)
+                                            : handelWishlist(property.id);
+                                        }}
                                             style={{
-                                              color: wishlistIds.includes(
-                                                property?.id
-                                              )
-                                                ? "red"
-                                                : "#FFBD59",
-                                              fontSize: "21px",
-                                            }}
+                                                color: wishlistIds.includes(property?.id) ||
+                                            wishlistFolderIds.includes(property?.id)
+                                                  ? "red"
+                                                  : "#FFBD59",
+                                                fontSize: "21px",
+                                              }}
                                           />
                                         </li>
                                       </ul>
@@ -1332,17 +1442,22 @@ const AgencyProfile = () => {
                                           <i
                                             className="fa fa-heart"
                                             aria-hidden="true"
-                                            onClick={() =>
-                                              handelWishlist(prop?.id)
-                                            }
+                                            // onClick={() =>
+                                            //   handelWishlist(prop?.id)
+                                            // }
+                                             onClick={() => {
+                                          setSelectedPropertyId(prop.id); // yaha store hoga
+                                          folder
+                                            ? setFolderPopup(true)
+                                            : handelWishlist(prop.id);
+                                        }}
                                             style={{
-                                              color: wishlistIds.includes(
-                                                prop?.id
-                                              )
-                                                ? "red"
-                                                : "#FFBD59",
-                                              fontSize: "21px",
-                                            }}
+                                                color: wishlistIds.includes(prop?.id) ||
+                                            wishlistFolderIds.includes(prop?.id)
+                                                  ? "red"
+                                                  : "#FFBD59",
+                                                fontSize: "21px",
+                                              }}
                                           />
                                         </li>
                                       </ul>
@@ -1835,6 +1950,66 @@ const AgencyProfile = () => {
           </Fragment>
         )}
       </div>
+              {/* select folder Modal  */}
+                                          {folderPopup && (
+                                            <div className="popup-overlay">
+                                              <div
+                                                className="popup-content"
+                                              >
+                                                <div className="d-flex justify-content-between mb-2">
+                                                  <h5>Seleccionar carpeta </h5>
+                                                  <img
+                                                    src={cancel}
+                                                    alt=""
+                                                    style={{
+                                                      height: "20px",
+                                                      width: "20px",
+                                                      cursor: "pointer",
+                                                    }}
+                                                    onClick={() => setFolderPopup(false)}
+                                                  />
+                                                </div>
+                                                <div>
+                                                  <select
+                                                    className="mb-4 w-100 add-folder-modal"
+                                                    name="folderId"
+                                                    value={selectedFolderId}
+                                                    onChange={(e) =>
+                                                      setSelectedFolderId(e.target.value)
+                                                    }
+                                                  >
+                                                    <option value="">Seleccionar</option>
+                                                    {folderData?.map((folder) => (
+                                                      <option
+                                                        key={folder.id}
+                                                        value={folder.id}
+                                                      >
+                                                        {folder.name}
+                                                      </option>
+                                                    ))}
+                                                  </select>
+                                                </div>
+              
+                                                <div className="d-flex justify-content-between">
+                                                  <button
+                                                    className="cancelar-btn"
+                                                    onClick={() => setFolderPopup(false)}
+                                                  >
+                                                    Cancelar
+                                                  </button>
+                                                  <button
+                                                    className="crear-btn"
+                                                    onClick={() =>
+                                                      handleAddFolder(selectedPropertyId)
+                                                    }
+                                                  >
+                                                    Agregar
+                                                  </button>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          )}
+                                          {/* select folder Modal  */}
     </Fragment>
   );
 };
