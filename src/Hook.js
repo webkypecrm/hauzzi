@@ -6,6 +6,7 @@ const getApi = (url) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("token");
+  console.log(token);
 
   useEffect(() => {
     const fetchData = async () => {
