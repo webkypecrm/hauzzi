@@ -20,6 +20,7 @@ const MyFavorites = () => {
   const [folderData, setFolderData] = useState([]);
   const [folderName, setFolderName] = useState(""); //for post api
   const [folderId, setFolderId] = useState("");
+  const [folderPropertyData, setFolderPropertyData] = useState([]);
 
   const token = localStorage.getItem("token");
   const token2 = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
@@ -201,7 +202,6 @@ const MyFavorites = () => {
   };
 
   // get folder property
-  const [folderPropertyData, setFolderPropertyData] = useState([]);
   console.log("folderId", folderPropertyData);
   const getFolderpropertyData = async () => {
     try {
@@ -231,7 +231,7 @@ const MyFavorites = () => {
   const url = `${apiUrl}/profile/getById/${customerId}`;
   const { data, error } = getApi(url);
   const folder = data?.isFolder;
-  console.log("folder", folder);
+  console.log("folder", data);
 
   // delete folder
   const deleteFolder = async (id) => {
@@ -278,6 +278,21 @@ const MyFavorites = () => {
     } catch (error) {
       toast.error(error?.res?.data?.message);
     }
+  };
+
+  // Share Folder
+  const shareFolder = async (id) => {
+    try {
+      const res = await axios.post(
+        `${apiUrl}/property/share/folder/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (error) {}
   };
 
   return (
@@ -355,7 +370,18 @@ const MyFavorites = () => {
                           className="d-flex flex-column"
                           style={{ cursor: "pointer" }}
                         >
-                          <i className="bi bi-person-plus-fill" />
+                          <i
+                            className="bi bi-person-plus-fill"
+                            // onClick={() => shareFolder(item?.id)}
+                            onClick={() =>
+                                                  window.open(
+                                                    `https://wa.me/?text=${encodeURIComponent(
+                                                      `https://new-hauzzi.vercel.app/myfavoriets`
+                                                    )}`,
+                                                    "_blank"
+                                                  )
+                                                }
+                          />
                           <i
                             className="bi bi-trash"
                             onClick={() => deleteFolder(item?.id)}
@@ -553,14 +579,18 @@ const MyFavorites = () => {
                                   style={{ marginTop: 0 }}
                                 >
                                   <div className="profile-pic-wrapper">
-                                      {item.agentDetails.map((agent, idx) => (
-                                        <img
-                                          key={idx}
-                                           src={agent.photoUrl ? agent.photoUrl : hauzziPic}
-                                          alt=""
-                                        />
-                                      ))}
-                                  
+                                    {item.agentDetails.map((agent, idx) => (
+                                      <img
+                                        key={idx}
+                                        src={
+                                          agent.photoUrl
+                                            ? agent.photoUrl
+                                            : hauzziPic
+                                        }
+                                        alt=""
+                                      />
+                                    ))}
+
                                     {/* <img
                                       src={item.agentDetails?.map(
                                         (item) => item.photoUrl
@@ -693,12 +723,16 @@ const MyFavorites = () => {
                                       alt=""
                                     /> */}
                                     {item.agencyDetails.map((agency, idx) => (
-                                        <img
-                                          key={idx}
-                                           src={agency.photoUrl ? agency.photoUrl : hauzziPic}
-                                          alt=""
-                                        />
-                                      ))}
+                                      <img
+                                        key={idx}
+                                        src={
+                                          agency.photoUrl
+                                            ? agency.photoUrl
+                                            : hauzziPic
+                                        }
+                                        alt=""
+                                      />
+                                    ))}
                                   </div>
                                   <small className="toprated">
                                     <img src="img/my-img/crown.png" />

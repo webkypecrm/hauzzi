@@ -127,26 +127,11 @@ const MyVisit = () => {
     }
   };
 
-  // console.log(
-  //   "first",
-  //   calendarData?.map((item) => item.property.name)
-  // );
 
   useEffect(() => {
     getCalendarData();
   }, []);
 
-  // const getDataForDate = (date) => {
-  //   if (!date) return [];
-
-  //   const selectedStr = date.toISOString().split("T")[0]; // this is fine
-
-  //   return calendarData.filter((item) => {
-  //     const itemDate = new Date(item.date + "T00:00:00"); // ✅ Fix here
-  //     const itemStr = itemDate.toISOString().split("T")[0];
-  //     return itemStr === selectedStr;
-  //   });
-  // };
 
   const getDataForDate = (date) => {
   if (!date) return [];
