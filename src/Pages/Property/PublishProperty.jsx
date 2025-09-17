@@ -435,7 +435,6 @@ const PublishProperty = () => {
   }, []);
 
   // Google Map
-
   const autocompleteRef = useRef(null);
   const mapRef = useRef(null);
 

@@ -1,10 +1,17 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { Tooltip } from "bootstrap";
 import Header from "../MainPage/Header";
 import Footer from "../MainPage/Footer";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import {
+  GoogleMap,
+  LoadScript,
+  Marker,
+  useJsApiLoader,
+  Autocomplete,
+} from "@react-google-maps/api";
 
 const MyAlert = () => {
   const [folderPopup, setFolderPopup] = useState(false);
@@ -158,21 +165,49 @@ const MyAlert = () => {
   };
 
   // alert for mail
-  const alertForMail = async (ID) => {
-    try {
-      const res = await axios.post(
-        `${apiUrl}/property/processAlert-with-id/${ID}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      toast.success(res?.data?.message);
-    } catch (error) {
-      toast.error(error?.response?.data?.message);
-    }
+  // const alertForMail = async (ID) => {
+  //   try {
+  //     const res = await axios.post(
+  //       `${apiUrl}/property/processAlert-with-id/${ID}`,
+  //       {},
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     toast.success(res?.data?.message);
+  //   } catch (error) {
+  //     toast.error(error?.response?.data?.message);
+  //   }
+  // };
+  // Google Map
+  const LIBRARIES = ["places"];
+
+  const defaultCenter = { lat: 28.6139, lng: 77.209 };
+
+  const autocompleteRef = useRef(null);
+  const [mapCenter, setMapCenter] = useState(defaultCenter);
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: "AIzaSyDAc6yU2PelDIJKgzSxOJZIepi7Bx43lXw",
+    libraries: LIBRARIES,
+  });
+
+  const onPlaceChanged = () => {
+    const place = autocompleteRef.current?.getPlace();
+    if (!place?.geometry) return;
+
+    const lat = place.geometry.location.lat();
+    const lng = place.geometry.location.lng();
+
+    setMapCenter({ lat, lng });
+
+    // formData me message set karna
+    setFormData((prev) => ({
+      ...prev,
+      location: place.formatted_address || place.name,
+    }));
   };
 
   return (
@@ -345,7 +380,7 @@ const MyAlert = () => {
                             Recibir novedades inmediatas
                           </p>
                           <div className="d-flex justify-content-between">
-                            <div className="switch-label">
+                            {/* <div className="switch-label">
                               <label className="switchSmall">
                                 <input
                                   type="checkbox"
@@ -358,7 +393,7 @@ const MyAlert = () => {
                                 <small />
                               </label>
                               <span className="ms-2">Email</span>
-                            </div>
+                            </div> */}
                             <button className="btn btn-primary me-3 w-auto btn-sm">
                               {" "}
                               Ver Anuncios
@@ -409,62 +444,7 @@ const MyAlert = () => {
                     onClick={() => setFolderPopup(false)}
                   />
                 </div>
-                {/* <form onSubmit={createAlert}>
-                  <div>
-                    <input
-                      type="text"
-                      className="form-control mb-2"
-                      placeholder="Name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handelInputChange}
-                    />
-                    <input
-                      type="text"
-                      className="form-control mb-2"
-                      placeholder="Location"
-                      name="location"
-                      value={formData.location}
-                      onChange={handelInputChange}
-                    />
-                    <input
-                      type="number"
-                      className="form-control mb-2"
-                      placeholder="Bedrooms"
-                      name="bedrooms"
-                      value={formData.bedrooms}
-                      onChange={handelInputChange}
-                    />
-                    <input
-                      type="number"
-                      className="form-control mb-2"
-                      placeholder="Bathrooms"
-                      name="bathrooms"
-                      value={formData.bathrooms}
-                      onChange={handelInputChange}
-                    />
-                    <input
-                      type="number"
-                      className="form-control mb-2"
-                      placeholder="Budget"
-                      name="budget"
-                      value={formData.budget}
-                      onChange={handelInputChange}
-                    />
-                  </div>
 
-                  <div className="d-flex justify-content-between">
-                    <button
-                      className="cancelar-btn"
-                      onClick={() => setFolderPopup(false)}
-                    >
-                      Cancelar
-                    </button>
-                    <button className="crear-btn" type="submit">
-                      Crear
-                    </button>
-                  </div>
-                </form> */}
                 <form onSubmit={alertId ? updateAlert : createAlert}>
                   <div>
                     <input
@@ -475,14 +455,17 @@ const MyAlert = () => {
                       value={formData.name}
                       onChange={handelInputChange}
                     />
-                    <input
-                      type="text"
-                      className="form-control mb-2"
-                      placeholder="Location"
-                      name="location"
-                      value={formData.location}
-                      onChange={handelInputChange}
-                    />
+                    <Autocomplete
+                      onLoad={(ref) => (autocompleteRef.current = ref)}
+                      onPlaceChanged={onPlaceChanged}
+                    >
+                      <input
+                        type="text"
+                        name="location"
+                        className="form-control mb-2"
+                        placeholder="Buscar dirección del inmueble"
+                      />
+                    </Autocomplete>
                     <input
                       type="number"
                       className="form-control mb-2"
