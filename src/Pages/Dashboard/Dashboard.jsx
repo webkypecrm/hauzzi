@@ -248,7 +248,7 @@ const navigate = useNavigate();
                             src="img/my-img/user-icon.png"
                             className="icon-wrapper mb-2"
                           />
-                          <h6 className="card-text-title">log out</h6>
+                          <h6 className="card-text-title">Cerrar Sesión</h6>
                           {/* <p className="card-text-subtitle">
                             Tus datos, contraseña, consentimientos y ajustes
                           </p> */}

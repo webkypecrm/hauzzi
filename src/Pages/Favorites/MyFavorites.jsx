@@ -374,13 +374,13 @@ const MyFavorites = () => {
                             className="bi bi-person-plus-fill"
                             // onClick={() => shareFolder(item?.id)}
                             onClick={() =>
-                                                  window.open(
-                                                    `https://wa.me/?text=${encodeURIComponent(
-                                                      `https://new-hauzzi.vercel.app/myfavoriets`
-                                                    )}`,
-                                                    "_blank"
-                                                  )
-                                                }
+                              window.open(
+                                `https://wa.me/?text=${encodeURIComponent(
+                                  `https://new-hauzzi.vercel.app/myfavoriets`
+                                )}`,
+                                "_blank"
+                              )
+                            }
                           />
                           <i
                             className="bi bi-trash"

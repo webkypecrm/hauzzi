@@ -396,104 +396,95 @@ const PropertyDetils = () => {
     }
   };
 
-    // fatch foldet true/false
-    const url = `${apiUrl}/profile/getById/${customerId}`;
-    const { data, error } = getApi(url);
-    const folder = data?.isFolder;
-    console.log("folder", folder);
-  
-    // folder options
-    const getFolderData = async () => {
+  // fatch foldet true/false
+  const url = `${apiUrl}/profile/getById/${customerId}`;
+  const { data, error } = getApi(url);
+  const folder = data?.isFolder;
+  console.log("folder", folder);
+
+  // folder options
+  const getFolderData = async () => {
+    try {
+      const res = await axios.get(
+        `${apiUrl}/property/get-Folders-byCustomerId?customerId=${customerId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token2}`,
+          },
+        }
+      );
+      setFolderData(res?.data?.data);
+      console.log("folderData", res?.data.data);
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
+  useEffect(() => {
+    getFolderData();
+  }, []);
+
+  // property add in folder
+  useEffect(() => {
+    const fetchFolderProperty = async () => {
       try {
         const res = await axios.get(
-          `${apiUrl}/property/get-Folders-byCustomerId?customerId=${customerId}`,
+          `${apiUrl}/property/getPropertyFolderData?customerId=${customerId}`,
           {
-            headers: {
-              Authorization: `Bearer ${token2}`,
-            },
+            headers: { Authorization: `Bearer ${token2}` },
           }
         );
-        setFolderData(res?.data?.data);
-        console.log("folderData", res?.data.data);
-      } catch (error) {
-        toast.error(error?.response?.data?.message);
+
+        const folderIds = Array.isArray(res?.data?.data)
+          ? res?.data?.data.map((item) =>
+              typeof item === "object" && item !== null
+                ? Number(item.propertyId)
+                : Number(item)
+            )
+          : [];
+        // console.log("folderProperty", res?.data?.data);
+        // console.log("folderPropertyids", folderIds);
+
+        setWishlistFolderIds(folderIds);
+      } catch (err) {
+        setWishlistIds([]);
+      } finally {
+        setWishlistLoaded(true);
       }
     };
-  
-    useEffect(() => {
-      getFolderData();
-    }, []);
-  
-    // property add in folder
-    useEffect(() => {
-      const fetchFolderProperty = async () => {
-        try {
-          const res = await axios.get(
-            `${apiUrl}/property/getPropertyFolderData?customerId=${customerId}`,
-            {
-              headers: { Authorization: `Bearer ${token2}` },
-            }
-          );
-  
-          const folderIds = Array.isArray(res?.data?.data)
-            ? res?.data?.data.map((item) =>
-                typeof item === "object" && item !== null
-                  ? Number(item.propertyId)
-                  : Number(item)
-              )
-            : [];
-          // console.log("folderProperty", res?.data?.data);
-          // console.log("folderPropertyids", folderIds);
-  
-          setWishlistFolderIds(folderIds);
-        } catch (err) {
-          setWishlistIds([]);
-        } finally {
-          setWishlistLoaded(true);
-        }
-      };
-  
-      fetchFolderProperty();
-    }, []);
-  
-    const handleAddFolder = async (pid) => {
-      // console.log(id)
-      try {
-        const response = await axios.post(
-          `${apiUrl}/property/addpropertyFolderData`,
-  
-          {
-            propertyId: pid,
-            folderId: Number(selectedFolderId),
-            customerId: Number(customerId),
+
+    fetchFolderProperty();
+  }, []);
+
+  const handleAddFolder = async (pid) => {
+    // console.log(id)
+    try {
+      const response = await axios.post(
+        `${apiUrl}/property/addpropertyFolderData`,
+
+        {
+          propertyId: pid,
+          folderId: Number(selectedFolderId),
+          customerId: Number(customerId),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token2}`,
           },
-          {
-            headers: {
-              Authorization: `Bearer ${token2}`,
-            },
-          }
-        );
-  
-        // Update UI instantly
+        }
+      );
+
+      // Update UI instantly
       setWishlistFolderIds((prev) => [...prev, pid]);
-  
-        setFolderPopup(false);
-        toast.success(response.data.message);
-      } catch (error) {
-        console.log(error);
-        toast.error(error.response.data.message);
-        setFolderPopup(false);
-      }
-    };
 
-
-
-
-
-
-
-
-
+      setFolderPopup(false);
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+      setFolderPopup(false);
+    }
+  };
 
   // compair api
   useEffect(() => {
@@ -552,30 +543,31 @@ const PropertyDetils = () => {
     }
   };
 
-   // Discart Api
-      const handleDiscart = async (id) => {
-        const confirmDiscart = window.confirm(
-        "Are you sure you want to descartar this Property?"
-      );
-  
-      if (!confirmDiscart) return;
-        try {
-          const response = await axios.put(
-            `${apiUrl}/property/property-discard/${id}`,{},
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-    
-          toast.success(response?.data?.message);
-          getMainData();
-        } catch (error) {
-          console.log(error);
-          toast.error(error.response?.data?.message || "Something went wrong");
+  // Discart Api
+  const handleDiscart = async (id) => {
+    const confirmDiscart = window.confirm(
+      "Are you sure you want to descartar this Property?"
+    );
+
+    if (!confirmDiscart) return;
+    try {
+      const response = await axios.put(
+        `${apiUrl}/property/property-discard/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      };
+      );
+
+      toast.success(response?.data?.message);
+      getMainData();
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  };
 
   // ----------------------Calender------------------
 
@@ -689,7 +681,7 @@ const PropertyDetils = () => {
   };
 
   // Request Information
-    const initialState2 = {
+  const initialState2 = {
     name: "",
     email: "",
     phone: "",
@@ -709,11 +701,15 @@ const PropertyDetils = () => {
   const handelMsgSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${apiUrl}/request-enquiry/add`, msgSendDAta, {
-        headers: {
-          Authorization: `Bearer ${token2}`,
-        },
-      });
+      const response = await axios.post(
+        `${apiUrl}/request-enquiry/add`,
+        msgSendDAta,
+        {
+          headers: {
+            Authorization: `Bearer ${token2}`,
+          },
+        }
+      );
       setMsgSendDAta(initialState2);
       console.log("response", response);
       toast.success(response.data.message);
@@ -721,7 +717,7 @@ const PropertyDetils = () => {
       console.log(error);
       toast.error(error.response.data.message);
     }
-  }
+  };
 
   return (
     <Fragment>
@@ -922,8 +918,10 @@ const PropertyDetils = () => {
             <div className="container">
               <div className="home-claas">
                 <ul className="ham-class">
-                  <li style={{ listStyle: "none", color: "#767373" }}>Home</li>
-                  <li style={{ color: "#767373" }}>Listings</li>
+                  <li style={{ listStyle: "none", color: "#767373" }}>
+                    Inicio
+                  </li>
+                  <li style={{ color: "#767373" }}>Listado</li>
                   <li style={{ color: "#767373" }}>Caracas</li>
                   <li style={{ color: "#000" }}>{propertyData?.name}</li>
                 </ul>
@@ -945,17 +943,21 @@ const PropertyDetils = () => {
                       Publicado: Hace 10 días{" "}
                     </Link>
                   </div>
-                  <div className="s-bt">
+                  <div className="s-bt ">
                     <Link
                       className="btn-getstarted"
                       to="#"
                       // onClick={() => handelWishlist(propertyData?.id)}
-                        onClick={() => {
-                                          setSelectedPropertyId(propertyData.id);
-                                          folder
-                                            ? setFolderPopup(true)
-                                            : handelWishlist(propertyData.id);
-                                        }}
+                      onClick={() => {
+                        setSelectedPropertyId(propertyData.id);
+                        folder
+                          ? setFolderPopup(true)
+                          : handelWishlist(propertyData.id);
+                      }}
+                      style={{
+                        backgroundColor: "#fff",
+                        border: "1.5px solid #EEEEEE",
+                      }}
                     >
                       {/* <i className="fa fa-heart p-2" /> */}
                       <i
@@ -965,23 +967,32 @@ const PropertyDetils = () => {
                         //     ? "red"
                         //     : "",
                         // }}
-                          style={{
-  color:
-    wishlistIds.includes(propertyData?.id) || wishlistFolderIds.includes(propertyData?.id)
-      ? "red"
-      : "",
-}}
+                        style={{
+                          color:
+                            wishlistIds.includes(propertyData?.id) ||
+                            wishlistFolderIds.includes(propertyData?.id)
+                              ? "red"
+                              : "",
+                        }}
                       />
-                      Favoritor{" "}
+                      <span style={{ fontWeight: "500" }}>Favorito </span>
                     </Link>
 
-                    <Link className="btn-getstarted" to="#">
-                      <i className="fa fa-share-alt p-2" /> Share{" "}
-                    </Link>
                     <Link
                       className="btn-getstarted"
                       to="#"
+                      style={{
+                        backgroundColor: "#fff",
+                        border: "1.5px solid #EEEEEE",
+                      }}
+                    >
+                      <i className="fa fa-share-alt p-2" /> Compartir{" "}
+                    </Link>
+                    {/* <Link
+                      className="btn-getstarted"
+                      to="#"
                       onClick={() => handleCompare(propertyData?.id)}
+                      style={{backgroundColor: "#fff",border: "1.5px solid #EEEEEE"}}
                     >
                       <i
                         key={compareIds.join(",")}
@@ -992,36 +1003,90 @@ const PropertyDetils = () => {
                             : "",
                         }}
                       />
-                      Comparar{" "}
-                    </Link>
-                    {/* <Link to="#" onClick={() => handleCompare(propertyData.id)}>
-                      {compareIds.includes(propertyData.id) ? (
-                        <FaBalanceScale
-                          style={{
-                            fontSize: "35px",
-                            color: "#6c63ff", 
-                            marginLeft: 15,
-                            cursor: "pointer",
-                          }}
-                        />
-                      ) : (
-                        <img
-                          src={img1}
-                          alt="Compare"
-                          style={{
-                            width: "10%",
-                            marginLeft: 15,
-                            cursor: "pointer",
-                          }}
-                        />
-                      )}
-                    </Link> */}
 
-                    <Link to="">
-                      <img
-                        src={img2}
-                        style={{ width: "10%", marginLeft: 15 }}
-                      />
+                    </Link> */}
+                    <Link
+                      className="ms-2"
+                      style={{
+                        border: "1.5px solid #EEEEEE",
+                        borderRadius: "6px",
+                        padding: "7.5px 10px",
+                      }}
+                    >
+                      <svg
+                        width={24}
+                        height={13.33}
+                        viewBox="0 0 24 22"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        onClick={() => handleCompare(propertyData?.id)}
+                      >
+                        <path
+                          d="M23.0845 15.5834C23.5359 15.9897 23.5359 16.6668 23.0845 17.073L19.4734 20.6841C18.7964 21.3612 17.6679 20.9098 17.6679 19.9168V18.1112H15.0047C14.8241 18.1112 14.6887 18.0661 14.5984 17.9758L11.3936 14.5452L13.8311 11.9723L16.2234 14.5001H17.6679V12.7397C17.6679 11.7466 18.7964 11.2952 19.4734 11.9723L23.0845 15.5834ZM0.876217 7.27789C0.560244 7.27789 0.33455 7.05219 0.33455 6.73622V4.20844C0.33455 3.93761 0.560244 3.66678 0.876217 3.66678H5.84149C6.02205 3.66678 6.15747 3.75705 6.24774 3.84733L9.4526 7.27789L7.0151 9.8508L4.66788 7.27789H0.876217ZM17.6679 7.27789H16.2234L6.24774 17.9758C6.15747 18.0661 6.02205 18.1112 5.84149 18.1112H0.876217C0.560244 18.1112 0.33455 17.8855 0.33455 17.5696V15.0418C0.33455 14.7709 0.560244 14.5001 0.876217 14.5001H4.66788L14.5984 3.84733C14.6887 3.75705 14.8241 3.66678 15.0047 3.66678H17.6679V1.90636C17.6679 0.913305 18.7964 0.461916 19.4734 1.139L23.0845 4.75011C23.5359 5.15636 23.5359 5.83344 23.0845 6.23969L19.4734 9.8508C18.7964 10.5279 17.6679 10.0765 17.6679 9.08344V7.27789Z"
+                          fill={
+                            compareIds.includes(Number(propertyData?.id))
+                              ? "red"
+                              : "black"
+                          }
+                        />
+                      </svg>
+                    </Link>
+                    <Link
+                      className="ms-2"
+                      style={{
+                        border: "1.5px solid #EEEEEE",
+                        borderRadius: "6px",
+                        padding: "7.5px 10px",
+                      }}
+                    >
+                      <svg
+                        width={24}
+                        height={14.33}
+                        viewBox="0 0 29 31"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M1.375 7.25H4.29167M4.29167 7.25H27.625M4.29167 7.25V26.5C4.29167 27.2293 4.59896 27.9288 5.14594 28.4445C5.69292 28.9603 6.43479 29.25 7.20833 29.25H21.7917C22.5652 29.25 23.3071 28.9603 23.8541 28.4445C24.401 27.9288 24.7083 27.2293 24.7083 26.5V7.25M8.66667 7.25V4.5C8.66667 3.77065 8.97396 3.07118 9.52094 2.55546C10.0679 2.03973 10.8098 1.75 11.5833 1.75H17.4167C18.1902 1.75 18.9321 2.03973 19.4791 2.55546C20.026 3.07118 20.3333 3.77065 20.3333 4.5V7.25M11.5833 14.125V22.375M17.4167 14.125V22.375"
+                          stroke="#1E1E1E"
+                          style={{
+                            stroke: "color(display-p3 0.1176 0.1176 0.1176)",
+                            strokeOpacity: 1,
+                          }}
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </Link>
+
+                    <Link
+                      className="ms-2"
+                      style={{
+                        border: "1.5px solid #EEEEEE",
+                        borderRadius: "6px",
+                        padding: "7.5px 10px",
+                      }}
+                    >
+                      <svg
+                        width={24}
+                        height={14}
+                        viewBox="0 0 28 28"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M6.5 10.25V1.5H21.5V10.25M6.5 21.5H4C3.33696 21.5 2.70107 21.2366 2.23223 20.7678C1.76339 20.2989 1.5 19.663 1.5 19V12.75C1.5 12.087 1.76339 11.4511 2.23223 10.9822C2.70107 10.5134 3.33696 10.25 4 10.25H24C24.663 10.25 25.2989 10.5134 25.7678 10.9822C26.2366 11.4511 26.5 12.087 26.5 12.75V19C26.5 19.663 26.2366 20.2989 25.7678 20.7678C25.2989 21.2366 24.663 21.5 24 21.5H21.5M6.5 16.5H21.5V26.5H6.5V16.5Z"
+                          stroke="#1E1E1E"
+                          style={{
+                            stroke: "color(display-p3 0.1176 0.1176 0.1176)",
+                            strokeOpacity: 1,
+                          }}
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
                     </Link>
                   </div>
                 </div>
@@ -1646,82 +1711,84 @@ const PropertyDetils = () => {
                     {activeTab === "solicitar" && (
                       <div id="solicitar" className="tabcontent mt-3">
                         <form onSubmit={handelMsgSubmit}>
-                        <div className="form-group mt-2">
-                          <label htmlFor="nombre">Tus nombre</label>
-                          <input
-                            type="text"
-          className="form-control"
-          id="nombre"
-          name="name"
-          value={msgSendDAta.name}
-          onChange={handelRequestInputChange}
-          placeholder="Ingresa tu nombre"
-          required
-                          />
-                        </div>
-                        <div className="form-group mt-2">
-                          <label htmlFor="tus">Tus correo</label>
-                          <input
-                                 type="email"
-          className="form-control"
-          id="tus"
-          name="email"
-          value={msgSendDAta.email}
-          onChange={handelRequestInputChange}
-          placeholder="Ingresa tu correo electrónico"
-          required
-                          />
-                        </div>
-                        <div className="form-group mt-3">
-                          <label htmlFor="tu">Tu teléfono</label>
-                          <input
-                            type="text"
-          className="form-control"
-          id="tu"
-          name="phone"
-          value={msgSendDAta.phone}
-          onChange={handelRequestInputChange}
-          placeholder="Ingresa tu teléfono"
-          required
-                          />
-                        </div>
-                        <div className="form-group mt-3">
-                          <select className="form-control" id="sel1">
-                            <option>¿Cuál es el motivo de tu contacto?</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                          </select>
-                        </div>
-                        <div className="form-group mt-3">
-                          <textarea
-                            className="form-control"
-          rows={5}
-          id="comment"
-          name="message"
-          value={msgSendDAta.message}
-          onChange={handelRequestInputChange}
-          placeholder="Estoy buscando en Hauzzi y me gustaría recibir más información sobre el inmueble con referencia"
-          required
-                          />
-                        </div>
-                        <div className="checkbox mt-3 mb-3">
-                          <label>
-                            <input type="checkbox" defaultValue="" /> Quiero
-                            recibir alertas de inmuebles similares a este
-                          </label>
-                        </div>
-                        <div className="text-center mb-4">
-                          {/* <Link class="btn-getstarted agendar-tour" to="#">
+                          <div className="form-group mt-2">
+                            <label htmlFor="nombre">Tus nombre</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="nombre"
+                              name="name"
+                              value={msgSendDAta.name}
+                              onChange={handelRequestInputChange}
+                              placeholder="Ingresa tu nombre"
+                              required
+                            />
+                          </div>
+                          <div className="form-group mt-2">
+                            <label htmlFor="tus">Tus correo</label>
+                            <input
+                              type="email"
+                              className="form-control"
+                              id="tus"
+                              name="email"
+                              value={msgSendDAta.email}
+                              onChange={handelRequestInputChange}
+                              placeholder="Ingresa tu correo electrónico"
+                              required
+                            />
+                          </div>
+                          <div className="form-group mt-3">
+                            <label htmlFor="tu">Tu teléfono</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="tu"
+                              name="phone"
+                              value={msgSendDAta.phone}
+                              onChange={handelRequestInputChange}
+                              placeholder="Ingresa tu teléfono"
+                              required
+                            />
+                          </div>
+                          <div className="form-group mt-3">
+                            <select className="form-control" id="sel1">
+                              <option>
+                                ¿Cuál es el motivo de tu contacto?
+                              </option>
+                              <option>2</option>
+                              <option>3</option>
+                              <option>4</option>
+                            </select>
+                          </div>
+                          <div className="form-group mt-3">
+                            <textarea
+                              className="form-control"
+                              rows={5}
+                              id="comment"
+                              name="message"
+                              value={msgSendDAta.message}
+                              onChange={handelRequestInputChange}
+                              placeholder="Estoy buscando en Hauzzi y me gustaría recibir más información sobre el inmueble con referencia"
+                              required
+                            />
+                          </div>
+                          <div className="checkbox mt-3 mb-3">
+                            <label>
+                              <input type="checkbox" defaultValue="" /> Quiero
+                              recibir alertas de inmuebles similares a este
+                            </label>
+                          </div>
+                          <div className="text-center mb-4">
+                            {/* <Link class="btn-getstarted agendar-tour" to="#">
             Agendar tour </Link> */}
-                          <button
-                            type="submit"
-                            className="btn btn-warning"
-                            style={{ width: "90%" }}
-                          >
-                            Contactar ahora
-                          </button>
-                        </div>
+                            <button
+                              type="submit"
+                              className="btn btn-warning"
+                              style={{ width: "90%" }}
+                            >
+                              Contactar ahora
+                            </button>
+                          </div>
                         </form>
                       </div>
                     )}
@@ -1788,12 +1855,24 @@ const PropertyDetils = () => {
                             </Swiper>
                             <div className="thmb_cntnt" style={{ zIndex: 1 }}>
                               <ul className="tag mb0 p-0">
-                                <li className="list-inline-item">
-                                  <span>{e.purpose}</span>
-                                </li>
-                                <li className="list-inline-item">
-                                  <span>{e.tags}</span>
-                                </li>
+                                {e.purpose && (
+                                  <li
+                                    className="list-inline-item"
+                                    style={{ backgroundColor: "#FFBD59" }}
+                                  >
+                                    <span style={{ color: "black" }}>
+                                      {e.purpose}
+                                    </span>
+                                  </li>
+                                )}{" "}
+                                {e.tags && (
+                                  <li
+                                    className="list-inline-item"
+                                    style={{ backgroundColor: "#4b6bfb" }}
+                                  >
+                                    <span>{e.tags}</span>
+                                  </li>
+                                )}
                               </ul>
                               <ul className="icon mb0">
                                 <li className="list-inline-item">
@@ -1816,24 +1895,24 @@ const PropertyDetils = () => {
                                     className="fa fa-heart hrt-icon"
                                     aria-hidden="true"
                                     // onClick={() => handelWishlist(e?.id)}
-                                      onClick={() => {
-                                          setSelectedPropertyId(e.id);
-                                          folder
-                                            ? setFolderPopup(true)
-                                            : handelWishlist(propertyData.id);
-                                        }}
+                                    onClick={() => {
+                                      setSelectedPropertyId(e.id);
+                                      folder
+                                        ? setFolderPopup(true)
+                                        : handelWishlist(propertyData.id);
+                                    }}
                                     // style={{
                                     //   color: wishlistIds.includes(e?.id)
                                     //     ? "red"
                                     //     : "",
                                     // }}
                                     style={{
-                                          color:
-                                            wishlistIds.includes(e?.id) ||
-                                            wishlistFolderIds.includes(e?.id)
-                                              ? "red"
-                                              : "",
-                                        }}
+                                      color:
+                                        wishlistIds.includes(e?.id) ||
+                                        wishlistFolderIds.includes(e?.id)
+                                          ? "red"
+                                          : "",
+                                    }}
                                   />
                                 </li>
                               </ul>
@@ -2009,10 +2088,7 @@ const PropertyDetils = () => {
                                               )
                                             }
                                           >
-                                            <img
-                                              src={whats}
-                                              width="16"
-                                            />
+                                            <img src={whats} width="16" />
                                             {/* WhatsApp */}
                                           </button>
 
@@ -2027,10 +2103,7 @@ const PropertyDetils = () => {
                                               )
                                             }
                                           >
-                                            <img
-                                              src={face}
-                                              width="16"
-                                            />
+                                            <img src={face} width="16" />
                                             {/* Facebook */}
                                           </button>
 
@@ -2045,10 +2118,7 @@ const PropertyDetils = () => {
                                               )
                                             }
                                           >
-                                            <img
-                                              src={twitter}
-                                              width="16"
-                                            />
+                                            <img src={twitter} width="16" />
                                             {/* Twitter */}
                                           </button>
 
@@ -2063,10 +2133,7 @@ const PropertyDetils = () => {
                                               )
                                             }
                                           >
-                                            <img
-                                              src={link}
-                                              width="16"
-                                            />
+                                            <img src={link} width="16" />
                                             {/* LinkedIn */}
                                           </button>
                                         </div>
@@ -2074,9 +2141,11 @@ const PropertyDetils = () => {
                                     </li>
 
                                     <li>
-                                      <Link className="dropdown-item" to="#" onClick={() =>
-                                                  handleDiscart(e.id)
-                                                }>
+                                      <Link
+                                        className="dropdown-item"
+                                        to="#"
+                                        onClick={() => handleDiscart(e.id)}
+                                      >
                                         <i className="bi bi-trash me-2" />{" "}
                                         Descartar
                                       </Link>
@@ -2109,66 +2178,57 @@ const PropertyDetils = () => {
             )}
           </section>
 
-                    {/* select folder Modal  */}
-                            {folderPopup && (
-                              <div className="popup-overlay">
-                                <div
-                                  className="popup-content"
-                                >
-                                  <div className="d-flex justify-content-between mb-2">
-                                    <h5>Seleccionar carpeta </h5>
-                                    <img
-                                      src={cancel}
-                                      alt=""
-                                      style={{
-                                        height: "20px",
-                                        width: "20px",
-                                        cursor: "pointer",
-                                      }}
-                                      onClick={() => setFolderPopup(false)}
-                                    />
-                                  </div>
-                                  <div>
-                                    <select
-                                      className="mb-4 w-100 add-folder-modal"
-                                      name="folderId"
-                                      value={selectedFolderId}
-                                      onChange={(e) =>
-                                        setSelectedFolderId(e.target.value)
-                                      }
-                                    >
-                                      <option value="">Seleccionar</option>
-                                      {folderData?.map((folder) => (
-                                        <option
-                                          key={folder.id}
-                                          value={folder.id}
-                                        >
-                                          {folder.name}
-                                        </option>
-                                      ))}
-                                    </select>
-                                  </div>
+          {/* select folder Modal  */}
+          {folderPopup && (
+            <div className="popup-overlay">
+              <div className="popup-content">
+                <div className="d-flex justify-content-between mb-2">
+                  <h5>Seleccionar carpeta </h5>
+                  <img
+                    src={cancel}
+                    alt=""
+                    style={{
+                      height: "20px",
+                      width: "20px",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => setFolderPopup(false)}
+                  />
+                </div>
+                <div>
+                  <select
+                    className="mb-4 w-100 add-folder-modal"
+                    name="folderId"
+                    value={selectedFolderId}
+                    onChange={(e) => setSelectedFolderId(e.target.value)}
+                  >
+                    <option value="">Seleccionar</option>
+                    {folderData?.map((folder) => (
+                      <option key={folder.id} value={folder.id}>
+                        {folder.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-                                  <div className="d-flex justify-content-between">
-                                    <button
-                                      className="cancelar-btn"
-                                      onClick={() => setFolderPopup(false)}
-                                    >
-                                      Cancelar
-                                    </button>
-                                    <button
-                                      className="crear-btn"
-                                      onClick={() =>
-                                        handleAddFolder(selectedPropertyId)
-                                      }
-                                    >
-                                      Agregar
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                            {/* select folder Modal  */}
+                <div className="d-flex justify-content-between">
+                  <button
+                    className="cancelar-btn"
+                    onClick={() => setFolderPopup(false)}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    className="crear-btn"
+                    onClick={() => handleAddFolder(selectedPropertyId)}
+                  >
+                    Agregar
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          {/* select folder Modal  */}
 
           <Footer />
         </main>

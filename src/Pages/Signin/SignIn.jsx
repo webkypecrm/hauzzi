@@ -179,10 +179,10 @@ const SignIn = () => {
               <div className="mt-3">
                 <div className="text-end">
                   <p className="mb-0 dont-have-acount">
-                    <a className="me-2" href="">
-                      ¿No tienes cuenta?
-                    </a>
-                    Crear cuenta
+                    ¿No tienes cuenta?
+                    <Link to="/sign-up" className="me-2">
+                      Crear cuenta
+                    </Link>
                   </p>
                 </div>
               </div>

@@ -36,10 +36,12 @@ import "react-toastify/dist/ReactToastify.css";
 import PropertyEdit from "./Pages/Property/PropertyEdit.jsx";
 import Terms from "./Pages/Terms&Policy/Terms.jsx";
 import Policyes from "./Pages/Terms&Policy/Policyes.jsx";
+import ScrollToTop from "./Scroll/ScrollToTop.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
+    <ScrollToTop/>
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/index2" element={<Index2 />} />

@@ -3,6 +3,7 @@ import Header from "../MainPage/Header";
 import Footer from "../MainPage/Footer";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const Plans = () => {
   const [selected, setSelected] = useState(null);
@@ -30,6 +31,29 @@ const Plans = () => {
     getAllPlan();
   }, []);
 
+  // payment getway
+  const paymentGetway = async (id) => {
+    try {
+      const res = await axios.post(
+        `${apiUrl}/payment/buy-plan`,
+        {
+          planId: id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (res.data?.status && res.data?.data?.checkout_url) {
+        window.location.href = res.data.data.checkout_url;
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
+
   return (
     <Fragment>
       <div className="index-page">
@@ -49,10 +73,10 @@ const Plans = () => {
               <p className="mb-3">Aumenta la visibilidad de tu anuncio</p>
             </div>
             {/* End Section Title */}
-              <div className="container">
-                {plan?.length > 0 && (
-                  <div className="row gy-4">
-                    {plan?.map((plan, index) => (
+            <div className="container">
+              {plan?.length > 0 && (
+                <div className="row gy-4">
+                  {plan?.map((plan, index) => (
                     <div className="col-lg-4" key={index}>
                       {/* <div className="pricing-card"> */}
                       <div
@@ -84,18 +108,22 @@ const Plans = () => {
                           </li>
                         </ul> */}
                         <div
-    className="description"
-    dangerouslySetInnerHTML={{ __html: plan.description }}
-  ></div>
-                        <Link to="#" className="btn btn-primary">
+                          className="description"
+                          dangerouslySetInnerHTML={{ __html: plan.description }}
+                        ></div>
+                        <Link
+                          to="#"
+                          className="btn btn-primary"
+                          onClick={() => paymentGetway(plan.id)}
+                        >
                           Elegir plan
                         </Link>
                       </div>
                     </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </section>
 
           <Footer />
