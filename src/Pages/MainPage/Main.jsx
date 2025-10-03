@@ -78,8 +78,8 @@ const Main = () => {
     const selectedText = e.target.options[e.target.selectedIndex].text.trim();
 
     const purposeMap = {
-      Rent: "wantToRent",
-      Sale: "wantToSell",
+      Alquilar: "wantToRent",
+      Comprar: "wantToSell",
       Both: "bothSellRent",
     };
 
@@ -432,8 +432,8 @@ const Main = () => {
                                   onChange={handleLookingForChange}
                                 >
                                   <option value={1}>Buscando</option>
-                                  <option value={2}>Rent</option>
-                                  <option value={3}>Sale</option>
+                                  <option value={2}>Alquilar</option>
+                                  <option value={3}>Comprar</option>
                                   {/* <option value={4}>Both</option> */}
                                 </select>
                                 <div
@@ -453,7 +453,7 @@ const Main = () => {
                                   value={selectedCategoryId}
                                   onChange={handleCategoryChange}
                                 >
-                                  <option value="">Todas las categorías</option>
+                                  <option value="">Tipo de propiedad</option>
                                   {category.map((cat) => (
                                     <option key={cat.id} value={cat.id}>
                                       {cat.name}
@@ -493,7 +493,7 @@ const Main = () => {
                               </div> */}
                               {/* single input end */}
                               {/* submit button */}
-                              <div className="search">
+                              <div className="search d-flex justify-content-center align-items-center">
                                 <input
                                   className="search-txt small-placeholder"
                                   type="text"
@@ -508,7 +508,11 @@ const Main = () => {
                                   style={{
                                     backgroundColor: "#ffbd59",
                                     borderRadius: "15px",
-                                    padding: "3px",
+                                    padding: "5px",
+                                    marginRight: "1.5px",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
                                   }}
                                 >
                                   <span
@@ -520,15 +524,18 @@ const Main = () => {
                                   >
                                     BUSCAR
                                   </span>{" "}
-                                  {/* <img
-                                  src={serchIcon}
-                                    className="fa fa-search search-c slider-search"
-                                    // style={{ color: "black" }}
-                                  /> */}
-                                  <i
+                                  <img
+                                    src={serchIcon}
+                                    className="search-c slider-search mt-0"
+                                    style={{
+                                      height: "16.5px",
+                                      width: "16.5px",
+                                    }}
+                                  />
+                                  {/* <i
                                     className="fa fa-search search-c slider-search"
                                     style={{ color: "black" }}
-                                  />
+                                  /> */}
                                 </Link>
                               </div>
                               {/* submit button end */}
@@ -634,13 +641,23 @@ const Main = () => {
                                   style={{ zIndex: 1 }}
                                 >
                                   <ul className="tag mb0 p-0">
-                                    <li className="list-inline-item">
-                                      <span>{e.purpose}</span>
-                                    </li>
+                                    {e.purpose && (
+                                      <li
+                                        className="list-inline-item"
+                                        style={{ backgroundColor: "#FFBD59" }}
+                                      >
+                                        <span style={{ color: "black" }}>{e.purpose}</span>
+                                      </li>
+                                    )}
 
-                                    <li className="list-inline-item">
-                                      <span>{e.tags}</span>
-                                    </li>
+                                    {e.tags && (
+                                      <li
+                                        className="list-inline-item"
+                                        style={{ backgroundColor: "#4b6bfb" }}
+                                      >
+                                        <span>{e.tags}</span>
+                                      </li>
+                                    )}
                                   </ul>
                                   <ul className="icon mb0">
                                     <li className="list-inline-item">

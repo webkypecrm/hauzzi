@@ -477,7 +477,7 @@ const PublishProperty = () => {
             <form onSubmit={handelPropertyDataSubmit}>
               <div className="container py-3">
                 {/* Navigation */}
-                <div className="d-flex flex-wrap justify-content-end mb-4">
+                <div className="d-flex flex-wrap justify-content-center mb-4">
                   <Link to={"/publish-propert"} className="nav-button active">
                     Publicar inmueble
                   </Link>
@@ -528,7 +528,7 @@ const PublishProperty = () => {
                       ))}
                     </div>
 
-                    {propertyCategory.length > 0 && (
+                    {/* {propertyCategory.length > 0 && (
                       <>
                         <h5 className="fw-bold">Categoría</h5>
                         <div className="d-flex flex-wrap mb-4">
@@ -546,7 +546,7 @@ const PublishProperty = () => {
                           ))}
                         </div>
                       </>
-                    )}
+                    )} */}
                   </Fragment>
                 )}
 
@@ -747,19 +747,19 @@ const PublishProperty = () => {
                       </div> */}
                     </>
                   )}
-                  <div className="col-md-3 mb-3">
+                  {/* <div className="col-md-3 mb-3">
                     <label className="form-label">Features</label>
                     <div className="d-flex align-items-center position-relative">
                       <input
                         type="text"
                         className="form-control border bg-transparent"
-                        // placeholder="Precio de venta"
+                        placeholder="Precio de venta"
                         name="features"
                         value={propertyData.features}
                         onChange={handleInputChange}
                       />
                     </div>
-                  </div>
+                  </div> */}
                 </div>
                 {/* Counters */}
                 <div className="row">
@@ -1100,7 +1100,7 @@ const PublishProperty = () => {
                     <input
                       type="text"
                       className="form-control border bg-transparent"
-                      placeholder="Código postal"
+                      placeholder="Dirección del inmueble"
                       name="address1"
                       value={propertyData.address1}
                       onChange={handleInputChange}
@@ -1210,7 +1210,7 @@ const PublishProperty = () => {
                   </div>
 
                   <div className="col-md-4">
-                    <label className="form-label">Longitude</label>
+                    <label className="form-label">Longitud</label>
                     <input
                       type="text"
                       className="form-control border bg-transparent"
@@ -1220,7 +1220,7 @@ const PublishProperty = () => {
                   </div>
 
                   <div className="col-md-4">
-                    <label className="form-label">Latitude</label>
+                    <label className="form-label">Latitud</label>
                     <input
                       type="text"
                       className="form-control border bg-transparent"

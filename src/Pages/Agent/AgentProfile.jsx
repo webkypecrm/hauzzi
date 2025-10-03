@@ -583,12 +583,22 @@ const AgentProfile = () => {
                                       />
                                       <div className="thmb_cntnt">
                                         <ul className="tag mb-0 p-0">
-                                          <li className="list-inline-item">
-                                            <span>{e.purpose}</span>
-                                          </li>
-                                          <li className="list-inline-item">
-                                            <span>{e.type}</span>
-                                          </li>
+                                             {e.purpose && (
+                                      <li
+                                        className="list-inline-item"
+                                        style={{ backgroundColor: "#FFBD59" }}
+                                      >
+                                        <span style={{ color: "black" }}>{e.purpose}</span>
+                                      </li>
+                                    )}{" "}
+                                        {e.tags && (
+                                      <li
+                                        className="list-inline-item"
+                                        style={{ backgroundColor: "#4b6bfb" }}
+                                      >
+                                        <span>{e.tags}</span>
+                                      </li>
+                                    )}
                                         </ul>
                                         <ul className="icon mb-0">
                                           <li className="list-inline-item">
@@ -1011,12 +1021,22 @@ const AgentProfile = () => {
                                     />
                                     <div className="thmb_cntnt">
                                       <ul className="tag mb-0 p-0">
-                                        <li className="list-inline-item">
-                                          <span>{property.purpose}</span>
-                                        </li>
-                                        <li className="list-inline-item">
-                                          <span>{property.type}</span>
-                                        </li>
+                                           {property.purpose && (
+                                      <li
+                                        className="list-inline-item"
+                                        style={{ backgroundColor: "#FFBD59" }}
+                                      >
+                                        <span style={{ color: "black" }}>{property.purpose}</span>
+                                      </li>
+                                    )}{" "}
+                                        {property.tags && (
+                                      <li
+                                        className="list-inline-item"
+                                        style={{ backgroundColor: "#4b6bfb" }}
+                                      >
+                                        <span>{property.tags}</span>
+                                      </li>
+                                    )}
                                       </ul>
                                       <ul className="icon mb-0">
                                         <li className="list-inline-item">
@@ -1382,12 +1402,22 @@ const AgentProfile = () => {
                                     />
                                     <div className="thmb_cntnt">
                                       <ul className="tag mb-0 p-0">
-                                        <li className="list-inline-item">
-                                          <span>{prop.purpose}</span>
-                                        </li>
-                                        <li className="list-inline-item">
-                                          <span>{prop.type}</span>
-                                        </li>
+                                        {prop.purpose && (
+                                      <li
+                                        className="list-inline-item"
+                                        style={{ backgroundColor: "#FFBD59" }}
+                                      >
+                                        <span style={{ color: "black" }}>{prop.purpose}</span>
+                                      </li>
+                                    )}{" "}
+                                        {prop.tags && (
+                                      <li
+                                        className="list-inline-item"
+                                        style={{ backgroundColor: "#4b6bfb" }}
+                                      >
+                                        <span>{prop.tags}</span>
+                                      </li>
+                                    )}
                                       </ul>
                                       <ul className="icon mb-0">
                                         <li className="list-inline-item">

@@ -915,7 +915,7 @@ button.btn-close:hover {
 }
 .nav-button.active {
   background-color: var(--primary-color);
-  color: white;
+  color: black;
   font-weight: bold;
 }
 .property-type-btn {

@@ -36,16 +36,15 @@ const PropertySell = () => {
   const [advancedFilter, setAdvancedFilter] = useState({});
 
   const [wishlistFolderIds, setWishlistFolderIds] = useState([]);
-    const [folderPopup, setFolderPopup] = useState(false);
-    const [selectedPropertyId, setSelectedPropertyId] = useState(null);
-    const [selectedFolderId, setSelectedFolderId] = useState("");
-    const [folderData, setFolderData] = useState([]);
+  const [folderPopup, setFolderPopup] = useState(false);
+  const [selectedPropertyId, setSelectedPropertyId] = useState(null);
+  const [selectedFolderId, setSelectedFolderId] = useState("");
+  const [folderData, setFolderData] = useState([]);
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
   const token2 = localStorage.getItem("token");
   const customerId2 = localStorage.getItem("tokenId") || "";
-
 
   // const { search } = useParams();
   const [searchParams] = useSearchParams();
@@ -93,23 +92,23 @@ const PropertySell = () => {
       setAllData(response.data);
       setCount(response?.data?.totalcounts);
       setShowFilter(false);
-         // 🔹 API ke baad filters reset
-    setAdvancedFilter({
-      Habitaciones: "",
-      Banos: "",
-      Condición: "",
-      Estacionamientos: "",
-      Mobiliario: "",
-      Antigüedad: "",
-      "Tipo de suelo": "",
-      Orientación: "",
-      Vistas: "",
-      "Publicado por": "",
-      Seguridad: "",
-      Ambientes: "",
-      Equipamientos: "",
-      Servicios: "",
-    });
+      // 🔹 API ke baad filters reset
+      setAdvancedFilter({
+        Habitaciones: "",
+        Banos: "",
+        Condición: "",
+        Estacionamientos: "",
+        Mobiliario: "",
+        Antigüedad: "",
+        "Tipo de suelo": "",
+        Orientación: "",
+        Vistas: "",
+        "Publicado por": "",
+        Seguridad: "",
+        Ambientes: "",
+        Equipamientos: "",
+        Servicios: "",
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -196,100 +195,95 @@ const PropertySell = () => {
     }
   };
 
+  // fatch foldet true/false
+  const url = `${apiUrl}/profile/getById/${customerId2}`;
+  const { data, error } = getApi(url);
+  const folder = data?.isFolder;
+  console.log("folder", folder);
 
-      // fatch foldet true/false
-      const url = `${apiUrl}/profile/getById/${customerId2}`;
-      const { data, error } = getApi(url);
-      const folder = data?.isFolder;
-      console.log("folder", folder);
-    
-      // folder options
-      const getFolderData = async () => {
-        try {
-          const res = await axios.get(
-            `${apiUrl}/property/get-Folders-byCustomerId?customerId=${customerId2}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token2}`,
-              },
-            }
-          );
-          setFolderData(res?.data?.data);
-          console.log("folderData", res?.data.data);
-        } catch (error) {
-          toast.error(error?.response?.data?.message);
+  // folder options
+  const getFolderData = async () => {
+    try {
+      const res = await axios.get(
+        `${apiUrl}/property/get-Folders-byCustomerId?customerId=${customerId2}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token2}`,
+          },
         }
-      };
-    
-      useEffect(() => {
-        getFolderData();
-      }, []);
-    
-      // property add in folder
-      useEffect(() => {
-        const fetchFolderProperty = async () => {
-          try {
-            const res = await axios.get(
-              `${apiUrl}/property/getPropertyFolderData?customerId=${customerId2}`,
-              {
-                headers: { Authorization: `Bearer ${token2}` },
-              }
-            );
-    
-            const folderIds = Array.isArray(res?.data?.data)
-              ? res?.data?.data.map((item) =>
-                  typeof item === "object" && item !== null
-                    ? Number(item.propertyId)
-                    : Number(item)
-                )
-              : [];
-            // console.log("folderProperty", res?.data?.data);
-            // console.log("folderPropertyids", folderIds);
-    
-            setWishlistFolderIds(folderIds);
-          } catch (err) {
-            setWishlistIds([]);
-          } finally {
-            setWishlistLoaded(true);
+      );
+      setFolderData(res?.data?.data);
+      console.log("folderData", res?.data.data);
+    } catch (error) {
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
+  useEffect(() => {
+    getFolderData();
+  }, []);
+
+  // property add in folder
+  useEffect(() => {
+    const fetchFolderProperty = async () => {
+      try {
+        const res = await axios.get(
+          `${apiUrl}/property/getPropertyFolderData?customerId=${customerId2}`,
+          {
+            headers: { Authorization: `Bearer ${token2}` },
           }
-        };
-    
-        fetchFolderProperty();
-      }, []);
-    
-      const handleAddFolder = async (pid) => {
-        // console.log(id)
-        try {
-          const response = await axios.post(
-            `${apiUrl}/property/addpropertyFolderData`,
-    
-            {
-              propertyId: pid,
-              folderId: Number(selectedFolderId),
-              customerId: Number(customerId2),
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token2}`,
-              },
-            }
-          );
-    
-          // Update UI instantly
-        setWishlistFolderIds((prev) => [...prev, pid]);
-    
-          setFolderPopup(false);
-          toast.success(response.data.message);
-        } catch (error) {
-          console.log(error);
-          toast.error(error.response.data.message);
-          setFolderPopup(false);
+        );
+
+        const folderIds = Array.isArray(res?.data?.data)
+          ? res?.data?.data.map((item) =>
+              typeof item === "object" && item !== null
+                ? Number(item.propertyId)
+                : Number(item)
+            )
+          : [];
+        // console.log("folderProperty", res?.data?.data);
+        // console.log("folderPropertyids", folderIds);
+
+        setWishlistFolderIds(folderIds);
+      } catch (err) {
+        setWishlistIds([]);
+      } finally {
+        setWishlistLoaded(true);
+      }
+    };
+
+    fetchFolderProperty();
+  }, []);
+
+  const handleAddFolder = async (pid) => {
+    // console.log(id)
+    try {
+      const response = await axios.post(
+        `${apiUrl}/property/addpropertyFolderData`,
+
+        {
+          propertyId: pid,
+          folderId: Number(selectedFolderId),
+          customerId: Number(customerId2),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token2}`,
+          },
         }
-      };
+      );
 
+      // Update UI instantly
+      setWishlistFolderIds((prev) => [...prev, pid]);
 
-
-
+      setFolderPopup(false);
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+      setFolderPopup(false);
+    }
+  };
 
   // compair api
   useEffect(() => {
@@ -381,7 +375,6 @@ const PropertySell = () => {
     }));
   };
 
-
   const handleAdvancedSingleCheckboxChange = (field, value) => {
     setAdvancedFilter((prev) => ({
       ...prev,
@@ -395,32 +388,31 @@ const PropertySell = () => {
   };
 
   // Reset function
-const handleResetFilters = () => {
-  setAdvancedFilter({
-    Habitaciones: "",
-    Banos: "",
-    Condición: "",
-    Estacionamientos: "",
-    Mobiliario: "",
-    Antigüedad: "",
-    "Tipo de suelo": "",
-    Orientación: "",
-    Vistas: "",
-    "Publicado por": "",
-    Seguridad: "",
-    Ambientes: "",
-    Equipamientos: "",
-    Servicios:"",
-    
-  });
-  setTypeFilter("");
-  setPurposeFilter("");
-  setMaxPrice("");
-  setMinPrice("");
-  document
-    .querySelectorAll('input[type="checkbox"]')
-    .forEach((checkbox) => (checkbox.checked = false));
-};
+  const handleResetFilters = () => {
+    setAdvancedFilter({
+      Habitaciones: "",
+      Banos: "",
+      Condición: "",
+      Estacionamientos: "",
+      Mobiliario: "",
+      Antigüedad: "",
+      "Tipo de suelo": "",
+      Orientación: "",
+      Vistas: "",
+      "Publicado por": "",
+      Seguridad: "",
+      Ambientes: "",
+      Equipamientos: "",
+      Servicios: "",
+    });
+    setTypeFilter("");
+    setPurposeFilter("");
+    setMaxPrice("");
+    setMinPrice("");
+    document
+      .querySelectorAll('input[type="checkbox"]')
+      .forEach((checkbox) => (checkbox.checked = false));
+  };
 
   return (
     <Fragment>
@@ -523,8 +515,8 @@ const handleResetFilters = () => {
                             <option>Más pequeño (menos m²)</option>
                             <option>Más antigüo</option>
                           </select>
-                          <img src={filter_2} style={{ marginLeft: 10 }} />
-                          <img src={filter_3} style={{ marginLeft: 10 }} />
+                          {/* <img src={filter_2} style={{ marginLeft: 10 }} />
+                          <img src={filter_3} style={{ marginLeft: 10 }} /> */}
                         </div>
                       </div>
                       {allData?.data?.length > 0 ? (
@@ -556,12 +548,22 @@ const handleResetFilters = () => {
                                     />
                                     <div className="thmb_cntnt">
                                       <ul className="tag mb0 p-0">
-                                        <li className="list-inline-item">
-                                          <span>{e.purpose}</span>
-                                        </li>{" "}
-                                        <li className="list-inline-item">
-                                          <span>{e.tags}</span>
-                                        </li>
+                                        {e.purpose && (
+                                      <li
+                                        className="list-inline-item"
+                                        style={{ backgroundColor: "#FFBD59" }}
+                                      >
+                                        <span style={{ color: "black" }}>{e.purpose}</span>
+                                      </li>
+                                    )}{" "}
+                                        {e.tags && (
+                                      <li
+                                        className="list-inline-item"
+                                        style={{ backgroundColor: "#4b6bfb" }}
+                                      >
+                                        <span>{e.tags}</span>
+                                      </li>
+                                    )}
                                       </ul>
                                       <ul className="icon mb0">
                                         <li className="list-inline-item">
@@ -589,23 +591,25 @@ const handleResetFilters = () => {
                                             //   handelWishlist(e?.id)
                                             // }
                                             onClick={() => {
-                                          setSelectedPropertyId(e.id); // yaha store hoga
-                                          folder
-                                            ? setFolderPopup(true)
-                                            : handelWishlist(e.id);
-                                        }}
+                                              setSelectedPropertyId(e.id); // yaha store hoga
+                                              folder
+                                                ? setFolderPopup(true)
+                                                : handelWishlist(e.id);
+                                            }}
                                             // style={{
                                             //   color: wishlistIds.includes(e?.id)
                                             //     ? "red"
                                             //     : "",
                                             // }}
                                             style={{
-                                          color:
-                                            wishlistIds.includes(e?.id) ||
-                                            wishlistFolderIds.includes(e?.id)
-                                              ? "red"
-                                              : "",
-                                        }}
+                                              color:
+                                                wishlistIds.includes(e?.id) ||
+                                                wishlistFolderIds.includes(
+                                                  e?.id
+                                                )
+                                                  ? "red"
+                                                  : "",
+                                            }}
                                           />
                                         </li>
                                       </ul>
@@ -941,7 +945,7 @@ const handleResetFilters = () => {
                       checked={purposeFilter === "Vender"} // radio-like behavior
                     />
                     <label className="Transacción" htmlFor="Vender">
-                      Vender
+                      Comprar
                     </label>
                   </div>
                   <div className="new-container-box">
@@ -1248,70 +1252,6 @@ const handleResetFilters = () => {
                 </div> */}
               </div>
               <div className="row mb-3 gy-3 justify-content-between">
-                {/* <div className="col-12">
-                  <h5>Habitaciones</h5>
-                  <div
-                    className="btn-group property-categories w-100"
-                    role="group"
-                  >
-                    <label className="btn btn-orange d-flex align-items-center">
-                      Todo
-                    </label>
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      name="propertyCategory"
-                      id="property1"
-                      autoComplete="off"
-                    />
-                    <label className="btn Habitaciones" htmlFor="property1">
-                      <span>1</span>
-                    </label>
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      name="propertyCategory"
-                      id="property2"
-                      autoComplete="off"
-                    />
-                    <label className="btn Habitaciones" htmlFor="property2">
-                      <span>2</span>
-                    </label>
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      name="propertyCategory"
-                      id="property3"
-                      autoComplete="off"
-                    />
-                    <label className="btn Habitaciones" htmlFor="property3">
-                      <span>3</span>
-                    </label>
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      name="propertyCategory"
-                      id="property4"
-                      autoComplete="off"
-                    />
-                    <label className="btn Habitaciones" htmlFor="property4">
-                      <span>+4</span>
-                    </label>
-                  </div>
-                  <div className="form-check form-switch d-flex justify-content-between mt-3 p-0">
-                    <label
-                      className="form-check-label"
-                      htmlFor="flexSwitchCheckDefault"
-                    >
-                      Indica el número exacto de habitaciones.
-                    </label>
-                    <input
-                      className="form-check-input  new-border-clr"
-                      type="checkbox"
-                      id="flexSwitchCheckDefault"
-                    />
-                  </div>
-                </div> */}
                 <div className="col-12">
                   <h5>Habitaciones</h5>
                   <div
@@ -1319,9 +1259,9 @@ const handleResetFilters = () => {
                     role="group"
                   >
                     {/* Todo styled as static orange button */}
-                    <label className="btn btn-orange d-flex align-items-center">
+                    {/* <label className="btn btn-orange d-flex align-items-center">
                       Todo
-                    </label>
+                    </label> */}
 
                     <input
                       type="checkbox"
@@ -1358,12 +1298,16 @@ const handleResetFilters = () => {
                         handleAdvancedSingleCheckboxChange("Habitaciones", "2")
                       }
                     />
-                    <label className="btn Habitaciones" htmlFor="property2"  style={{
+                    <label
+                      className="btn Habitaciones"
+                      htmlFor="property2"
+                      style={{
                         backgroundColor:
                           advancedFilter.Habitaciones === "2" ? "#FFBD59" : "",
                         color:
                           advancedFilter.Habitaciones === "2" ? "white" : "",
-                      }}>
+                      }}
+                    >
                       <span>2</span>
                     </label>
 
@@ -1378,12 +1322,16 @@ const handleResetFilters = () => {
                         handleAdvancedSingleCheckboxChange("Habitaciones", "3")
                       }
                     />
-                    <label className="btn Habitaciones" htmlFor="property3"  style={{
+                    <label
+                      className="btn Habitaciones"
+                      htmlFor="property3"
+                      style={{
                         backgroundColor:
                           advancedFilter.Habitaciones === "3" ? "#FFBD59" : "",
                         color:
                           advancedFilter.Habitaciones === "3" ? "white" : "",
-                      }}>
+                      }}
+                    >
                       <span>3</span>
                     </label>
 
@@ -1398,12 +1346,16 @@ const handleResetFilters = () => {
                         handleAdvancedSingleCheckboxChange("Habitaciones", "4+")
                       }
                     />
-                    <label className="btn Habitaciones" htmlFor="property4"  style={{
+                    <label
+                      className="btn Habitaciones"
+                      htmlFor="property4"
+                      style={{
                         backgroundColor:
                           advancedFilter.Habitaciones === "4+" ? "#FFBD59" : "",
                         color:
                           advancedFilter.Habitaciones === "4+" ? "white" : "",
-                      }}>
+                      }}
+                    >
                       <span>+4</span>
                     </label>
                   </div>
@@ -1437,9 +1389,9 @@ const handleResetFilters = () => {
                     role="group"
                   >
                     {/* Todo styled as static orange button */}
-                    <label className="btn btn-orange d-flex align-items-center">
+                    {/* <label className="btn btn-orange d-flex align-items-center">
                       Todo
-                    </label>
+                    </label> */}
                     <input
                       type="checkbox"
                       className="btn-check"
@@ -1451,12 +1403,15 @@ const handleResetFilters = () => {
                         handleAdvancedSingleCheckboxChange("Baños", "1")
                       }
                     />
-                    <label className="btn Habitaciones" htmlFor="banos1" style={{
+                    <label
+                      className="btn Habitaciones"
+                      htmlFor="banos1"
+                      style={{
                         backgroundColor:
                           advancedFilter.Baños === "1" ? "#FFBD59" : "",
-                        color:
-                          advancedFilter.Baños === "1" ? "white" : "",
-                      }}>
+                        color: advancedFilter.Baños === "1" ? "white" : "",
+                      }}
+                    >
                       <span>1</span>
                     </label>
                     <input
@@ -1470,12 +1425,15 @@ const handleResetFilters = () => {
                         handleAdvancedSingleCheckboxChange("Baños", "2")
                       }
                     />
-                    <label className="btn Habitaciones" htmlFor="banos2" style={{
+                    <label
+                      className="btn Habitaciones"
+                      htmlFor="banos2"
+                      style={{
                         backgroundColor:
                           advancedFilter.Baños === "2" ? "#FFBD59" : "",
-                        color:
-                          advancedFilter.Baños === "2" ? "white" : "",
-                      }}>
+                        color: advancedFilter.Baños === "2" ? "white" : "",
+                      }}
+                    >
                       <span>2</span>
                     </label>
                     <input
@@ -1489,12 +1447,15 @@ const handleResetFilters = () => {
                         handleAdvancedSingleCheckboxChange("Baños", "3")
                       }
                     />
-                    <label className="btn Habitaciones" htmlFor="banos3" style={{
+                    <label
+                      className="btn Habitaciones"
+                      htmlFor="banos3"
+                      style={{
                         backgroundColor:
                           advancedFilter.Baños === "3" ? "#FFBD59" : "",
-                        color:
-                          advancedFilter.Baños === "3" ? "white" : "",
-                      }}>
+                        color: advancedFilter.Baños === "3" ? "white" : "",
+                      }}
+                    >
                       <span>3</span>
                     </label>
                     <input
@@ -1508,12 +1469,15 @@ const handleResetFilters = () => {
                         handleAdvancedSingleCheckboxChange("Baños", "+4")
                       }
                     />
-                    <label className="btn Habitaciones" htmlFor="banos4" style={{
+                    <label
+                      className="btn Habitaciones"
+                      htmlFor="banos4"
+                      style={{
                         backgroundColor:
                           advancedFilter.Baños === "+4" ? "#FFBD59" : "",
-                        color:
-                          advancedFilter.Baños === "+4" ? "white" : "",
-                      }}>
+                        color: advancedFilter.Baños === "+4" ? "white" : "",
+                      }}
+                    >
                       <span>+4</span>
                     </label>
                   </div>
@@ -1538,26 +1502,37 @@ const handleResetFilters = () => {
                     role="group"
                   >
                     {/* Todo styled as static orange button */}
-                    <label className="btn btn-orange d-flex align-items-center">
+                    {/* <label className="btn btn-orange d-flex align-items-center">
                       Todo
-                    </label>
+                    </label> */}
                     <input
                       type="checkbox"
                       className="btn-check"
                       name="propertyCategory"
                       id="estacionamientos1"
                       autoComplete="off"
-                        checked={advancedFilter.Estacionamientos === "1"}
+                      checked={advancedFilter.Estacionamientos === "1"}
                       onChange={() =>
-                        handleAdvancedSingleCheckboxChange("Estacionamientos", "1")
+                        handleAdvancedSingleCheckboxChange(
+                          "Estacionamientos",
+                          "1"
+                        )
                       }
                     />
-                    <label className="btn Habitaciones" htmlFor="estacionamientos1"  style={{
+                    <label
+                      className="btn Habitaciones"
+                      htmlFor="estacionamientos1"
+                      style={{
                         backgroundColor:
-                          advancedFilter.Estacionamientos === "1" ? "#FFBD59" : "",
+                          advancedFilter.Estacionamientos === "1"
+                            ? "#FFBD59"
+                            : "",
                         color:
-                          advancedFilter.Estacionamientos === "1" ? "white" : "",
-                      }}>
+                          advancedFilter.Estacionamientos === "1"
+                            ? "white"
+                            : "",
+                      }}
+                    >
                       <span>1</span>
                     </label>
                     <input
@@ -1566,17 +1541,28 @@ const handleResetFilters = () => {
                       name="propertyCategory"
                       id="estacionamientos2"
                       autoComplete="off"
-                         checked={advancedFilter.Estacionamientos === "2"}
+                      checked={advancedFilter.Estacionamientos === "2"}
                       onChange={() =>
-                        handleAdvancedSingleCheckboxChange("Estacionamientos", "2")
+                        handleAdvancedSingleCheckboxChange(
+                          "Estacionamientos",
+                          "2"
+                        )
                       }
                     />
-                    <label className="btn Habitaciones" htmlFor="estacionamientos2" style={{
+                    <label
+                      className="btn Habitaciones"
+                      htmlFor="estacionamientos2"
+                      style={{
                         backgroundColor:
-                          advancedFilter.Estacionamientos === "2" ? "#FFBD59" : "",
+                          advancedFilter.Estacionamientos === "2"
+                            ? "#FFBD59"
+                            : "",
                         color:
-                          advancedFilter.Estacionamientos === "2" ? "white" : "",
-                      }}>
+                          advancedFilter.Estacionamientos === "2"
+                            ? "white"
+                            : "",
+                      }}
+                    >
                       <span>2</span>
                     </label>
                     <input
@@ -1585,17 +1571,28 @@ const handleResetFilters = () => {
                       name="propertyCategory"
                       id="estacionamientos3"
                       autoComplete="off"
-                         checked={advancedFilter.Estacionamientos === "3"}
+                      checked={advancedFilter.Estacionamientos === "3"}
                       onChange={() =>
-                        handleAdvancedSingleCheckboxChange("Estacionamientos", "3")
+                        handleAdvancedSingleCheckboxChange(
+                          "Estacionamientos",
+                          "3"
+                        )
                       }
                     />
-                    <label className="btn Habitaciones" htmlFor="estacionamientos3" style={{
+                    <label
+                      className="btn Habitaciones"
+                      htmlFor="estacionamientos3"
+                      style={{
                         backgroundColor:
-                          advancedFilter.Estacionamientos === "3" ? "#FFBD59" : "",
+                          advancedFilter.Estacionamientos === "3"
+                            ? "#FFBD59"
+                            : "",
                         color:
-                          advancedFilter.Estacionamientos === "3" ? "white" : "",
-                      }}>
+                          advancedFilter.Estacionamientos === "3"
+                            ? "white"
+                            : "",
+                      }}
+                    >
                       <span>3</span>
                     </label>
                     <input
@@ -1604,17 +1601,28 @@ const handleResetFilters = () => {
                       name="propertyCategory"
                       id="estacionamientos4"
                       autoComplete="off"
-                         checked={advancedFilter.Estacionamientos === "+4"}
+                      checked={advancedFilter.Estacionamientos === "+4"}
                       onChange={() =>
-                        handleAdvancedSingleCheckboxChange("Estacionamientos", "+4")
+                        handleAdvancedSingleCheckboxChange(
+                          "Estacionamientos",
+                          "+4"
+                        )
                       }
                     />
-                    <label className="btn Habitaciones" htmlFor="estacionamientos4" style={{
+                    <label
+                      className="btn Habitaciones"
+                      htmlFor="estacionamientos4"
+                      style={{
                         backgroundColor:
-                          advancedFilter.Estacionamientos === "+4" ? "#FFBD59" : "",
+                          advancedFilter.Estacionamientos === "+4"
+                            ? "#FFBD59"
+                            : "",
                         color:
-                          advancedFilter.Estacionamientos === "+4" ? "white" : "",
-                      }}>
+                          advancedFilter.Estacionamientos === "+4"
+                            ? "white"
+                            : "",
+                      }}
+                    >
                       <span>+4</span>
                     </label>
                   </div>
@@ -1808,13 +1816,22 @@ const handleResetFilters = () => {
 
                 <div className="col-lg-6">
                   <label htmlFor="">Tipo de suelo</label>
-                  <select className="form-select mt-2" name="Tipo de suelo"  value={advancedFilter["Tipo de suelo"] || ""}
+                  <select
+                    className="form-select mt-2"
+                    name="Tipo de suelo"
+                    value={advancedFilter["Tipo de suelo"] || ""}
                     onChange={(e) =>
-                      handleAdvancedSelectChange("Tipo de suelo", e.target.value)
-                    }>
+                      handleAdvancedSelectChange(
+                        "Tipo de suelo",
+                        e.target.value
+                      )
+                    }
+                  >
                     <option value="">Indiferente</option>
                     <option selected="Madera">Madera</option>
-                    <option selected="Cerámica o Porcelanato">Cerámica o Porcelanato</option>
+                    <option selected="Cerámica o Porcelanato">
+                      Cerámica o Porcelanato
+                    </option>
                     <option selected="Granito">Granito</option>
                     <option selected="Cemento">Cemento</option>
                     <option selected="Vinil o PVC">Vinil o PVC</option>
@@ -1826,14 +1843,22 @@ const handleResetFilters = () => {
                 </div>
                 <div className="col-lg-6">
                   <label htmlFor="">Vistas</label>
-                  <select className="form-select mt-2" name="Vistas"  value={advancedFilter["Vistas"] || ""}
+                  <select
+                    className="form-select mt-2"
+                    name="Vistas"
+                    value={advancedFilter["Vistas"] || ""}
                     onChange={(e) =>
                       handleAdvancedSelectChange("Vistas", e.target.value)
-                    }>
+                    }
+                  >
                     <option selected="">Indiferente</option>
                     <option selected="Vista al mar">Vista al mar</option>
-                    <option selected="Vista a la montaña">Vista a la montaña</option>
-                    <option selected="Vista a la ciudad">Vista a la ciudad</option>
+                    <option selected="Vista a la montaña">
+                      Vista a la montaña
+                    </option>
+                    <option selected="Vista a la ciudad">
+                      Vista a la ciudad
+                    </option>
                     <option selected="Vista al lago">Vista al lago</option>
                     <option selected="Vista al bosque">Vista al bosque</option>
                     <option selected="Vista al río">Vista al río</option>
@@ -1841,10 +1866,14 @@ const handleResetFilters = () => {
                 </div>
                 <div className="col-lg-6">
                   <label htmlFor="">Orientación</label>
-                  <select className="form-select mt-2" name="Orientación"  value={advancedFilter["Orientación"] || ""}
+                  <select
+                    className="form-select mt-2"
+                    name="Orientación"
+                    value={advancedFilter["Orientación"] || ""}
                     onChange={(e) =>
                       handleAdvancedSelectChange("Orientación", e.target.value)
-                    }>
+                    }
+                  >
                     <option selected="">Indiferente</option>
                     <option selected="Norte">Norte</option>
                     <option selected="Sur">Sur</option>
@@ -2966,9 +2995,9 @@ const handleResetFilters = () => {
                         id={item}
                         autoComplete="off"
                         checked={tagFilter === item}
-                         onChange={() =>
-          setTagFilter(tagFilter === item ? "" : item) // ✅ single select checkbox
-        }
+                        onChange={
+                          () => setTagFilter(tagFilter === item ? "" : item) // ✅ single select checkbox
+                        }
                       />
                       <label className="Transacción" htmlFor={item}>
                         {item}
@@ -2987,8 +3016,13 @@ const handleResetFilters = () => {
                 >
                   Aplicar filtros
                 </button>
-                <button className="Resetear-filtros2"  type="button"
-  onClick={handleResetFilters}>Resetear filtros</button>
+                <button
+                  className="Resetear-filtros2"
+                  type="button"
+                  onClick={handleResetFilters}
+                >
+                  Resetear filtros
+                </button>
               </div>
             </div>
           </div>
@@ -2997,65 +3031,56 @@ const handleResetFilters = () => {
 
       {/* filters sidebar */}
       {/* select folder Modal  */}
-                                  {folderPopup && (
-                                    <div className="popup-overlay">
-                                      <div
-                                        className="popup-content"
-                                      >
-                                        <div className="d-flex justify-content-between mb-2">
-                                          <h5>Seleccionar carpeta </h5>
-                                          <img
-                                            src={cancel}
-                                            alt=""
-                                            style={{
-                                              height: "20px",
-                                              width: "20px",
-                                              cursor: "pointer",
-                                            }}
-                                            onClick={() => setFolderPopup(false)}
-                                          />
-                                        </div>
-                                        <div>
-                                          <select
-                                            className="mb-4 w-100 add-folder-modal"
-                                            name="folderId"
-                                            value={selectedFolderId}
-                                            onChange={(e) =>
-                                              setSelectedFolderId(e.target.value)
-                                            }
-                                          >
-                                            <option value="">Seleccionar</option>
-                                            {folderData?.map((folder) => (
-                                              <option
-                                                key={folder.id}
-                                                value={folder.id}
-                                              >
-                                                {folder.name}
-                                              </option>
-                                            ))}
-                                          </select>
-                                        </div>
-      
-                                        <div className="d-flex justify-content-between">
-                                          <button
-                                            className="cancelar-btn"
-                                            onClick={() => setFolderPopup(false)}
-                                          >
-                                            Cancelar
-                                          </button>
-                                          <button
-                                            className="crear-btn"
-                                            onClick={() =>
-                                              handleAddFolder(selectedPropertyId)
-                                            }
-                                          >
-                                            Agregar
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  )}
-                                  {/* select folder Modal  */}
+      {folderPopup && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <div className="d-flex justify-content-between mb-2">
+              <h5>Seleccionar carpeta </h5>
+              <img
+                src={cancel}
+                alt=""
+                style={{
+                  height: "20px",
+                  width: "20px",
+                  cursor: "pointer",
+                }}
+                onClick={() => setFolderPopup(false)}
+              />
+            </div>
+            <div>
+              <select
+                className="mb-4 w-100 add-folder-modal"
+                name="folderId"
+                value={selectedFolderId}
+                onChange={(e) => setSelectedFolderId(e.target.value)}
+              >
+                <option value="">Seleccionar</option>
+                {folderData?.map((folder) => (
+                  <option key={folder.id} value={folder.id}>
+                    {folder.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="d-flex justify-content-between">
+              <button
+                className="cancelar-btn"
+                onClick={() => setFolderPopup(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                className="crear-btn"
+                onClick={() => handleAddFolder(selectedPropertyId)}
+              >
+                Agregar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* select folder Modal  */}
     </Fragment>
   );
 };

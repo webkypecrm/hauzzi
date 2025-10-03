@@ -23,7 +23,7 @@ const Footer = () => {
                 />
               </div>
               <div className="soci">
-                <div className="text-soci"> Suscríbete gratis</div>
+                <div className="text-soci"> Únete a la familia</div>
                 <Link to="">
                   <i className="bi bi-facebook" />
                 </Link>
@@ -36,7 +36,8 @@ const Footer = () => {
               <h4>Suscríbete gratis</h4>
               <div className="subs-btn">
                 <div className="text-foot1">
-                  <p style={{marginBottom: 0}}>Ingresa tu correo electrónico</p>
+                  {/* <p style={{marginBottom: 0}}>Ingresa tu correo electrónico</p> */}
+                  <input type="text" placeholder="Ingresa tu correo electrónico" style={{width:"60%",backgroundColor: "black",outline: "none",border: "none",color: "white"}} />
                   <Link
                     className="btn-getstarted mt-0 btn-footer-btn"
                     to="#"
@@ -82,7 +83,7 @@ const Footer = () => {
               <h4>Particulares</h4>
               <ul style={{fontSize: 13}}>
                 <li>
-                  <Link to="/index2">Anuncia tu propiedad</Link>
+                  <Link to="/">Anuncia tu propiedad</Link>
                 </li>
                 <li>
                   <Link to="/index2">Vende con un profesional</Link>
@@ -99,7 +100,7 @@ const Footer = () => {
                   <Link to="/sign-up">Regístrate</Link>
                 </li>
                 <li>
-                  <Link to="#">Anuncia tu propiedad</Link>
+                  <Link to="/">Anuncia tu propiedad</Link>
                 </li>
                 
                 <li>
