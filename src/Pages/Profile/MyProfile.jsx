@@ -17,7 +17,6 @@ const MyProfile = () => {
   );
 
   // get Data
-
   const getAllData = async () => {
     try {
       const res = await axios.get(`${apiUrl}/profile/getById/${customerId}`, {
@@ -60,6 +59,7 @@ const MyProfile = () => {
     agency: "",
     notes: "",
     photo: "",
+    postalCode: "",
     customerId: localStorage.getItem("tokenId") || "",
     userType: localStorage.getItem("userType") || "",
   };
@@ -298,16 +298,6 @@ const MyProfile = () => {
           <section className="top-btn12">
             <div className="container-lg py-3">
               {/* Navigation */}
-              {/* <div className="d-flex flex-wrap justify-content-center mb-2 myadsnav">
-                <button type="" className="nav-button">Publicar inmueble</button>
-                <button className="nav-button">Mis anuncios</button>
-                <button className="nav-button">Mis favoritos</button>
-                <button className="nav-button">Mis alertas</button>
-                <button className="nav-button">Mis mensajes</button>
-                <button className="nav-button">Mis comparaciones</button>
-                <button className="nav-button">Mis visitas</button>
-                <button className="nav-button active">Mi perfil</button>
-              </div> */}
               <div className="d-flex flex-wrap justify-content-center mb-4 ">
                 <Link to={"/publish-propert"} className="nav-button ">
                   Publicar inmueble
@@ -341,8 +331,6 @@ const MyProfile = () => {
                   <form onSubmit={handleSubmit}>
                     {/* Nombre */}
 
-                    {/* <div className="col-lg-12"> */}
-                    {/* <div className="profile-container mt-1"> */}
                     <div className="profile-pic-wrapper ms-lg-0 mb-3">
                       {/* <img src={previewImage} alt="Profile" id="profileImage" /> */}
                       {photo == "" || photo == null ? (
@@ -365,8 +353,6 @@ const MyProfile = () => {
                         onChange={handelInputChange}
                       />
                     </div>
-                    {/* </div> */}
-                    {/* </div> */}
 
                     <div className="mb-3">
                       <label className="form-label">User Type</label>
@@ -447,6 +433,23 @@ const MyProfile = () => {
                           placeholder="+58 123 456 789"
                           name="whatsApp"
                           value={profileData.whatsApp}
+                          onChange={handelInputChange}
+                        />
+                      </div>
+                    </div>
+                    {/* Zip code/postal code */}
+                    <div className="mb-3">
+                      <label className="form-label">Código postal</label>
+                      <div className="input-group">
+                        <span className="input-group-text bg-light border-0">
+                          <i className="bi bi-geo-alt-fill primary-text" />
+                        </span>
+                        <input
+                          type="number"
+                          className="form-control"
+                          placeholder="Enter Código postal"
+                          name="postalCode"
+                          value={profileData.postalCode}
                           onChange={handelInputChange}
                         />
                       </div>
@@ -693,34 +696,39 @@ const MyProfile = () => {
                   </form>
                   <h4 className="mb-4">Idiomas</h4>
                   <form onSubmit={handleSubmitLanguages}>
-                  <div className="mb-4">
-                    <label className="form-label">Selecciona idioma(s) </label>
-                    <div className="input-group">
-                      <span className="input-group-text bg-light border-0">
-                        <i className="bi bi-translate primary-text" />
-                      </span>
+                    <div className="mb-4">
+                      <label className="form-label">
+                        Selecciona idioma(s){" "}
+                      </label>
+                      <div className="input-group">
+                        <span className="input-group-text bg-light border-0">
+                          <i className="bi bi-translate primary-text" />
+                        </span>
 
-                      <Select
-                        isMulti
-                        options={languageOptions}
-                        className="form-control"
-                        classNamePrefix="select"
-                        placeholder="Selecciona idioma(s)"
-                        onChange={(selected) => {
-                          setLanguages(selected);
-                          setLanguage((prev) => ({
-                            ...prev,
-                            languages: selected
-                              .map((lang) => lang.value)
-                              .join(", "),
-                          }));
-                        }}
-                      />
+                        <Select
+                          isMulti
+                          options={languageOptions}
+                          className="form-control"
+                          classNamePrefix="select"
+                          placeholder="Selecciona idioma(s)"
+                          onChange={(selected) => {
+                            setLanguages(selected);
+                            setLanguage((prev) => ({
+                              ...prev,
+                              languages: selected
+                                .map((lang) => lang.value)
+                                .join(", "),
+                            }));
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <button type="submit" className="btn btn-primary w-100 p-2 mb-4">
-                    Guardar cambios
-                  </button>
+                    <button
+                      type="submit"
+                      className="btn btn-primary w-100 p-2 mb-4"
+                    >
+                      Guardar cambios
+                    </button>
                   </form>
                   <h4 className="mb-4">Especialidades</h4>
                   <form onSubmit={handleSubmitSpecialties}>
