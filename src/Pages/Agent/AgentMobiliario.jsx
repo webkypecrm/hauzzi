@@ -5,12 +5,17 @@ import { Link } from "react-router-dom";
 import gola from "../../assets/img/agentGola.png";
 import axios from "axios";
 import Loading from "../../Loading";
+import hauzziImg from "../../assets/img/hauzziIcon.png";
 
 const AgentMobiliario = () => {
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [count, setCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [agentName, setAgentName] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
   const userId = localStorage.getItem("userType") || "";
@@ -19,7 +24,7 @@ const AgentMobiliario = () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `${apiUrl}/profile/getAll?userType=1`,
+        `${apiUrl}/profile/getAll?userType=1&search=${agentName}&postalCode=${postalCode}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -41,7 +46,6 @@ const AgentMobiliario = () => {
   }, []);
 
   // pagination
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -51,12 +55,17 @@ const AgentMobiliario = () => {
   const totalPages = Math.ceil(agents.length / itemsPerPage);
   const firstHalf = currentAgents.slice(0, 4);
   const secondHalf = currentAgents.slice(4, 8);
-    console.log("first", secondHalf);
+  console.log("first", firstHalf);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    getAgentsData();
   };
   return (
     <Fragment>
@@ -86,15 +95,17 @@ const AgentMobiliario = () => {
                     <h2 className="mb-0">Agentes inmobiliario </h2>
                   </div>
                   {/* Form Feild */}
-                  <form className="mb-3">
+                  <form className="mb-3" onSubmit={handleSearchSubmit}>
                     <div className="row g-3">
                       <div className="col-xl-5 col-lg-4 col-md-4">
                         <input
                           type="number"
                           className="form-control"
-                          placeholder="Ciudad o Código postal"
+                          placeholder="Código postal"
                           id=""
                           aria-describedby=""
+                          value={postalCode}
+                          onChange={(e) => setPostalCode(e.target.value)}
                         />
                       </div>
                       <div className="col-xl-5 col-lg-4 col-md-4">
@@ -103,7 +114,9 @@ const AgentMobiliario = () => {
                           className="form-control text-capitalize"
                           placeholder="Nombre del agente"
                           id=""
+                          value={agentName}
                           aria-describedby=""
+                          onChange={(e) => setAgentName(e.target.value)}
                         />
                       </div>
                       <div className="col-xl-2 col-lg-3 col-md-3">
@@ -198,9 +211,15 @@ const AgentMobiliario = () => {
                                   <div className="d-flex align-items-center w-100">
                                     <div className="agent-img">
                                       <img
-                                        src={agent?.agentDetails?.map(
-                                          (item) => item.photoUrl
-                                        )}
+                                        // src={agent?.agentDetails?.map(
+                                        //   (item) => item.photoUrl
+                                        // )}
+                                        src={
+                                          agent?.agentDetails?.length > 0 &&
+                                          agent.agentDetails[0]?.photoUrl
+                                            ? agent.agentDetails[0].photoUrl
+                                            : hauzziImg
+                                        }
                                         alt=""
                                         style={{
                                           height: "170.22px",
@@ -234,12 +253,15 @@ const AgentMobiliario = () => {
                                       </p>
                                       <small>@properties</small>
                                       <p className="mt-3 mb-0">
-                                        <b>1230</b> Inmuebles publicados
+                                        <b>{agent.propertyCount}</b> Inmuebles
+                                        publicados
                                       </p>
-                                      <p>
-                                        <i className="bi bi-geo-alt-fill primary-text" />{" "}
-                                        Caracas Distrito Capital
-                                      </p>
+                                      {agent?.agentDetails[0]?.address && (
+                                        <p>
+                                          <i className="bi bi-geo-alt-fill primary-text" />{" "}
+                                          {agent?.agentDetails[0]?.address}
+                                        </p>
+                                      )}
                                     </div>
                                   </div>
                                 </div>
@@ -248,561 +270,6 @@ const AgentMobiliario = () => {
                           ))}
                         </div>
                       </div>
-                      {/* <div
-                    className="tab-pane fade"
-                    id="nav-profile"
-                    role="tabpanel"
-                    aria-labelledby="nav-profile-tab"
-                  >
-                    <div className="row gy-4">                   
-                      <div className="col-lg-6 col-md-6">
-                        <div className="agent-card border-0">
-                          <div className="card-body p-0">
-                            <div className="d-flex align-items-center w-100">
-                              <div className="agent-img">
-                                <img src="img/my-img/agent-img.jpeg" alt="" />
-                                <small className="toprated">
-                                  <img src="img/my-img/crown.png" />
-                                  Top Rated
-                                </small>
-                              </div>
-                              <div className="ps-3 w-100">
-                                <div className="icon-bar">
-                                  <ul className="list-inline">
-                                    <li>
-                                      <img src="img/my-img/start-small.png" />{" "}
-                                      <span>
-                                        <b>( 112 )</b>
-                                      </span>
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/swap.png" />
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/heart.png" />
-                                    </li>
-                                  </ul>
-                                </div>
-                                <p className="mb-0">
-                                  <b>John Doe</b>
-                                </p>
-                                <small>@properties</small>
-                                <p className="mt-3 mb-0">
-                                  <b>1230</b> Inmuebles publicados
-                                </p>
-                                <p>
-                                  <i className="bi bi-geo-alt-fill primary-text" />{" "}
-                                  Caracas Distrito Capital
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="agent-card border-0">
-                          <div className="card-body p-0">
-                            <div className="d-flex align-items-center w-100">
-                              <div className="agent-img">
-                                <img src="img/my-img/agent-img.jpeg" alt="" />
-                                <small className="toprated">
-                                  <img src="img/my-img/crown.png" />
-                                  Top Rated
-                                </small>
-                              </div>
-                              <div className="ps-3 w-100">
-                                <div className="icon-bar">
-                                  <ul className="list-inline">
-                                    <li>
-                                      <img src="img/my-img/start-small.png" />{" "}
-                                      <span>
-                                        <b>( 112 )</b>
-                                      </span>
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/swap.png" />
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/heart.png" />
-                                    </li>
-                                  </ul>
-                                </div>
-                                <p className="mb-0">
-                                  <b>John Doe</b>
-                                </p>
-                                <small>@properties</small>
-                                <p className="mt-3 mb-0">
-                                  <b>1230</b> Inmuebles publicados
-                                </p>
-                                <p>
-                                  <i className="bi bi-geo-alt-fill primary-text" />{" "}
-                                  Caracas Distrito Capital
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> 
-                     <div className="col-lg-6 col-md-6">
-                        <div className="agent-card border-0">
-                          <div className="card-body p-0">
-                            <div className="d-flex align-items-center w-100">
-                              <div className="agent-img">
-                                <img src="img/my-img/agent-img.jpeg" alt="" />
-                                <small className="toprated">
-                                  <img src="img/my-img/crown.png" />
-                                  Top Rated
-                                </small>
-                              </div>
-                              <div className="ps-3 w-100">
-                                <div className="icon-bar">
-                                  <ul className="list-inline">
-                                    <li>
-                                      <img src="img/my-img/start-small.png" />{" "}
-                                      <span>
-                                        <b>( 112 )</b>
-                                      </span>
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/swap.png" />
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/heart.png" />
-                                    </li>
-                                  </ul>
-                                </div>
-                                <p className="mb-0">
-                                  <b>John Doe</b>
-                                </p>
-                                <small>@properties</small>
-                                <p className="mt-3 mb-0">
-                                  <b>1230</b> Inmuebles publicados
-                                </p>
-                                <p>
-                                  <i className="bi bi-geo-alt-fill primary-text" />{" "}
-                                  Caracas Distrito Capital
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div> 
-                    <div className="col-lg-6 col-md-6">
-                        <div className="agent-card border-0">
-                          <div className="card-body p-0">
-                            <div className="d-flex align-items-center w-100">
-                              <div className="agent-img">
-                                <img src="img/my-img/agent-img.jpeg" alt="" />
-                                <small className="toprated">
-                                  <img src="img/my-img/crown.png" />
-                                  Top Rated
-                                </small>
-                              </div>
-                              <div className="ps-3 w-100">
-                                <div className="icon-bar">
-                                  <ul className="list-inline">
-                                    <li>
-                                      <img src="img/my-img/start-small.png" />{" "}
-                                      <span>
-                                        <b>( 112 )</b>
-                                      </span>
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/swap.png" />
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/heart.png" />
-                                    </li>
-                                  </ul>
-                                </div>
-                                <p className="mb-0">
-                                  <b>John Doe</b>
-                                </p>
-                                <small>@properties</small>
-                                <p className="mt-3 mb-0">
-                                  <b>1230</b> Inmuebles publicados
-                                </p>
-                                <p>
-                                  <i className="bi bi-geo-alt-fill primary-text" />{" "}
-                                  Caracas Distrito Capital
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="tab-pane fade"
-                    id="nav-contact"
-                    role="tabpanel"
-                    aria-labelledby="nav-contact-tab"
-                  >
-                    <div className="row gy-4">
-                      <div className="col-lg-6 col-md-6">
-                        <div className="agent-card border-0">
-                          <div className="card-body p-0">
-                            <div className="d-flex align-items-center w-100">
-                              <div className="agent-img">
-                                <img src="img/my-img/agent-img.jpeg" alt="" />
-                                <small className="toprated">
-                                  <img src="img/my-img/crown.png" />
-                                  Top Rated
-                                </small>
-                              </div>
-                              <div className="ps-3 w-100">
-                                <div className="icon-bar">
-                                  <ul className="list-inline">
-                                    <li>
-                                      <img src="img/my-img/start-small.png" />{" "}
-                                      <span>
-                                        <b>( 112 )</b>
-                                      </span>
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/swap.png" />
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/heart.png" />
-                                    </li>
-                                  </ul>
-                                </div>
-                                <p className="mb-0">
-                                  <b>John Doe</b>
-                                </p>
-                                <small>@properties</small>
-                                <p className="mt-3 mb-0">
-                                  <b>1230</b> Inmuebles publicados
-                                </p>
-                                <p>
-                                  <i className="bi bi-geo-alt-fill primary-text" />{" "}
-                                  Caracas Distrito Capital
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="agent-card border-0">
-                          <div className="card-body p-0">
-                            <div className="d-flex align-items-center w-100">
-                              <div className="agent-img">
-                                <img src="img/my-img/agent-img.jpeg" alt="" />
-                                <small className="toprated">
-                                  <img src="img/my-img/crown.png" />
-                                  Top Rated
-                                </small>
-                              </div>
-                              <div className="ps-3 w-100">
-                                <div className="icon-bar">
-                                  <ul className="list-inline">
-                                    <li>
-                                      <img src="img/my-img/start-small.png" />{" "}
-                                      <span>
-                                        <b>( 112 )</b>
-                                      </span>
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/swap.png" />
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/heart.png" />
-                                    </li>
-                                  </ul>
-                                </div>
-                                <p className="mb-0">
-                                  <b>John Doe</b>
-                                </p>
-                                <small>@properties</small>
-                                <p className="mt-3 mb-0">
-                                  <b>1230</b> Inmuebles publicados
-                                </p>
-                                <p>
-                                  <i className="bi bi-geo-alt-fill primary-text" />{" "}
-                                  Caracas Distrito Capital
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="agent-card border-0">
-                          <div className="card-body p-0">
-                            <div className="d-flex align-items-center w-100">
-                              <div className="agent-img">
-                                <img src="img/my-img/agent-img.jpeg" alt="" />
-                                <small className="toprated">
-                                  <img src="img/my-img/crown.png" />
-                                  Top Rated
-                                </small>
-                              </div>
-                              <div className="ps-3 w-100">
-                                <div className="icon-bar">
-                                  <ul className="list-inline">
-                                    <li>
-                                      <img src="img/my-img/start-small.png" />{" "}
-                                      <span>
-                                        <b>( 112 )</b>
-                                      </span>
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/swap.png" />
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/heart.png" />
-                                    </li>
-                                  </ul>
-                                </div>
-                                <p className="mb-0">
-                                  <b>John Doe</b>
-                                </p>
-                                <small>@properties</small>
-                                <p className="mt-3 mb-0">
-                                  <b>1230</b> Inmuebles publicados
-                                </p>
-                                <p>
-                                  <i className="bi bi-geo-alt-fill primary-text" />{" "}
-                                  Caracas Distrito Capital
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="agent-card border-0">
-                          <div className="card-body p-0">
-                            <div className="d-flex align-items-center w-100">
-                              <div className="agent-img">
-                                <img src="img/my-img/agent-img.jpeg" alt="" />
-                                <small className="toprated">
-                                  <img src="img/my-img/crown.png" />
-                                  Top Rated
-                                </small>
-                              </div>
-                              <div className="ps-3 w-100">
-                                <div className="icon-bar">
-                                  <ul className="list-inline">
-                                    <li>
-                                      <img src="img/my-img/start-small.png" />{" "}
-                                      <span>
-                                        <b>( 112 )</b>
-                                      </span>
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/swap.png" />
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/heart.png" />
-                                    </li>
-                                  </ul>
-                                </div>
-                                <p className="mb-0">
-                                  <b>John Doe</b>
-                                </p>
-                                <small>@properties</small>
-                                <p className="mt-3 mb-0">
-                                  <b>1230</b> Inmuebles publicados
-                                </p>
-                                <p>
-                                  <i className="bi bi-geo-alt-fill primary-text" />{" "}
-                                  Caracas Distrito Capital
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="tab-pane fade"
-                    id="nav-price"
-                    role="tabpanel"
-                    aria-labelledby="nav-price-tab"
-                  >
-                    <div className="row gy-4">
-                      <div className="col-lg-6 col-md-6">
-                        <div className="agent-card border-0">
-                          <div className="card-body p-0">
-                            <div className="d-flex align-items-center w-100">
-                              <div className="agent-img">
-                                <img src="img/my-img/agent-img.jpeg" alt="" />
-                                <small className="toprated">
-                                  <img src="img/my-img/crown.png" />
-                                  Top Rated
-                                </small>
-                              </div>
-                              <div className="ps-3 w-100">
-                                <div className="icon-bar">
-                                  <ul className="list-inline">
-                                    <li>
-                                      <img src="img/my-img/start-small.png" />{" "}
-                                      <span>
-                                        <b>( 112 )</b>
-                                      </span>
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/swap.png" />
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/heart.png" />
-                                    </li>
-                                  </ul>
-                                </div>
-                                <p className="mb-0">
-                                  <b>John Doe</b>
-                                </p>
-                                <small>@properties</small>
-                                <p className="mt-3 mb-0">
-                                  <b>1230</b> Inmuebles publicados
-                                </p>
-                                <p>
-                                  <i className="bi bi-geo-alt-fill primary-text" />{" "}
-                                  Caracas Distrito Capital
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="agent-card border-0">
-                          <div className="card-body p-0">
-                            <div className="d-flex align-items-center w-100">
-                              <div className="agent-img">
-                                <img src="img/my-img/agent-img.jpeg" alt="" />
-                                <small className="toprated">
-                                  <img src="img/my-img/crown.png" />
-                                  Top Rated
-                                </small>
-                              </div>
-                              <div className="ps-3 w-100">
-                                <div className="icon-bar">
-                                  <ul className="list-inline">
-                                    <li>
-                                      <img src="img/my-img/start-small.png" />{" "}
-                                      <span>
-                                        <b>( 112 )</b>
-                                      </span>
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/swap.png" />
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/heart.png" />
-                                    </li>
-                                  </ul>
-                                </div>
-                                <p className="mb-0">
-                                  <b>John Doe</b>
-                                </p>
-                                <small>@properties</small>
-                                <p className="mt-3 mb-0">
-                                  <b>1230</b> Inmuebles publicados
-                                </p>
-                                <p>
-                                  <i className="bi bi-geo-alt-fill primary-text" />{" "}
-                                  Caracas Distrito Capital
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="agent-card border-0">
-                          <div className="card-body p-0">
-                            <div className="d-flex align-items-center w-100">
-                              <div className="agent-img">
-                                <img src="img/my-img/agent-img.jpeg" alt="" />
-                                <small className="toprated">
-                                  <img src="img/my-img/crown.png" />
-                                  Top Rated
-                                </small>
-                              </div>
-                              <div className="ps-3 w-100">
-                                <div className="icon-bar">
-                                  <ul className="list-inline">
-                                    <li>
-                                      <img src="img/my-img/start-small.png" />{" "}
-                                      <span>
-                                        <b>( 112 )</b>
-                                      </span>
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/swap.png" />
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/heart.png" />
-                                    </li>
-                                  </ul>
-                                </div>
-                                <p className="mb-0">
-                                  <b>John Doe</b>
-                                </p>
-                                <small>@properties</small>
-                                <p className="mt-3 mb-0">
-                                  <b>1230</b> Inmuebles publicados
-                                </p>
-                                <p>
-                                  <i className="bi bi-geo-alt-fill primary-text" />{" "}
-                                  Caracas Distrito Capital
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6">
-                        <div className="agent-card border-0">
-                          <div className="card-body p-0">
-                            <div className="d-flex align-items-center w-100">
-                              <div className="agent-img">
-                                <img src="img/my-img/agent-img.jpeg" alt="" />
-                                <small className="toprated">
-                                  <img src="img/my-img/crown.png" />
-                                  Top Rated
-                                </small>
-                              </div>
-                              <div className="ps-3 w-100">
-                                <div className="icon-bar">
-                                  <ul className="list-inline">
-                                    <li>
-                                      <img src="img/my-img/start-small.png" />{" "}
-                                      <span>
-                                        <b>( 112 )</b>
-                                      </span>
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/swap.png" />
-                                    </li>
-                                    <li>
-                                      <img src="img/my-img/heart.png" />
-                                    </li>
-                                  </ul>
-                                </div>
-                                <p className="mb-0">
-                                  <b>John Doe</b>
-                                </p>
-                                <small>@properties</small>
-                                <p className="mt-3 mb-0">
-                                  <b>1230</b> Inmuebles publicados
-                                </p>
-                                <p>
-                                  <i className="bi bi-geo-alt-fill primary-text" />{" "}
-                                  Caracas Distrito Capital
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div> */}
                     </div>
                   </div>
 
@@ -859,9 +326,15 @@ const AgentMobiliario = () => {
                             <div className="d-flex align-items-center w-100">
                               <div className="agent-img">
                                 <img
-                                  src={item?.agentDetails?.map(
-                                    (e) => e.photoUrl
-                                  )}
+                                  // src={item?.agentDetails?.map(
+                                  //   (e) => e.photoUrl
+                                  // )}
+                                  src={
+                                    item?.agentDetails?.length > 0 &&
+                                    item.agentDetails[0]?.photoUrl
+                                      ? item.agentDetails[0].photoUrl
+                                      : hauzziImg
+                                  }
                                   alt=""
                                   style={{
                                     height: "170.22px",
@@ -879,7 +352,7 @@ const AgentMobiliario = () => {
                                     <li>
                                       <img src="img/my-img/start-small.png" />{" "}
                                       <span>
-                                        <b>( 112 )</b>
+                                        <b>( {item.propertyCount} )</b>
                                       </span>
                                     </li>
                                     <li>
@@ -895,12 +368,15 @@ const AgentMobiliario = () => {
                                 </p>
                                 <small>@properties</small>
                                 <p className="mt-3 mb-0">
-                                  <b>1230</b> Inmuebles publicados
+                                  <b>{item.propertyCount}</b> Inmuebles
+                                  publicados
                                 </p>
-                                <p>
-                                  <i className="bi bi-geo-alt-fill primary-text" />{" "}
-                                  Caracas Distrito Capital
-                                </p>
+                                {item?.agentDetails[0]?.address && (
+                                  <p>
+                                    <i className="bi bi-geo-alt-fill primary-text" />{" "}
+                                    {item?.agentDetails[0]?.address}
+                                  </p>
+                                )}
                               </div>
                             </div>
                           </div>
