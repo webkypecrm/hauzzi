@@ -3,9 +3,6 @@ import Header from "../MainPage/Header";
 import Footer from "../MainPage/Footer";
 import { Link, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
-// import Loading from "../../Loading";
-// import img1 from "../../assets/img/my-img/icon123.png";
-// import { FaBalanceScale } from "react-icons/fa";
 import img2 from "../../assets/img/my-img/icon_123.png";
 import img3 from "../../assets/img/my-img/icon.png";
 import img4 from "../../assets/img/my-img/Vector_1.png";
@@ -75,6 +72,8 @@ const PropertyDetils = () => {
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
   const token2 = localStorage.getItem("token");
   const customerId = localStorage.getItem("tokenId") || "";
+
+  console.log("propertyData", propertyData);
 
   // lightbox
   const openLightbox = (index) => {
@@ -1126,7 +1125,7 @@ const PropertyDetils = () => {
                     </li>
                   </ul>
                   <div className="row mt-4">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                       <p className="view-m">
                         <img src={img6} style={{ marginRight: 8, width: 18 }} />
                         {propertyData?.category}
@@ -1135,42 +1134,55 @@ const PropertyDetils = () => {
                     <div className="col-md-4">
                       <p className="view-m">
                         <img src={img7} style={{ marginRight: 8, width: 18 }} />
-                        {propertyData?.type}
+                        {/* {propertyData?.type} */}
+                        Antigüedad : {propertyData?.listingDetails?.Antigüedad}
                       </p>
                     </div>
-                    <div className="col-md-4">
+                    {/* <div className="col-md-3">
                       <p className="view-m">
                         <img src={img5} style={{ marginRight: 8, width: 18 }} />
                         {propertyData?.builderName}
                       </p>
+                    </div> */}
+                    <div className="col-md-3">
+                      <p className="view-m">
+                        <img src={img5} style={{ marginRight: 8, width: 18 }} />
+                        {propertyData?.listingDetails?.Condición}
+                      </p>
+                    </div>
+                    <div className="col-md-3">
+                      <p className="view-m">
+                        <img src={img5} style={{ marginRight: 8, width: 18 }} />
+                        Vistas : {propertyData?.listingDetails?.Vistas}
+                      </p>
                     </div>
 
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                       <p className="view-m">
                         <img src={img9} style={{ marginRight: 8, width: 18 }} />
                         ${propertyData?.maxPSF}/sqft
                       </p>
                     </div>
-                    {propertyData?.rentalPrice && (
-                      <div className="col-md-4">
+                    {propertyData?.listingDetails?.Tipodesuelo && (
+                      <div className="col-md-2">
                         <p className="view-m">
                           <img
                             src={img8}
                             style={{ marginRight: 8, width: 18 }}
                           />
-                          {propertyData?.rentalPrice}
+                          {propertyData?.listingDetails?.Tipodesuelo}
                         </p>
                       </div>
                     )}
 
-                    {propertyData?.maintenancePrice && (
+                    {propertyData?.listingDetails?.Publicadopor && (
                       <div className="col-md-4">
                         <p className="view-m">
                           <img
                             src={img10}
                             style={{ marginRight: 8, width: 18 }}
                           />
-                          {propertyData?.maintenancePrice}
+                          {propertyData?.listingDetails?.Publicadopor}
                         </p>
                       </div>
                     )}
