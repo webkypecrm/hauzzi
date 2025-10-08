@@ -528,7 +528,7 @@ const PublishProperty = () => {
                       ))}
                     </div>
 
-                    {/* {propertyCategory.length > 0 && (
+                    {propertyCategory.length > 0 && (
                       <>
                         <h5 className="fw-bold">Categoría</h5>
                         <div className="d-flex flex-wrap mb-4">
@@ -546,7 +546,7 @@ const PublishProperty = () => {
                           ))}
                         </div>
                       </>
-                    )} */}
+                    )}
                   </Fragment>
                 )}
 

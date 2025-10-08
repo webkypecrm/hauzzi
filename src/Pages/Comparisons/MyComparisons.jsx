@@ -195,8 +195,8 @@ const MyComparisons = () => {
                   <h6 id="vista" className="table_heading">
                     Vista General
                   </h6>
-                  <div className="table-container table-responsive mb-4">
-                    <table className="table table-striped text-center">
+                  <div className="table-container1 table-responsive mb-4">
+                    <table className="table text-center">
                       <thead>
                         <tr>
                           <th className="text-start">Status</th>
