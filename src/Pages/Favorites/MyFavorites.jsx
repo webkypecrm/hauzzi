@@ -794,7 +794,7 @@ const MyFavorites = () => {
                       </button>
                       <button className="btn btn-primary w-auto btn-sm">
                         {" "}
-                        Buscar Agente <i className="bi bi-arrow-right ms-1" />
+                        Buscar Agentes <i className="bi bi-arrow-right ms-1" />
                       </button>
                     </div>
                   </div>

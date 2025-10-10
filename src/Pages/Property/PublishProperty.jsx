@@ -442,7 +442,8 @@ const PublishProperty = () => {
   const [markerPosition, setMarkerPosition] = useState(defaultCenter);
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx",
+    // googleMapsApiKey: "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx",
+    googleMapsApiKey: "AIzaSyDAc6yU2PelDIJKgzSxOJZIepi7Bx43lXw",
     libraries: LIBRARIES,
   });
 

@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import Loading from "../../Loading";
 import blogImg from "../../assets/img/blog.jpg";
+import blogImg2 from "../../assets/img/my-img/Image.png";
 
 const BlogDetails = () => {
      const [blogData, setBlogData] = useState([]);
@@ -166,7 +167,7 @@ const BlogDetails = () => {
                                             <li className="list-inline-item">
                                               <span to="#">
                                                 <img
-                                                  src="img/my-img/Image.png"
+                                                  src={blogImg2}
                                                   alt="pposter1.png"
                                                   width="20%"
                                                 />{" "}
