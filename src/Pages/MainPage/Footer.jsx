@@ -83,7 +83,7 @@ const Footer = () => {
               <h4>Particulares</h4>
               <ul style={{fontSize: 13}}>
                 <li>
-                  <Link to="/">Anuncia tu propiedad</Link>
+                  <Link to="/index3">Anuncia tu propiedad</Link>
                 </li>
                 <li>
                   <Link to="/index2">Vende con un profesional</Link>
@@ -100,7 +100,7 @@ const Footer = () => {
                   <Link to="/sign-up">Regístrate</Link>
                 </li>
                 <li>
-                  <Link to="/">Anuncia tu propiedad</Link>
+                  <Link to="/index2">Anuncia tu propiedad</Link>
                 </li>
                 
                 <li>

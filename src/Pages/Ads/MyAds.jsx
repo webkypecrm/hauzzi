@@ -134,12 +134,22 @@ const MyAds = () => {
                                 />
                                 <div className="thmb_cntnt">
                                   <ul className="tag mb-0 p-0">
-                                    <li className="list-inline-item">
-                                      <span>{e.purpose}</span>
-                                    </li>{" "}
-                                    <li className="list-inline-item">
-                                      <span>{e.tags}</span>
-                                    </li>
+                                    {e.purpose && (
+                                      <li
+                                        className="list-inline-item"
+                                        style={{ backgroundColor: "#FFBD59" }}
+                                      >
+                                        <span style={{ color: "black" }}>{e.purpose}</span>
+                                      </li>
+                                    )}{" "}
+                                    {e.tags && (
+                                      <li
+                                        className="list-inline-item"
+                                        style={{ backgroundColor: "#4b6bfb" }}
+                                      >
+                                        <span>{e.tags}</span>
+                                      </li>
+                                    )}
                                   </ul>
                                 </div>
                               </div>

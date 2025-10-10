@@ -58,6 +58,7 @@ const PropertySell = () => {
     setLoading(true);
     try {
       let url = `${apiUrl}/property/property?isDraft=false`;
+      // let url = `${apiUrl}/property/getPropertiesSortedByActivePayment`;
       if (search) url += `&search=${search}`;
       // if (type) url += `&type=${type}`;
       if (typeFilter) {
@@ -1486,7 +1487,7 @@ const PropertySell = () => {
                       className="form-check-label"
                       htmlFor="flexSwitchCheckDefault"
                     >
-                      Indica el número exacto de habitaciones.
+                      Indica el número exacto de Baños.
                     </label>
                     <input
                       className="form-check-input new-border-clr"
@@ -1631,7 +1632,7 @@ const PropertySell = () => {
                       className="form-check-label"
                       htmlFor="flexSwitchCheckDefault"
                     >
-                      Indica el número exacto de habitaciones.
+                      Indica el número exacto de Estacionamientos.
                     </label>
                     <input
                       className="form-check-input new-border-clr"
