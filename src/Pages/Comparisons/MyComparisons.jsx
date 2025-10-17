@@ -201,7 +201,7 @@ const MyComparisons = () => {
                         <tr>
                           <th className="text-start">Status</th>
                           {comparisonsData.map((item, index) => (
-                            <th key={index}>{item?.purpose}</th>
+                            <th className="text-start" key={index}>{item?.purpose}</th>
                           ))}
                         </tr>
                       </thead>
@@ -209,7 +209,7 @@ const MyComparisons = () => {
                         <tr>
                           <td className="text-start">Precio</td>
                           {comparisonsData?.map((item, idx) => (
-                            <td key={idx}>
+                            <td className="text-start" key={idx}>
                               {item?.maxPrice
                                 ? `${item.maxPrice}$`
                                 : item?.rentalPrice
@@ -221,7 +221,7 @@ const MyComparisons = () => {
                         <tr>
                           <td className="text-start">M2</td>
                           {comparisonsData?.map((item, idx) => (
-                            <td key={idx}>
+                            <td className="text-start" key={idx}>
                               {item?.maxSize
                                 ? `${item.maxSize} m²`
                                 : item?.propertySize
@@ -233,7 +233,7 @@ const MyComparisons = () => {
                         <tr>
                           <td className="text-start">Precio/m2</td>
                           {comparisonsData?.map((item, idx) => (
-                            <td key={idx}>
+                            <td className="text-start" key={idx}>
                               {item?.maxPSF ? `${item.maxPSF} m²` : "--"}
                             </td>
                           ))}
@@ -241,7 +241,7 @@ const MyComparisons = () => {
                         <tr>
                           <td className="text-start">Habitaciones</td>
                           {comparisonsData.map((item, index) => (
-                            <td key={index}>
+                            <td className="text-start" key={index}>
                               {item?.listingDetails?.Habitaciones
                                 ? item?.listingDetails?.Habitaciones
                                 : "--"}
@@ -251,7 +251,7 @@ const MyComparisons = () => {
                         <tr>
                           <td className="text-start">Baños</td>
                           {comparisonsData.map((item, index) => (
-                            <td key={index}>
+                            <td className="text-start" key={index}>
                               {item?.listingDetails?.Baños
                                 ? item?.listingDetails?.Baños
                                 : "--"}
@@ -261,7 +261,7 @@ const MyComparisons = () => {
                         <tr>
                           <td className="text-start">Estado</td>
                           {comparisonsData.map((item, index) => (
-                            <td key={index}>
+                            <td className="text-start" key={index}>
                               {item?.states?.name ? item?.states?.name : "--"}
                             </td>
                           ))}
@@ -269,7 +269,7 @@ const MyComparisons = () => {
                         <tr>
                           <td className="text-start">Publica</td>
                           {comparisonsData.map((item, index) => (
-                            <td key={index}>
+                            <td className="text-start" key={index}>
                               {item?.listingDetails?.Publicadopor
                                 ? item?.listingDetails?.Publicadopor
                                 : "--"}
@@ -279,7 +279,7 @@ const MyComparisons = () => {
                         <tr>
                           <td className="text-start">Vistas</td>
                           {comparisonsData.map((item, index) => (
-                            <td key={index}>
+                            <td className="text-start" key={index}>
                               {item?.listingDetails?.Vistas
                                 ? item?.listingDetails?.Vistas
                                 : "--"}
@@ -289,7 +289,7 @@ const MyComparisons = () => {
                         <tr>
                           <td className="text-start">Orientación</td>
                           {comparisonsData.map((item, index) => (
-                            <td key={index}>
+                            <td className="text-start" key={index}>
                               {item?.listingDetails?.Orientación
                                 ? item?.listingDetails?.Orientación
                                 : "--"}
@@ -299,7 +299,7 @@ const MyComparisons = () => {
                         <tr>
                           <td className="text-start">Tipo de suelo</td>
                           {comparisonsData.map((item, index) => (
-                            <td key={index}>
+                            <td className="text-start" key={index}>
                               {item?.listingDetails?.Tipodesuelo
                                 ? item?.listingDetails?.Tipodesuelo
                                 : "--"}
@@ -324,7 +324,7 @@ const MyComparisons = () => {
                             const hasCCTV = seguridad.includes(
                               "Cámaras de vigilancia (CCTV)"
                             );
-                            return <td key={index}>{hasCCTV ? "Sí" : "No"}</td>;
+                            return <td className="text-start" key={index}>{hasCCTV ? "Sí" : "No"}</td>;
                           })}
                         </tr>
                         <tr>
@@ -334,7 +334,7 @@ const MyComparisons = () => {
                               item?.listingDetails?.Seguridad || "";
                             const includesAlarma = seguridad.includes("Alarma");
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {includesAlarma ? "Sí" : "No"}
                               </td>
                             );
@@ -347,7 +347,7 @@ const MyComparisons = () => {
                               item?.listingDetails?.Seguridad || "";
                             const vigilancia = seguridad.includes("Vigilancia");
                             return (
-                              <td key={index}>{vigilancia ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>{vigilancia ? "Sí" : "No"}</td>
                             );
                           })}
                         </tr>
@@ -361,7 +361,7 @@ const MyComparisons = () => {
                             const sistema = seguridad.includes(
                               "Sistema de videointercomunicador"
                             );
-                            return <td key={index}>{sistema ? "Sí" : "No"}</td>;
+                            return <td className="text-start" key={index}>{sistema ? "Sí" : "No"}</td>;
                           })}
                         </tr>
                         <tr>
@@ -372,7 +372,7 @@ const MyComparisons = () => {
                             const cercoEléctrico =
                               seguridad.includes("Cerco eléctrico");
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {cercoEléctrico ? "Sí" : "No"}
                               </td>
                             );
@@ -386,7 +386,7 @@ const MyComparisons = () => {
                             const portónEléctrico =
                               seguridad.includes("Portón eléctrico");
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {portónEléctrico ? "Sí" : "No"}
                               </td>
                             );
@@ -400,7 +400,7 @@ const MyComparisons = () => {
                             const cercoPerimetral =
                               seguridad.includes("Cerco perimetral");
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {cercoPerimetral ? "Sí" : "No"}
                               </td>
                             );
@@ -417,7 +417,7 @@ const MyComparisons = () => {
                               "Sistema contra incendio"
                             );
                             return (
-                              <td key={index}>{sistemaContra ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>{sistemaContra ? "Sí" : "No"}</td>
                             );
                           })}
                         </tr>
@@ -441,7 +441,7 @@ const MyComparisons = () => {
                               "Jardines o áreas verdes"
                             );
                             return (
-                              <td key={index}>{jardines ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>{jardines ? "Sí" : "No"}</td>
                             );
                           })}
                         </tr>
@@ -452,7 +452,7 @@ const MyComparisons = () => {
                               item?.listingDetails?.Ambientes || "";
                             const terraza =
                               Ambientes.includes("Terraza o solárium");
-                            return <td key={index}>{terraza ? "Sí" : "No"}</td>;
+                            return <td className="text-start" key={index}>{terraza ? "Sí" : "No"}</td>;
                           })}
                         </tr>
                         <tr>
@@ -466,7 +466,7 @@ const MyComparisons = () => {
                               "Área de barbacoa/parrillera"
                             );
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {areaDeBarbacoa ? "Sí" : "No"}
                               </td>
                             );
@@ -478,7 +478,7 @@ const MyComparisons = () => {
                             const Ambientes =
                               item?.listingDetails?.Ambientes || "";
                             const cocina = Ambientes.includes("Cocina");
-                            return <td key={index}>{cocina ? "Sí" : "No"}</td>;
+                            return <td className="text-start" key={index}>{cocina ? "Sí" : "No"}</td>;
                           })}
                         </tr>
                         <tr>
@@ -488,7 +488,7 @@ const MyComparisons = () => {
                               item?.listingDetails?.Ambientes || "";
                             const estudio =
                               Ambientes.includes("Estudio o oficina");
-                            return <td key={index}>{estudio ? "Sí" : "No"}</td>;
+                            return <td className="text-start" key={index}>{estudio ? "Sí" : "No"}</td>;
                           })}
                         </tr>
                         <tr>
@@ -497,7 +497,7 @@ const MyComparisons = () => {
                             const Ambientes =
                               item?.listingDetails?.Ambientes || "";
                             const vestier = Ambientes.includes("Vestier");
-                            return <td key={index}>{vestier ? "Sí" : "No"}</td>;
+                            return <td className="text-start" key={index}>{vestier ? "Sí" : "No"}</td>;
                           })}
                         </tr>
                         <tr>
@@ -507,7 +507,7 @@ const MyComparisons = () => {
                               item?.listingDetails?.Ambientes || "";
                             const armarios = Ambientes.includes("Armarios");
                             return (
-                              <td key={index}>{armarios ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>{armarios ? "Sí" : "No"}</td>
                             );
                           })}
                         </tr>
@@ -519,7 +519,7 @@ const MyComparisons = () => {
                             const cuartoDeServicio =
                               Ambientes.includes("Cuarto de servicio");
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {cuartoDeServicio ? "Sí" : "No"}
                               </td>
                             );
@@ -533,7 +533,7 @@ const MyComparisons = () => {
                             const cuartoDeLavado =
                               Ambientes.includes("Cuarto de lavado");
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {cuartoDeLavado ? "Sí" : "No"}
                               </td>
                             );
@@ -547,7 +547,7 @@ const MyComparisons = () => {
                             const areaDeComedor =
                               Ambientes.includes("Área de comedor");
                             return (
-                              <td key={index}>{areaDeComedor ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>{areaDeComedor ? "Sí" : "No"}</td>
                             );
                           })}
                         </tr>
@@ -560,7 +560,7 @@ const MyComparisons = () => {
                               "Área para desayunar"
                             );
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {areaParaDesayunar ? "Sí" : "No"}
                               </td>
                             );
@@ -577,7 +577,7 @@ const MyComparisons = () => {
                               "Canchas de usos múltiples"
                             );
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {canchasMúltiples ? "Sí" : "No"}
                               </td>
                             );
@@ -600,7 +600,7 @@ const MyComparisons = () => {
                             const aireAcondicionado =
                               Equipamientos.includes("Aire acondicionado");
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {aireAcondicionado ? "Sí" : "No"}
                               </td>
                             );
@@ -613,7 +613,7 @@ const MyComparisons = () => {
                               item?.listingDetails?.Equipamientos || "";
                             const ascensor = Equipamientos.includes("Ascensor");
                             return (
-                              <td key={index}>{ascensor ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>{ascensor ? "Sí" : "No"}</td>
                             );
                           })}
                         </tr>
@@ -625,7 +625,7 @@ const MyComparisons = () => {
                             const ventilador =
                               Equipamientos.includes("Ventilador");
                             return (
-                              <td key={index}>{ventilador ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>{ventilador ? "Sí" : "No"}</td>
                             );
                           })}
                         </tr>
@@ -637,7 +637,7 @@ const MyComparisons = () => {
                             const pantaEléctrica =
                               Equipamientos.includes("Planta eléctrica");
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {pantaEléctrica ? "Sí" : "No"}
                               </td>
                             );
@@ -651,7 +651,7 @@ const MyComparisons = () => {
                             const calefacción =
                               Equipamientos.includes("Calefacción");
                             return (
-                              <td key={index}>{calefacción ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>{calefacción ? "Sí" : "No"}</td>
                             );
                           })}
                         </tr>
@@ -663,7 +663,7 @@ const MyComparisons = () => {
                             const accesoInternet =
                               Equipamientos.includes("Acceso a internet");
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {accesoInternet ? "Sí" : "No"}
                               </td>
                             );
@@ -680,7 +680,7 @@ const MyComparisons = () => {
                               "Calentador a gas/ eléctrico"
                             );
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {calentadorEléctrico ? "Sí" : "No"}
                               </td>
                             );
@@ -694,7 +694,7 @@ const MyComparisons = () => {
                             const electrodomésticos =
                               Equipamientos.includes("Electrodomésticos");
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {electrodomésticos ? "Sí" : "No"}
                               </td>
                             );
@@ -706,7 +706,7 @@ const MyComparisons = () => {
                             const Equipamientos =
                               item?.listingDetails?.Equipamientos || "";
                             const TV = Equipamientos.includes("TV");
-                            return <td key={index}>{TV ? "Sí" : "No"}</td>;
+                            return <td className="text-start" key={index}>{TV ? "Sí" : "No"}</td>;
                           })}
                         </tr>
                         <tr>
@@ -718,7 +718,7 @@ const MyComparisons = () => {
                               "Sistema de domótica"
                             );
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {Sistemadedomótica ? "Sí" : "No"}
                               </td>
                             );
@@ -732,7 +732,7 @@ const MyComparisons = () => {
                             const Cisternadeagua =
                               Equipamientos.includes("Cisterna de agua");
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {Cisternadeagua ? "Sí" : "No"}
                               </td>
                             );
@@ -759,7 +759,7 @@ const MyComparisons = () => {
                             const hasRegular =
                               serviciosArr.includes("Suministro de agua");
                             return (
-                              <td key={index}>{hasRegular ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>{hasRegular ? "Sí" : "No"}</td>
                             );
                           })}
                         </tr>
@@ -771,7 +771,7 @@ const MyComparisons = () => {
                             const Líneatelefónica =
                               Servicios.includes("Línea telefónica");
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {Líneatelefónica ? "Sí" : "No"}
                               </td>
                             );
@@ -785,7 +785,7 @@ const MyComparisons = () => {
                             const Redeléctrica =
                               Servicios.includes("Red eléctrica");
                             return (
-                              <td key={index}>{Redeléctrica ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>{Redeléctrica ? "Sí" : "No"}</td>
                             );
                           })}
                         </tr>
@@ -795,7 +795,7 @@ const MyComparisons = () => {
                             const Servicios =
                               item?.listingDetails?.Servicios || "";
                             const Gas = Servicios.includes("Gas");
-                            return <td key={index}>{Gas ? "Sí" : "No"}</td>;
+                            return <td className="text-start" key={index}>{Gas ? "Sí" : "No"}</td>;
                           })}
                         </tr>
                         <tr>
@@ -807,7 +807,7 @@ const MyComparisons = () => {
                               "Recolección de basura"
                             );
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {Recoleccióndebasura ? "Sí" : "No"}
                               </td>
                             );
@@ -824,7 +824,7 @@ const MyComparisons = () => {
                               "Alcantarillado y drenaje"
                             );
                             return (
-                              <td key={index}>
+                              <td className="text-start" key={index}>
                                 {Alcantarilladoydrenaje ? "Sí" : "No"}
                               </td>
                             );
@@ -844,7 +844,7 @@ const MyComparisons = () => {
                               "Suministro de agua potable"
                             );
                             return (
-                              <td key={index}>{hasPotable ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>{hasPotable ? "Sí" : "No"}</td>
                             );
                           })}
                         </tr>

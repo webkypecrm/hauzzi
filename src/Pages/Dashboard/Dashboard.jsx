@@ -52,13 +52,20 @@ const navigate = useNavigate();
         },
       });
 
-      if (response.status === 200) {
-        localStorage.removeItem("token");
-        toast.success("Logout successful!");
-        navigate("/login");
-      } else {
-        toast.error("Logout failed.");
-      }
+    // Agar successful, remove token
+    localStorage.removeItem("token");
+    localStorage.removeItem("tokenId");
+    localStorage.removeItem("userType");
+
+      // if (response.status === 200) {
+      //   localStorage.removeItem("token");
+      //   toast.success("Logout successful!");
+      //   navigate("/login");
+      // } else {
+      //   toast.error("Logout failed.");
+      // }
+      toast.success("Logout successful!");
+    navigate("/login");
     } catch (error) {
       console.error("Logout error:", error);
       // toast.error("Something went wrong during logout.");

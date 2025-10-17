@@ -664,10 +664,10 @@ const AgentProfile = () => {
                                               {e.maxPrice
                                                 ? Number(
                                                     e.maxPrice
-                                                  ).toLocaleString()
+                                                  )
                                                 : Number(
                                                     e.rentalPrice
-                                                  ).toLocaleString()}
+                                                  )}
                                             </span>
                                           </div>
                                           <p>
@@ -1102,10 +1102,10 @@ const AgentProfile = () => {
                                             {property.maxPrice
                                               ? Number(
                                                   property.maxPrice
-                                                ).toLocaleString()
+                                                )
                                               : Number(
                                                   property.rentalPrice
-                                                ).toLocaleString()}
+                                                )}
                                           </span>
                                         </div>
                                         <p>
@@ -1483,10 +1483,10 @@ const AgentProfile = () => {
                                             {prop.maxPrice
                                               ? Number(
                                                   prop.maxPrice
-                                                ).toLocaleString()
+                                                )
                                               : Number(
                                                   prop.rentalPrice
-                                                ).toLocaleString()}
+                                                )}
                                           </span>
                                         </div>
                                         <p>

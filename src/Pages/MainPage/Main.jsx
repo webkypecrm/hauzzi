@@ -71,7 +71,7 @@ const Main = () => {
 
   console.log(
     "firstmainDATA",
-    mainData.map((item) => item.id)
+    mainData
   );
 
   const handleLookingForChange = (e) => {
@@ -149,6 +149,8 @@ const Main = () => {
   // --------------------------------------------------------------------------------
   // Wishlist Api
   useEffect(() => {
+    if (!customerId || !token2) return;
+
     const fetchWishlist = async () => {
       try {
         const res = await axios.get(
@@ -175,10 +177,14 @@ const Main = () => {
       }
     };
 
-    if (customerId) fetchWishlist();
-  }, [customerId]);
+    fetchWishlist();
+  }, [customerId, token2]);
 
   const handelWishlist = async (id) => {
+      if (!token2) {
+    toast.error("Please login first!");
+    return;
+  }
     try {
       const response = await axios.get(
         `${apiUrl}/property/addToWishlist/${customerId}-${id}`,
@@ -207,6 +213,7 @@ const Main = () => {
 
   // folder options
   const getFolderData = async () => {
+    if (!token2) return;
     try {
       const res = await axios.get(
         `${apiUrl}/property/get-Folders-byCustomerId?customerId=${customerId}`,
@@ -223,12 +230,19 @@ const Main = () => {
     }
   };
 
+  // useEffect(() => {
+  //   getFolderData();
+  // }, []);
   useEffect(() => {
-    getFolderData();
-  }, []);
+  if (!token2 || !customerId) return;
+
+  getFolderData();
+}, [token2, customerId]);
 
   // property add in folder
   useEffect(() => {
+    if (!customerId || !token2) return;
+
     const fetchFolderProperty = async () => {
       try {
         const res = await axios.get(
@@ -257,10 +271,13 @@ const Main = () => {
     };
 
     fetchFolderProperty();
-  }, []);
+  }, [customerId, token2]);
 
   const handleAddFolder = async (pid) => {
-    // console.log(id)
+    if (!token2) {
+    toast.error("Please login first!");
+    return;
+  }
     try {
       const response = await axios.post(
         `${apiUrl}/property/addpropertyFolderData`,
@@ -792,10 +809,10 @@ const Main = () => {
                                     <span className="fp_price">
                                       $
                                       {e.maxPrice
-                                        ? Number(e.maxPrice).toLocaleString()
+                                        ? Number(e.maxPrice)
                                         : Number(
                                             e.rentalPrice
-                                          ).toLocaleString()}
+                                          )}
                                     </span>
                                   </div>
                                   <p className="line-clamp-1">

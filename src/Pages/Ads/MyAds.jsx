@@ -171,10 +171,10 @@ const MyAds = () => {
                                     <span className="fp_price">
                                       $
                                       {e.maxPrice
-                                        ? Number(e.maxPrice).toLocaleString()
+                                        ? Number(e.maxPrice)
                                         : Number(
                                             e.rentalPrice
-                                          ).toLocaleString()}
+                                          )}
                                     </span>
                                   </div>
                                   <p className="line-clamp-1">

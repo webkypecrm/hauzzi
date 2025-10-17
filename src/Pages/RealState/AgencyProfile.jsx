@@ -653,10 +653,10 @@ const AgencyProfile = () => {
                                               {e.maxPrice
                                                 ? Number(
                                                     e.maxPrice
-                                                  ).toLocaleString()
+                                                  )
                                                 : Number(
                                                     e.rentalPrice
-                                                  ).toLocaleString()}
+                                                  )}
                                             </span>
                                           </div>
                                           <p>
@@ -1153,10 +1153,10 @@ const AgencyProfile = () => {
                                             {property.maxPrice
                                               ? Number(
                                                   property.maxPrice
-                                                ).toLocaleString()
+                                                )
                                               : Number(
                                                   property.rentalPrice
-                                                ).toLocaleString()}
+                                                )}
                                           </span>
                                         </div>
                                         <p>
@@ -1512,10 +1512,10 @@ const AgencyProfile = () => {
                                             {prop.maxPrice
                                               ? Number(
                                                   prop.maxPrice
-                                                ).toLocaleString()
+                                                )
                                               : Number(
                                                   prop.rentalPrice
-                                                ).toLocaleString()}
+                                                )}
                                           </span>
                                         </div>
                                         <p>
