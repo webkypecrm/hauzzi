@@ -13,10 +13,7 @@ import img8 from "../../assets/img/my-img//apple.png";
 import img9 from "../../assets/img/my-img//money-send.svg";
 import img10 from "../../assets/img/my-img//like-shapes.png";
 import img11 from "../../assets/img/my-img/Line arrow-down.png";
-// import map from "../../assets/img/my-img/map-1view.png";
-// import img12 from "../../assets/img/my-img/image31.png";
 import whatsapp from "../../assets/img/my-img/whatsapps.png";
-// import img13 from "../../assets/img/my-img/ellipse_1.png";
 import telephn from "../../assets/img/my-img/call12.png";
 import msg from "../../assets/img/my-img/sms.svg";
 import global from "../../assets/img/my-img/global.png";
@@ -341,8 +338,8 @@ const PropertyDetils = () => {
     currentIndexid < allIds.length - 1 ? allIds[currentIndexid + 1] : null;
 
   // Wishlist Api
-
   useEffect(() => {
+    if (!customerId || !token2) return;
     const fetchWishlist = async () => {
       try {
         const res = await axios.get(
@@ -369,10 +366,14 @@ const PropertyDetils = () => {
       }
     };
 
-    if (customerId) fetchWishlist();
-  }, [customerId]);
+    fetchWishlist();
+  }, [customerId, token2]);
 
   const handelWishlist = async (id) => {
+       if (!token2) {
+        toast.error("Please login first!");
+        return;
+      }
     try {
       const response = await axios.get(
         `${apiUrl}/property/addToWishlist/${customerId}-${id}`,
@@ -403,6 +404,7 @@ const PropertyDetils = () => {
 
   // folder options
   const getFolderData = async () => {
+    if (!token2) return;
     try {
       const res = await axios.get(
         `${apiUrl}/property/get-Folders-byCustomerId?customerId=${customerId}`,
@@ -420,11 +422,14 @@ const PropertyDetils = () => {
   };
 
   useEffect(() => {
+    if (!token2 || !customerId) return;
+  
     getFolderData();
-  }, []);
+  }, [token2, customerId]);
 
   // property add in folder
   useEffect(() => {
+    if (!customerId || !token2) return;
     const fetchFolderProperty = async () => {
       try {
         const res = await axios.get(
@@ -453,10 +458,13 @@ const PropertyDetils = () => {
     };
 
     fetchFolderProperty();
-  }, []);
+  }, [customerId, token2]);
 
   const handleAddFolder = async (pid) => {
-    // console.log(id)
+     if (!token2) {
+        toast.error("Please login first!");
+        return;
+      }
     try {
       const response = await axios.post(
         `${apiUrl}/property/addpropertyFolderData`,
@@ -733,13 +741,6 @@ const PropertyDetils = () => {
                   </Link>
                 </div>
                 <div className="s-bt">
-                  {/* <Link
-                    className="btn-getstarted"
-                    to={`/propert-details/${parseInt(id) - 1}`}
-                  >
-                    <i className="fa fa-long-arrow-left p-2" />
-                    Anterior{" "}
-                  </Link> */}
                   {prevId ? (
                     <Link
                       className="btn-getstarted"
@@ -924,7 +925,7 @@ const PropertyDetils = () => {
                   <li style={{ color: "#767373" }}>Caracas</li>
                   <li style={{ color: "#000" }}>{propertyData?.name}</li>
                 </ul>
-                <div className="top-bt topp-view12">
+                <div className="top-bt topp-view12" style={{justifyContent:"unset"}}>
                   <div className="f-bt">
                     <Link className="btn-getstarted" to="#">
                       {" "}
@@ -942,7 +943,7 @@ const PropertyDetils = () => {
                       Publicado: Hace 10 días{" "}
                     </Link>
                   </div>
-                  <div className="s-bt ">
+                  <div className="s-bt" style={{marginLeft:"200px"}}>
                     <Link
                       className="btn-getstarted"
                       to="#"
@@ -1030,7 +1031,7 @@ const PropertyDetils = () => {
                         />
                       </svg>
                     </Link>
-                    <Link
+                    {/* <Link
                       className="ms-2"
                       style={{
                         border: "1.5px solid #EEEEEE",
@@ -1057,7 +1058,7 @@ const PropertyDetils = () => {
                           strokeLinejoin="round"
                         />
                       </svg>
-                    </Link>
+                    </Link> */}
 
                     <Link
                       className="ms-2"
@@ -1190,8 +1191,8 @@ const PropertyDetils = () => {
                   <h3 className="mt-2">
                     $
                     {propertyData.maxPrice
-                      ? Number(propertyData.maxPrice).toLocaleString()
-                      : Number(propertyData.rentalPrice).toLocaleString()}{" "}
+                      ? Number(propertyData.maxPrice)
+                      : Number(propertyData.rentalPrice)}{" "}
                     <span style={{ fontSize: 13, color: "#00BF63" }}>
                       <img src={img11} style={{ width: 20 }} />
                       Ha bajado $5.000{" "}
@@ -1478,7 +1479,7 @@ const PropertyDetils = () => {
                         </div>
                       </Link>
 
-                      <div className="card-de" key={item.id}>
+                      {/* <div className="card-de" key={item.id}>
                         <div className="pr-det" style={{ marginTop: "10%" }}>
                           <p className="de-i"></p>
                           <p
@@ -1541,7 +1542,7 @@ const PropertyDetils = () => {
                           </p>
                           <p />
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   ))}
 
@@ -1952,8 +1953,8 @@ const PropertyDetils = () => {
                                 <span className="fp_price">
                                   $
                                   {e.maxPrice
-                                    ? Number(e.maxPrice).toLocaleString()
-                                    : Number(e.rentalPrice).toLocaleString()}
+                                    ? Number(e.maxPrice)
+                                    : Number(e.rentalPrice)}
                                 </span>
                               </div>
                               <p className="line-clamp-1">

@@ -145,6 +145,8 @@ const PropertySell = () => {
 
   // Wishlist Api
   useEffect(() => {
+    if (!customerId2 || !token2) return;
+
     const fetchWishlist = async () => {
       try {
         const res = await axios.get(
@@ -171,10 +173,16 @@ const PropertySell = () => {
       }
     };
 
-    if (customerId2) fetchWishlist();
-  }, [customerId2]);
+     fetchWishlist();
+  }, [customerId2, token2]);
+
+
 
   const handelWishlist = async (id) => {
+       if (!token2) {
+        toast.error("Please login first!");
+        return;
+      }
     try {
       const response = await axios.get(
         `${apiUrl}/property/addToWishlist/${customerId2}-${id}`,
@@ -204,6 +212,7 @@ const PropertySell = () => {
 
   // folder options
   const getFolderData = async () => {
+    if (!token2) return;
     try {
       const res = await axios.get(
         `${apiUrl}/property/get-Folders-byCustomerId?customerId=${customerId2}`,
@@ -220,12 +229,18 @@ const PropertySell = () => {
     }
   };
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   getFolderData();
+  // }, []);
+    useEffect(() => {
+    if (!token2 || !customerId) return;
+  
     getFolderData();
-  }, []);
+  }, [token2, customerId]);
 
   // property add in folder
   useEffect(() => {
+    if (!customerId || !token2) return;
     const fetchFolderProperty = async () => {
       try {
         const res = await axios.get(
@@ -254,10 +269,13 @@ const PropertySell = () => {
     };
 
     fetchFolderProperty();
-  }, []);
+  }, [customerId, token2]);
 
   const handleAddFolder = async (pid) => {
-    // console.log(id)
+     if (!token2) {
+        toast.error("Please login first!");
+        return;
+      }
     try {
       const response = await axios.post(
         `${apiUrl}/property/addpropertyFolderData`,
@@ -641,10 +659,10 @@ const PropertySell = () => {
                                           {e.maxPrice
                                             ? Number(
                                                 e.maxPrice
-                                              ).toLocaleString()
+                                              )
                                             : Number(
                                                 e.rentalPrice
-                                              ).toLocaleString()}
+                                              )}
                                         </span>
                                       </div>
                                       <p className="line-clamp-1">
