@@ -5,15 +5,18 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Loading from "../../Loading";
 import { toast } from "react-toastify";
+import html2pdf from "html2pdf.js";
 
 const MyComparisons = () => {
   const [comparisonsData, setComparisonsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeBtn, setActiveBtn] = useState("vista");
+  const [noteData, setNoteData] = useState({});
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
   const customerId = localStorage.getItem("tokenId") || "";
+  const token2 = localStorage.getItem("token");
 
   const getComparisons = async () => {
     setLoading(true);
@@ -71,6 +74,29 @@ const MyComparisons = () => {
     }
   };
 
+  // get notes
+  const getNots = async () => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}/review/getPrivateNotes?customerId=${customerId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token2}`,
+          },
+        }
+      );
+      setNoteData(response?.data?.data || {});
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  };
+
+  useEffect(() => {
+    getNots();
+  }, []);
+  console.log("notesData", noteData);
+
   return (
     <Fragment>
       <div className="index-page">
@@ -119,13 +145,94 @@ const MyComparisons = () => {
                     </div>
                     <div className="col-lg-3 col-3 text-end">
                       <div className="d-none d-lg-block d-xl-block">
-                        <button className="btn btn-outline-secondary me-2">
+                        {/* <button className="btn btn-outline-secondary me-2">
+                          <i className="bi bi-share" /> Compartir
+                        </button> */}
+                        <button
+                          className="btn btn-outline-secondary me-2"
+                          onClick={() => {
+                            const shareData = {
+                              title: document.title,
+                              text: "Check out this page!",
+                              url: window.location.href,
+                            };
+                            if (navigator.share) {
+                              navigator.share(shareData);
+                            } else {
+                              alert("Share not supported on this browser.");
+                            }
+                          }}
+                        >
                           <i className="bi bi-share" /> Compartir
                         </button>
-                        <button className="btn btn-outline-secondary me-2">
+
+                        {/* <button className="btn btn-outline-secondary me-2">
+                          <i className="bi bi-download" />
+                        </button> */}
+                        <button
+                          className="btn btn-outline-secondary me-2"
+                          onClick={() => {
+                            const element = document.body; // poora page
+                            const opt = {
+                              margin: 0,
+                              filename: "full-page.pdf",
+                              image: { type: "jpeg", quality: 1 },
+                              html2canvas: {
+                                scale: 2,
+                                scrollY: 0,
+                                useCORS: true,
+                                windowWidth:
+                                  document.documentElement.scrollWidth,
+                                windowHeight:
+                                  document.documentElement.scrollHeight,
+                              },
+                              jsPDF: {
+                                unit: "px",
+                                format: [
+                                  document.documentElement.scrollWidth,
+                                  document.documentElement.scrollHeight,
+                                ],
+                                orientation: "portrait",
+                              },
+                            };
+                            html2pdf().from(element).set(opt).save();
+                          }}
+                        >
                           <i className="bi bi-download" />
                         </button>
-                        <button className="btn btn-outline-secondary">
+
+                        {/* <button className="btn btn-outline-secondary">
+                          <i className="bi bi-printer" />
+                        </button> */}
+                        <button
+                          className="btn btn-outline-secondary me-2"
+                          onClick={() => {
+                            const element = document.body; // poora page
+                            const opt = {
+                              margin: 0,
+                              filename: "full-page.pdf",
+                              image: { type: "jpeg", quality: 1 },
+                              html2canvas: {
+                                scale: 2,
+                                scrollY: 0,
+                                useCORS: true,
+                                windowWidth:
+                                  document.documentElement.scrollWidth,
+                                windowHeight:
+                                  document.documentElement.scrollHeight,
+                              },
+                              jsPDF: {
+                                unit: "px",
+                                format: [
+                                  document.documentElement.scrollWidth,
+                                  document.documentElement.scrollHeight,
+                                ],
+                                orientation: "portrait",
+                              },
+                            };
+                            html2pdf().from(element).set(opt).save();
+                          }}
+                        >
                           <i className="bi bi-printer" />
                         </button>
                       </div>
@@ -201,7 +308,9 @@ const MyComparisons = () => {
                         <tr>
                           <th className="text-start">Status</th>
                           {comparisonsData.map((item, index) => (
-                            <th className="text-start" key={index}>{item?.purpose}</th>
+                            <th className="text-start" key={index}>
+                              {item?.purpose}
+                            </th>
                           ))}
                         </tr>
                       </thead>
@@ -324,7 +433,11 @@ const MyComparisons = () => {
                             const hasCCTV = seguridad.includes(
                               "Cámaras de vigilancia (CCTV)"
                             );
-                            return <td className="text-start" key={index}>{hasCCTV ? "Sí" : "No"}</td>;
+                            return (
+                              <td className="text-start" key={index}>
+                                {hasCCTV ? "Sí" : "No"}
+                              </td>
+                            );
                           })}
                         </tr>
                         <tr>
@@ -347,7 +460,9 @@ const MyComparisons = () => {
                               item?.listingDetails?.Seguridad || "";
                             const vigilancia = seguridad.includes("Vigilancia");
                             return (
-                              <td className="text-start" key={index}>{vigilancia ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>
+                                {vigilancia ? "Sí" : "No"}
+                              </td>
                             );
                           })}
                         </tr>
@@ -361,7 +476,11 @@ const MyComparisons = () => {
                             const sistema = seguridad.includes(
                               "Sistema de videointercomunicador"
                             );
-                            return <td className="text-start" key={index}>{sistema ? "Sí" : "No"}</td>;
+                            return (
+                              <td className="text-start" key={index}>
+                                {sistema ? "Sí" : "No"}
+                              </td>
+                            );
                           })}
                         </tr>
                         <tr>
@@ -417,7 +536,9 @@ const MyComparisons = () => {
                               "Sistema contra incendio"
                             );
                             return (
-                              <td className="text-start" key={index}>{sistemaContra ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>
+                                {sistemaContra ? "Sí" : "No"}
+                              </td>
                             );
                           })}
                         </tr>
@@ -441,7 +562,9 @@ const MyComparisons = () => {
                               "Jardines o áreas verdes"
                             );
                             return (
-                              <td className="text-start" key={index}>{jardines ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>
+                                {jardines ? "Sí" : "No"}
+                              </td>
                             );
                           })}
                         </tr>
@@ -452,7 +575,11 @@ const MyComparisons = () => {
                               item?.listingDetails?.Ambientes || "";
                             const terraza =
                               Ambientes.includes("Terraza o solárium");
-                            return <td className="text-start" key={index}>{terraza ? "Sí" : "No"}</td>;
+                            return (
+                              <td className="text-start" key={index}>
+                                {terraza ? "Sí" : "No"}
+                              </td>
+                            );
                           })}
                         </tr>
                         <tr>
@@ -478,7 +605,11 @@ const MyComparisons = () => {
                             const Ambientes =
                               item?.listingDetails?.Ambientes || "";
                             const cocina = Ambientes.includes("Cocina");
-                            return <td className="text-start" key={index}>{cocina ? "Sí" : "No"}</td>;
+                            return (
+                              <td className="text-start" key={index}>
+                                {cocina ? "Sí" : "No"}
+                              </td>
+                            );
                           })}
                         </tr>
                         <tr>
@@ -488,7 +619,11 @@ const MyComparisons = () => {
                               item?.listingDetails?.Ambientes || "";
                             const estudio =
                               Ambientes.includes("Estudio o oficina");
-                            return <td className="text-start" key={index}>{estudio ? "Sí" : "No"}</td>;
+                            return (
+                              <td className="text-start" key={index}>
+                                {estudio ? "Sí" : "No"}
+                              </td>
+                            );
                           })}
                         </tr>
                         <tr>
@@ -497,7 +632,11 @@ const MyComparisons = () => {
                             const Ambientes =
                               item?.listingDetails?.Ambientes || "";
                             const vestier = Ambientes.includes("Vestier");
-                            return <td className="text-start" key={index}>{vestier ? "Sí" : "No"}</td>;
+                            return (
+                              <td className="text-start" key={index}>
+                                {vestier ? "Sí" : "No"}
+                              </td>
+                            );
                           })}
                         </tr>
                         <tr>
@@ -507,7 +646,9 @@ const MyComparisons = () => {
                               item?.listingDetails?.Ambientes || "";
                             const armarios = Ambientes.includes("Armarios");
                             return (
-                              <td className="text-start" key={index}>{armarios ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>
+                                {armarios ? "Sí" : "No"}
+                              </td>
                             );
                           })}
                         </tr>
@@ -547,7 +688,9 @@ const MyComparisons = () => {
                             const areaDeComedor =
                               Ambientes.includes("Área de comedor");
                             return (
-                              <td className="text-start" key={index}>{areaDeComedor ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>
+                                {areaDeComedor ? "Sí" : "No"}
+                              </td>
                             );
                           })}
                         </tr>
@@ -613,7 +756,9 @@ const MyComparisons = () => {
                               item?.listingDetails?.Equipamientos || "";
                             const ascensor = Equipamientos.includes("Ascensor");
                             return (
-                              <td className="text-start" key={index}>{ascensor ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>
+                                {ascensor ? "Sí" : "No"}
+                              </td>
                             );
                           })}
                         </tr>
@@ -625,7 +770,9 @@ const MyComparisons = () => {
                             const ventilador =
                               Equipamientos.includes("Ventilador");
                             return (
-                              <td className="text-start" key={index}>{ventilador ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>
+                                {ventilador ? "Sí" : "No"}
+                              </td>
                             );
                           })}
                         </tr>
@@ -651,7 +798,9 @@ const MyComparisons = () => {
                             const calefacción =
                               Equipamientos.includes("Calefacción");
                             return (
-                              <td className="text-start" key={index}>{calefacción ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>
+                                {calefacción ? "Sí" : "No"}
+                              </td>
                             );
                           })}
                         </tr>
@@ -706,7 +855,11 @@ const MyComparisons = () => {
                             const Equipamientos =
                               item?.listingDetails?.Equipamientos || "";
                             const TV = Equipamientos.includes("TV");
-                            return <td className="text-start" key={index}>{TV ? "Sí" : "No"}</td>;
+                            return (
+                              <td className="text-start" key={index}>
+                                {TV ? "Sí" : "No"}
+                              </td>
+                            );
                           })}
                         </tr>
                         <tr>
@@ -759,7 +912,9 @@ const MyComparisons = () => {
                             const hasRegular =
                               serviciosArr.includes("Suministro de agua");
                             return (
-                              <td className="text-start" key={index}>{hasRegular ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>
+                                {hasRegular ? "Sí" : "No"}
+                              </td>
                             );
                           })}
                         </tr>
@@ -785,7 +940,9 @@ const MyComparisons = () => {
                             const Redeléctrica =
                               Servicios.includes("Red eléctrica");
                             return (
-                              <td className="text-start" key={index}>{Redeléctrica ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>
+                                {Redeléctrica ? "Sí" : "No"}
+                              </td>
                             );
                           })}
                         </tr>
@@ -795,7 +952,11 @@ const MyComparisons = () => {
                             const Servicios =
                               item?.listingDetails?.Servicios || "";
                             const Gas = Servicios.includes("Gas");
-                            return <td className="text-start" key={index}>{Gas ? "Sí" : "No"}</td>;
+                            return (
+                              <td className="text-start" key={index}>
+                                {Gas ? "Sí" : "No"}
+                              </td>
+                            );
                           })}
                         </tr>
                         <tr>
@@ -844,7 +1005,9 @@ const MyComparisons = () => {
                               "Suministro de agua potable"
                             );
                             return (
-                              <td className="text-start" key={index}>{hasPotable ? "Sí" : "No"}</td>
+                              <td className="text-start" key={index}>
+                                {hasPotable ? "Sí" : "No"}
+                              </td>
                             );
                           })}
                         </tr>
@@ -865,9 +1028,23 @@ const MyComparisons = () => {
                     />
                   </div>
                   <h6 className="table_heading">Privado</h6>
-                  <div className="table-notas table-responsive">
-                    <table className="table">
-                      <thead>
+                  <div className="table-container1 table-responsive">
+                    <table className="table text-center">
+                      <tbody>
+                        <tr>
+                          <td className="text-start">Notas personales</td>
+                          {comparisonsData.map((item, index) => {
+                            const note = item?.PropertyPrivateNote?.note || "";
+                            return (
+                              <td className="text-start" key={index}>
+                                {note ? note : "--"}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      </tbody>
+
+                      {/* <thead>
                         <tr>
                           <td className="text-nowrap fw-medium">
                             Notas personales
@@ -876,20 +1053,8 @@ const MyComparisons = () => {
                             Buen espacio para los niños sin embargo hay que
                             remodelar la cocina
                           </td>
-                          <td>
-                            Buen espacio para los niños sin embargo hay que
-                            remodelar la cocina
-                          </td>
-                          <td>
-                            Buen espacio para los niños sin embargo hay que
-                            remodelar la cocina
-                          </td>
-                          <td>
-                            Buen espacio para los niños sin embargo hay que
-                            remodelar la cocina
-                          </td>
                         </tr>
-                      </thead>
+                      </thead> */}
                     </table>
                   </div>
                 </div>

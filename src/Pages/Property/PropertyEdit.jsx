@@ -79,7 +79,6 @@ const PropertyEdit = () => {
   };
 
   // Type of property GET
-
   const getPropertyTypes = async () => {
     setLoading(true);
     try {
@@ -155,7 +154,6 @@ const PropertyEdit = () => {
     name: "",
     purpose: "",
     maxPrice: "",
-    // originalMaxPrice: "",
     maxSize: "",
     maxPSF: "",
     rentalPrice: "",
@@ -192,7 +190,7 @@ const PropertyEdit = () => {
 
   const [propertyData, setPropertyData] = useState({
     ...initialData,
-    purpose: "Vender", // default because mode is "vender"
+    purpose: "Vender", 
   });
 
   const handleInputChange = (e) => {
@@ -280,21 +278,20 @@ const PropertyEdit = () => {
           setPropertyData(fullData);
 
           if (fetchedData.photo1 || fetchedData.photo2 || fetchedData.photo3) {
-  const previewImages = [];
+            const previewImages = [];
 
-  for (let i = 1; i <= 10; i++) {
-    const key = `photo${i}`;
-    if (fetchedData[key]) {
-      previewImages.push({
-        file: null, // Original file not accessible
-        preview: `${apiUrl}/uploads/property/${fetchedData[key]}`, // Adjust path as per backend
-      });
-    }
-  }
+            for (let i = 1; i <= 10; i++) {
+              const key = `photo${i}`;
+              if (fetchedData[key]) {
+                previewImages.push({
+                  file: null, // Original file not accessible
+                  preview: `${apiUrl}/uploads/property/${fetchedData[key]}`, // Adjust path as per backend
+                });
+              }
+            }
 
-  setImages(previewImages);
-}
-
+            setImages(previewImages);
+          }
         })
         .catch((err) => {
           toast.error("Failed to load property");
@@ -338,6 +335,7 @@ const PropertyEdit = () => {
         if (key === "countries" && !!id) continue;
         if (key === "images" && !!id) continue;
         if (key === "propertyDocs" && !!id) continue;
+        if (key === "discard" && !!id) continue;
 
         // Handle file/image
         if (key.startsWith("photo") && value instanceof File) {
@@ -366,7 +364,7 @@ const PropertyEdit = () => {
 
       navigate("/myads");
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       setIsSubmitLoading(false);

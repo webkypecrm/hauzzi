@@ -931,7 +931,7 @@ button.btn-close:hover {
 }
 .property-type-btn.active {
   background-color: var(--primary-color);
-  color: white;
+  color: black;
 }
 .toggle-btn {
   border: 1px solid var(--primary-color);
@@ -943,7 +943,7 @@ button.btn-close:hover {
 }
 .toggle-btn.active {
   background-color: var(--primary-color);
-  color: white;
+  color: black;
 }
 .form-control,
 .form-select {
@@ -1167,7 +1167,7 @@ input[type="checkbox"].asButton + label {
 }
 input[type="checkbox"].asButton:checked + label {
   background-color: var(--primary-color);
-  color: white;
+  color: black;
 }
 input[type="checkbox"].asButton:disabled + label {
   opacity: 0.5;
