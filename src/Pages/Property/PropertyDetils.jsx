@@ -13,10 +13,6 @@ import img8 from "../../assets/img/my-img//apple.png";
 import img9 from "../../assets/img/my-img//money-send.svg";
 import img10 from "../../assets/img/my-img//like-shapes.png";
 import img11 from "../../assets/img/my-img/Line arrow-down.png";
-import whatsapp from "../../assets/img/my-img/whatsapps.png";
-import telephn from "../../assets/img/my-img/call12.png";
-import msg from "../../assets/img/my-img/sms.svg";
-import global from "../../assets/img/my-img/global.png";
 import Map from "../../Map";
 import locationn from "../../assets/img/my-img/vector.png";
 import { toast } from "react-toastify";
@@ -35,6 +31,7 @@ import face from "../../assets/img/facebook.png";
 import whats from "../../assets/img/whatsapp.png";
 import getApi from "../../Hook.js";
 import cancel from "../../assets/img/X-circle.png";
+import html2pdf from "html2pdf.js";
 
 const PropertyDetils = () => {
   // -------------lightbox---------
@@ -64,6 +61,7 @@ const PropertyDetils = () => {
   const [selectedPropertyId, setSelectedPropertyId] = useState(null);
   const [selectedFolderId, setSelectedFolderId] = useState("");
   const [folderData, setFolderData] = useState([]);
+  const [note, setNote] = useState("");
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
@@ -370,10 +368,10 @@ const PropertyDetils = () => {
   }, [customerId, token2]);
 
   const handelWishlist = async (id) => {
-       if (!token2) {
-        toast.error("Please login first!");
-        return;
-      }
+    if (!token2) {
+      toast.error("Please login first!");
+      return;
+    }
     try {
       const response = await axios.get(
         `${apiUrl}/property/addToWishlist/${customerId}-${id}`,
@@ -423,7 +421,7 @@ const PropertyDetils = () => {
 
   useEffect(() => {
     if (!token2 || !customerId) return;
-  
+
     getFolderData();
   }, [token2, customerId]);
 
@@ -461,10 +459,10 @@ const PropertyDetils = () => {
   }, [customerId, token2]);
 
   const handleAddFolder = async (pid) => {
-     if (!token2) {
-        toast.error("Please login first!");
-        return;
-      }
+    if (!token2) {
+      toast.error("Please login first!");
+      return;
+    }
     try {
       const response = await axios.post(
         `${apiUrl}/property/addpropertyFolderData`,
@@ -525,8 +523,42 @@ const PropertyDetils = () => {
     if (customerId) fetchCompareList();
   }, [customerId]);
 
+  // const handleCompare = async (id) => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${apiUrl}/property/addToCompare/${customerId}-${id}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+
+  //     console.log("first", response.data);
+
+  //     toast.success(response.data.message);
+
+  //     // Toggle logic
+  //     setCompareIds((prev) =>
+  //       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+  //     );
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error(error.response?.data?.message || "Something went wrong");
+  //   }
+  // };
+
   const handleCompare = async (id) => {
     try {
+      // Check if the property is already in compare
+      const isAlreadyAdded = compareIds.includes(id);
+
+      // If not already added and compare list is full
+      if (!isAlreadyAdded && compareIds.length >= 4) {
+        toast.error("Compare list is full (max 4 properties)");
+        return;
+      }
+
       const response = await axios.get(
         `${apiUrl}/property/addToCompare/${customerId}-${id}`,
         {
@@ -536,14 +568,17 @@ const PropertyDetils = () => {
         }
       );
 
-      console.log("first", response.data);
+      // Only toggle state if API responds successfully
+      if (response.data.success) {
+        toast.success(response.data.message);
 
-      toast.success(response.data.message);
-
-      // Toggle logic
-      setCompareIds((prev) =>
-        prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-      );
+        setCompareIds((prev) =>
+          isAlreadyAdded ? prev.filter((i) => i !== id) : [...prev, id]
+        );
+      } else {
+        // Handle backend failure message
+        toast.error(response.data.message || "Cannot add property");
+      }
     } catch (error) {
       console.log(error);
       toast.error(error.response?.data?.message || "Something went wrong");
@@ -725,6 +760,36 @@ const PropertyDetils = () => {
       toast.error(error.response.data.message);
     }
   };
+
+  // add note
+  const initialState3 = {
+    note: "",
+    propertyId: id,
+  };
+  const [noteData, setNoteData] = useState(initialState3);
+
+  const handelNoteChange = (e) => {
+    setNoteData({ ...noteData, note: e.target.value });
+  };
+
+  const noteSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`${apiUrl}/review/addPrivateNote`, noteData, {
+        headers: {
+          Authorization: `Bearer ${token2}`,
+        },
+      });
+      setNoteData(initialState3);
+      console.log("response", response);
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
+  };
+
+
 
   return (
     <Fragment>
@@ -925,7 +990,10 @@ const PropertyDetils = () => {
                   <li style={{ color: "#767373" }}>Caracas</li>
                   <li style={{ color: "#000" }}>{propertyData?.name}</li>
                 </ul>
-                <div className="top-bt topp-view12" style={{justifyContent:"unset"}}>
+                <div
+                  className="top-bt topp-view12"
+                  style={{ justifyContent: "unset" }}
+                >
                   <div className="f-bt">
                     <Link className="btn-getstarted" to="#">
                       {" "}
@@ -943,7 +1011,7 @@ const PropertyDetils = () => {
                       Publicado: Hace 10 días{" "}
                     </Link>
                   </div>
-                  <div className="s-bt" style={{marginLeft:"200px"}}>
+                  <div className="s-bt" style={{ marginLeft: "200px" }}>
                     <Link
                       className="btn-getstarted"
                       to="#"
@@ -984,6 +1052,18 @@ const PropertyDetils = () => {
                       style={{
                         backgroundColor: "#fff",
                         border: "1.5px solid #EEEEEE",
+                      }}
+                      onClick={() => {
+                        const shareData = {
+                          title: document.title,
+                          text: "Check out this page!",
+                          url: window.location.href,
+                        };
+                        if (navigator.share) {
+                          navigator.share(shareData);
+                        } else {
+                          alert("Share not supported on this browser.");
+                        }
                       }}
                     >
                       <i className="fa fa-share-alt p-2" /> Compartir{" "}
@@ -1066,6 +1146,30 @@ const PropertyDetils = () => {
                         border: "1.5px solid #EEEEEE",
                         borderRadius: "6px",
                         padding: "7.5px 10px",
+                      }}
+                      onClick={() => {
+                        const element = document.body; // poora page
+                        const opt = {
+                          margin: 0,
+                          filename: "full-page.pdf",
+                          image: { type: "jpeg", quality: 1 },
+                          html2canvas: {
+                            scale: 2,
+                            scrollY: 0,
+                            useCORS: true,
+                            windowWidth: document.documentElement.scrollWidth,
+                            windowHeight: document.documentElement.scrollHeight,
+                          },
+                          jsPDF: {
+                            unit: "px",
+                            format: [
+                              document.documentElement.scrollWidth,
+                              document.documentElement.scrollHeight,
+                            ],
+                            orientation: "portrait",
+                          },
+                        };
+                        html2pdf().from(element).set(opt).save();
                       }}
                     >
                       <svg
@@ -1549,7 +1653,7 @@ const PropertyDetils = () => {
                   <h5 className="mt-4 text-center" style={{ fontWeight: 700 }}>
                     Contacta con el anunciante
                   </h5>
-                  <div className="tab-v12">
+                  <div className="tab-v12" style={{ borderRadius: "15px" }}>
                     <div className="tab tab1">
                       <button
                         className={`tablinks ${
@@ -1765,15 +1869,13 @@ const PropertyDetils = () => {
                           </div>
                           <div className="form-group mt-3">
                             <select className="form-control" id="sel1">
-                              <option>
-                                ¿Cuál es el motivo de tu contacto?
-                              </option>
-                              <option>2</option>
-                              <option>3</option>
-                              <option>4</option>
+                              <option>Solicitar más información</option>
+                              <option>Solicitar más fotos</option>
+                              <option>Solicitar disponibilidad</option>
+                              <option>Otro</option>
                             </select>
                           </div>
-                          <div className="form-group mt-3">
+                          {/* <div className="form-group mt-3">
                             <textarea
                               className="form-control"
                               rows={5}
@@ -1784,7 +1886,7 @@ const PropertyDetils = () => {
                               placeholder="Estoy buscando en Hauzzi y me gustaría recibir más información sobre el inmueble con referencia"
                               required
                             />
-                          </div>
+                          </div> */}
                           <div className="checkbox mt-3 mb-3">
                             <label>
                               <input type="checkbox" defaultValue="" /> Quiero
@@ -1806,6 +1908,38 @@ const PropertyDetils = () => {
                       </div>
                     )}
                   </div>
+
+                  {compareIds.includes(Number(propertyData?.id)) && (
+                    <div>
+                      <form onSubmit={noteSubmit}>
+                        <h5 className="mt-4" style={{ fontWeight: 600 }}>
+                          Nota personal
+                        </h5>
+                        <textarea
+                          className="w-100"
+                          rows={6}
+                          placeholder="Escribe una nota personal (solo tú podrás verla)"
+                          value={noteData.note}
+                            onChange={handelNoteChange}
+                          style={{
+                            padding: "10px",
+                            borderRadius: "6px",
+                            border: "1px solid #ccc",
+                            resize: "vertical",
+                          }}
+                        ></textarea>
+                        <div className="text-center mt-2">
+                          <button
+                            type="submit"
+                            className="btn btn-warning"
+                            style={{ width: "76%" }}
+                          >
+                            Agregar nota
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
