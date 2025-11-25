@@ -27,6 +27,7 @@ const PropertySell = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [compareIds, setCompareIds] = useState([]);
   const [compareLoaded, setCompareLoaded] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState(null);
   // filter
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -173,16 +174,14 @@ const PropertySell = () => {
       }
     };
 
-     fetchWishlist();
+    fetchWishlist();
   }, [customerId2, token2]);
 
-
-
   const handelWishlist = async (id) => {
-       if (!token2) {
-        toast.error("Please login first!");
-        return;
-      }
+    if (!token2) {
+      toast.error("Please login first!");
+      return;
+    }
     try {
       const response = await axios.get(
         `${apiUrl}/property/addToWishlist/${customerId2}-${id}`,
@@ -232,9 +231,9 @@ const PropertySell = () => {
   // useEffect(() => {
   //   getFolderData();
   // }, []);
-    useEffect(() => {
+  useEffect(() => {
     if (!token2 || !customerId) return;
-  
+
     getFolderData();
   }, [token2, customerId]);
 
@@ -272,10 +271,10 @@ const PropertySell = () => {
   }, [customerId, token2]);
 
   const handleAddFolder = async (pid) => {
-     if (!token2) {
-        toast.error("Please login first!");
-        return;
-      }
+    if (!token2) {
+      toast.error("Please login first!");
+      return;
+    }
     try {
       const response = await axios.post(
         `${apiUrl}/property/addpropertyFolderData`,
@@ -433,6 +432,8 @@ const PropertySell = () => {
       .forEach((checkbox) => (checkbox.checked = false));
   };
 
+
+
   return (
     <Fragment>
       <div className="index-page">
@@ -515,7 +516,7 @@ const PropertySell = () => {
                   <div className="row">
                     <div className="col-md-5">
                       <div style={{ position: "sticky", top: "100px" }}>
-                        <PropertyMap />
+                        <PropertyMap selectedLocation={selectedLocation} />
                       </div>
                     </div>
                     <div className="col-md-7">
@@ -557,6 +558,20 @@ const PropertySell = () => {
                                     image: e.images[0],
                                     allProducts: allData.data,
                                   }}
+                                  onClick={() => {
+  const lat = Number(e.latitude);
+  const lng = Number(e.longitude);
+
+  if (!lat || !lng || isNaN(lat) || isNaN(lng)) return;
+
+  setSelectedLocation({
+    lat,
+    lng,
+    name: e.name,
+    image: e.images?.[0],
+  });
+}}
+
                                 >
                                   <div className="thumb">
                                     <img
@@ -568,21 +583,27 @@ const PropertySell = () => {
                                     <div className="thmb_cntnt">
                                       <ul className="tag mb0 p-0">
                                         {e.purpose && (
-                                      <li
-                                        className="list-inline-item"
-                                        style={{ backgroundColor: "#FFBD59" }}
-                                      >
-                                        <span style={{ color: "black" }}>{e.purpose}</span>
-                                      </li>
-                                    )}{" "}
+                                          <li
+                                            className="list-inline-item"
+                                            style={{
+                                              backgroundColor: "#FFBD59",
+                                            }}
+                                          >
+                                            <span style={{ color: "black" }}>
+                                              {e.purpose}
+                                            </span>
+                                          </li>
+                                        )}{" "}
                                         {e.tags && (
-                                      <li
-                                        className="list-inline-item"
-                                        style={{ backgroundColor: "#4b6bfb" }}
-                                      >
-                                        <span>{e.tags}</span>
-                                      </li>
-                                    )}
+                                          <li
+                                            className="list-inline-item"
+                                            style={{
+                                              backgroundColor: "#4b6bfb",
+                                            }}
+                                          >
+                                            <span>{e.tags}</span>
+                                          </li>
+                                        )}
                                       </ul>
                                       <ul className="icon mb0">
                                         <li className="list-inline-item">
@@ -656,13 +677,11 @@ const PropertySell = () => {
                                         </h4>
                                         <span className="fp_price">
                                           $
-                                          {e.maxPrice
-                                            ? Number(
-                                                e.maxPrice
-                                              )
-                                            : Number(
-                                                e.rentalPrice
-                                              )}
+                                          {Number(
+                                            e.maxPrice
+                                              ? e.maxPrice
+                                              : e.rentalPrice
+                                          ).toLocaleString("de-DE")}
                                         </span>
                                       </div>
                                       <p className="line-clamp-1">

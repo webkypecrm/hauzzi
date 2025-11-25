@@ -257,7 +257,6 @@ const PropertyEdit = () => {
   };
 
   // Post Data Api
-
   const [originalData, setOriginalData] = useState(null);
 
   useEffect(() => {
@@ -505,7 +504,7 @@ const PropertyEdit = () => {
             <form onSubmit={handelPropertyDataSubmit}>
               <div className="container py-3">
                 {/* Navigation */}
-                <div className="d-flex flex-wrap justify-content-end mb-4">
+                <div className="d-flex flex-wrap justify-content-center mb-4">
                   <Link to={"/publish-propert"} className="nav-button active">
                     Publicar inmueble
                   </Link>

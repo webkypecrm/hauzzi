@@ -650,13 +650,7 @@ const AgencyProfile = () => {
                                             <h4>{e.name}</h4>
                                             <span className="fp_price">
                                               $
-                                              {e.maxPrice
-                                                ? Number(
-                                                    e.maxPrice
-                                                  )
-                                                : Number(
-                                                    e.rentalPrice
-                                                  )}
+                                              {Number(e.maxPrice ? e.maxPrice : e.rentalPrice).toLocaleString("de-DE")}
                                             </span>
                                           </div>
                                           <p>
@@ -1150,13 +1144,8 @@ const AgencyProfile = () => {
                                           <h4>{property.name}</h4>
                                           <span className="fp_price">
                                             $
-                                            {property.maxPrice
-                                              ? Number(
-                                                  property.maxPrice
-                                                )
-                                              : Number(
-                                                  property.rentalPrice
-                                                )}
+                                            {Number(property.maxPrice ? property.maxPrice : property.rentalPrice).toLocaleString("de-DE")}
+                                           
                                           </span>
                                         </div>
                                         <p>
@@ -1509,13 +1498,8 @@ const AgencyProfile = () => {
                                           <h4>{prop.name}</h4>
                                           <span className="fp_price">
                                             $
-                                            {prop.maxPrice
-                                              ? Number(
-                                                  prop.maxPrice
-                                                )
-                                              : Number(
-                                                  prop.rentalPrice
-                                                )}
+                                            {Number(prop.maxPrice ? prop.maxPrice : prop.rentalPrice).toLocaleString("de-DE")}
+                                            
                                           </span>
                                         </div>
                                         <p>

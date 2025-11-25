@@ -523,42 +523,8 @@ const PropertyDetils = () => {
     if (customerId) fetchCompareList();
   }, [customerId]);
 
-  // const handleCompare = async (id) => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${apiUrl}/property/addToCompare/${customerId}-${id}`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     console.log("first", response.data);
-
-  //     toast.success(response.data.message);
-
-  //     // Toggle logic
-  //     setCompareIds((prev) =>
-  //       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-  //     );
-  //   } catch (error) {
-  //     console.log(error);
-  //     toast.error(error.response?.data?.message || "Something went wrong");
-  //   }
-  // };
-
   const handleCompare = async (id) => {
     try {
-      // Check if the property is already in compare
-      const isAlreadyAdded = compareIds.includes(id);
-
-      // If not already added and compare list is full
-      if (!isAlreadyAdded && compareIds.length >= 4) {
-        toast.error("Compare list is full (max 4 properties)");
-        return;
-      }
-
       const response = await axios.get(
         `${apiUrl}/property/addToCompare/${customerId}-${id}`,
         {
@@ -568,22 +534,56 @@ const PropertyDetils = () => {
         }
       );
 
-      // Only toggle state if API responds successfully
-      if (response.data.success) {
-        toast.success(response.data.message);
+      console.log("first", response.data);
 
-        setCompareIds((prev) =>
-          isAlreadyAdded ? prev.filter((i) => i !== id) : [...prev, id]
-        );
-      } else {
-        // Handle backend failure message
-        toast.error(response.data.message || "Cannot add property");
-      }
+      toast.success(response.data.message);
+
+      // Toggle logic
+      setCompareIds((prev) =>
+        prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+      );
     } catch (error) {
       console.log(error);
       toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
+
+  // const handleCompare = async (id) => {
+  //   try {
+  //     // Check if the property is already in compare
+  //     const isAlreadyAdded = compareIds.includes(id);
+
+  //     // If not already added and compare list is full
+  //     if (!isAlreadyAdded && compareIds.length >= 4) {
+  //       toast.error("Compare list is full (max 4 properties)");
+  //       return;
+  //     }
+
+  //     const response = await axios.get(
+  //       `${apiUrl}/property/addToCompare/${customerId}-${id}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+
+  //     // Only toggle state if API responds successfully
+  //     if (response.data.success) {
+  //       toast.success(response.data.message);
+
+  //       setCompareIds((prev) =>
+  //         isAlreadyAdded ? prev.filter((i) => i !== id) : [...prev, id]
+  //       );
+  //     } else {
+  //       // Handle backend failure message
+  //       toast.error(response.data.message || "Cannot add property");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error(error.response?.data?.message || "Something went wrong");
+  //   }
+  // };
 
   // Discart Api
   const handleDiscart = async (id) => {
@@ -1011,7 +1011,7 @@ const PropertyDetils = () => {
                       Publicado: Hace 10 días{" "}
                     </Link>
                   </div>
-                  <div className="s-bt" style={{ marginLeft: "200px" }}>
+                  <div className="s-bt" style={{ marginLeft: "133px" }}>
                     <Link
                       className="btn-getstarted"
                       to="#"
@@ -1294,9 +1294,8 @@ const PropertyDetils = () => {
                   </div>
                   <h3 className="mt-2">
                     $
-                    {propertyData.maxPrice
-                      ? Number(propertyData.maxPrice)
-                      : Number(propertyData.rentalPrice)}{" "}
+                    {Number(propertyData.maxPrice ? propertyData.maxPrice : propertyData.rentalPrice).toLocaleString("de-DE")}
+                    {" "}
                     <span style={{ fontSize: 13, color: "#00BF63" }}>
                       <img src={img11} style={{ width: 20 }} />
                       Ha bajado $5.000{" "}
@@ -2086,9 +2085,7 @@ const PropertyDetils = () => {
                                 <h4 className="line-clamp-2">{e.name}</h4>
                                 <span className="fp_price">
                                   $
-                                  {e.maxPrice
-                                    ? Number(e.maxPrice)
-                                    : Number(e.rentalPrice)}
+                                  {Number(e.maxPrice ? e.maxPrice : e.rentalPrice).toLocaleString("de-DE")}
                                 </span>
                               </div>
                               <p className="line-clamp-1">
