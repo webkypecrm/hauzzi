@@ -170,11 +170,7 @@ const MyAds = () => {
                                     <h4 className="line-clamp-1">{e.name}</h4>
                                     <span className="fp_price">
                                       $
-                                      {e.maxPrice
-                                        ? Number(e.maxPrice)
-                                        : Number(
-                                            e.rentalPrice
-                                          )}
+                                      {Number(e.maxPrice ? e.maxPrice : e.rentalPrice).toLocaleString("de-DE")}
                                     </span>
                                   </div>
                                   <p className="line-clamp-1">

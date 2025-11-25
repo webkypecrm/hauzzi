@@ -275,7 +275,6 @@ const PublishProperty = () => {
   };
 
   // Post Data Api
-
   const handelPropertyDataSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitLoading(true);
@@ -360,7 +359,7 @@ const PublishProperty = () => {
         country: venezuela.id,
       }));
       setSelectedCountryId(venezuela.id);
-      getStates(venezuela.id); // auto-load states
+      getStates(venezuela.id);
     }
   } catch (error) {
     console.log(error);
@@ -662,13 +661,13 @@ const PublishProperty = () => {
 
                       <div className="col-md-3 mb-3">
                         <label className="form-label">
-                          Tarifa por pie cuadrado
+                          Precio por metro cuadrado
                         </label>
                         <div className="d-flex align-items-center position-relative">
                           <input
                             type="text"
                             className="form-control border bg-transparent"
-                            placeholder="Tarifa por pie cuadrado"
+                            placeholder="Precio por metro cuadrado"
                             name="maxPSF"
                             value={propertyData.maxPSF}
                             // onChange={handleInputChange2}
@@ -1702,7 +1701,7 @@ const PublishProperty = () => {
                   </div>
                 </div>
 
-                <h5 className="fw-bold mb-3">Tus datos de contacto</h5>
+                {/* <h5 className="fw-bold mb-3">Tus datos de contacto</h5>
                 <div className="row g-2">
                   <div className="col-md-3">
                     <div className="mb-3 position-relative">
@@ -1741,8 +1740,6 @@ const PublishProperty = () => {
                           className="form-control bg-transparent border"
                           id=""
                           name=""
-                          // placeholder="+58 123 456 789"
-                          // required=""
                           value={
                             Array.isArray(allData?.userDetails)
                               ? allData.userDetails
@@ -1756,6 +1753,7 @@ const PublishProperty = () => {
                     </div>
                   </div>
                 </div>
+                
                 <div className="row g-2 mb-4">
                   <div className="col-md-4">
                     <div className="mb-3 position-relative">
@@ -1770,32 +1768,14 @@ const PublishProperty = () => {
                           id=""
                           name=""
                           placeholder="nombre@gmail.com"
-                          // required=""
                           disabled
                           value={allData?.email}
                         />
                       </div>
                     </div>
                   </div>
-                  {/* <div className="col-md-3">
-                    <div className="mb-3 position-relative">
-                      <label className="mb-2">Página web</label>
-                      <div className="input-group">
-                        <span className="input-group-text bg-transparent">
-                          <i className="bi bi-globe primary-text" />
-                        </span>
-                        <input
-                          type="text"
-                          className="form-control bg-transparent border"
-                          id=""
-                          name=""
-                          placeholder="www.dominio.com"
-                          required=""
-                        />
-                      </div>
-                    </div>
-                  </div> */}
-                </div>
+         
+                </div> */}
                 <h5 className="fw-bold">
                   ¿Quieres aumentar la visibilidad a tu anuncio?
                 </h5>
