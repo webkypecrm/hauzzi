@@ -432,8 +432,6 @@ const PropertySell = () => {
       .forEach((checkbox) => (checkbox.checked = false));
   };
 
-
-
   return (
     <Fragment>
       <div className="index-page">
@@ -559,19 +557,24 @@ const PropertySell = () => {
                                     allProducts: allData.data,
                                   }}
                                   onClick={() => {
-  const lat = Number(e.latitude);
-  const lng = Number(e.longitude);
+                                    const lat = Number(e.latitude);
+                                    const lng = Number(e.longitude);
 
-  if (!lat || !lng || isNaN(lat) || isNaN(lng)) return;
+                                    if (
+                                      !lat ||
+                                      !lng ||
+                                      isNaN(lat) ||
+                                      isNaN(lng)
+                                    )
+                                      return;
 
-  setSelectedLocation({
-    lat,
-    lng,
-    name: e.name,
-    image: e.images?.[0],
-  });
-}}
-
+                                    setSelectedLocation({
+                                      lat,
+                                      lng,
+                                      name: e.name,
+                                      image: e.images?.[0],
+                                    });
+                                  }}
                                 >
                                   <div className="thumb">
                                     <img
