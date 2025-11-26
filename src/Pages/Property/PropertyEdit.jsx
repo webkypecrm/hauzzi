@@ -272,6 +272,8 @@ const PropertyEdit = () => {
             return;
           }
 
+          console.log("firstimage",res.data?.data)
+
           const fullData = { ...initialData, ...fetchedData, id };
           setOriginalData(fullData);
           setPropertyData(fullData);
@@ -284,12 +286,14 @@ const PropertyEdit = () => {
               if (fetchedData[key]) {
                 previewImages.push({
                   file: null, // Original file not accessible
-                  preview: `${apiUrl}/uploads/property/${fetchedData[key]}`, // Adjust path as per backend
-                });
+          preview: fetchedData[key].startsWith("http")
+          ? fetchedData[key]
+          : `${apiUrl}/uploads/${fetchedData[key]}`,                });
               }
             }
 
             setImages(previewImages);
+            // setImages(res.data?.data?.images);
           }
         })
         .catch((err) => {
@@ -335,6 +339,7 @@ const PropertyEdit = () => {
         if (key === "images" && !!id) continue;
         if (key === "propertyDocs" && !!id) continue;
         if (key === "discard" && !!id) continue;
+        if (key === "isPlanActive" && !!id) continue;
 
         // Handle file/image
         if (key.startsWith("photo") && value instanceof File) {
