@@ -4,10 +4,7 @@ import Footer from "../MainPage/Footer";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import Loading from "../../Loading";
-import map1 from "../../assets/img/my-img/map1.png";
 import filter_1 from "../../assets/img/my-img/filter_1.png";
-import filter_2 from "../../assets/img/my-img/filter_2.png";
-import filter_3 from "../../assets/img/my-img/filter_3.png";
 import PropertyMap from "../Property/PropertyMap";
 import hauzzi from "../../assets/img/hauzziIcon.png";
 import call from "../../assets/img/blackCall.png";
@@ -17,6 +14,10 @@ import link from "../../assets/img/link.png";
 import twitter from "../../assets/img/twitter.png";
 import getApi from "../../Hook.js";
 import cancel from "../../assets/img/X-circle.png";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
 const PropertySell = () => {
   const [allData, setAllData] = useState([]);
@@ -27,12 +28,26 @@ const PropertySell = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [compareIds, setCompareIds] = useState([]);
   const [compareLoaded, setCompareLoaded] = useState(false);
+  const [selectedSavedSearch, setSelectedSavedSearch] = useState("");
+  const [propertyTypes, setPropertyTypes] = useState([]);
+  const [savedSearchesData, setSavedSearchesData] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedLocation2, setSelectedLocation2] = useState({
+    country: "",
+    state: "",
+    city: "",
+  });
+
   // filter
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [purposeFilter, setPurposeFilter] = useState("");
+  const [purposeFilter2, setPurposeFilter2] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
+  const [typeFilter2, setTypeFilter2] = useState("");
   const [tagFilter, setTagFilter] = useState("");
   const [advancedFilter, setAdvancedFilter] = useState({});
 
@@ -64,6 +79,8 @@ const PropertySell = () => {
       // if (type) url += `&type=${type}`;
       if (typeFilter) {
         url += `&type=${typeFilter}`;
+      } else if (typeFilter2) {
+        url += `&type=${typeFilter2}`;
       } else if (type) {
         url += `&type=${type}`;
       }
@@ -73,11 +90,19 @@ const PropertySell = () => {
         url += `&purpose=${purposeFilter}`;
       } else if (purpose) {
         url += `&purpose=${purpose}`;
+      } else if (purposeFilter2) {
+        url += `&purpose=${purposeFilter2}`;
       }
       if (tagFilter) url += `&tags=${tagFilter}`;
       if (customerId) url += `&customerId=${customerId}`;
       if (minPrice) url += `&minPrice=${minPrice}`;
       if (maxPrice) url += `&maxPrice=${maxPrice}`;
+      // 📌 LOCATION FILTERS
+      if (selectedLocation2?.country)
+        url += `&country=${selectedLocation2.country}`;
+      if (selectedLocation2?.state) url += `&state=${selectedLocation2.state}`;
+      if (selectedLocation2?.city) url += `&city=${selectedLocation2.city}`;
+
       if (Object.keys(advancedFilter).length > 0) {
         url += `&advancedFilter=${encodeURIComponent(
           JSON.stringify(advancedFilter)
@@ -122,7 +147,7 @@ const PropertySell = () => {
 
   useEffect(() => {
     getAllData();
-  }, []);
+  }, [selectedLocation2, typeFilter2, purposeFilter2]);
 
   // Reusable function for any advanced filter checkbox group
   const handleAdvancedCheckboxChange = (category, value, checked) => {
@@ -228,9 +253,6 @@ const PropertySell = () => {
     }
   };
 
-  // useEffect(() => {
-  //   getFolderData();
-  // }, []);
   useEffect(() => {
     if (!token2 || !customerId) return;
 
@@ -432,6 +454,159 @@ const PropertySell = () => {
       .forEach((checkbox) => (checkbox.checked = false));
   };
 
+  // Type of property GET
+  const getPropertyTypes = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`${apiUrl}/category/getAllCategory`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setPropertyTypes(res.data?.data || []);
+    } catch (error) {
+      console.error("Error fetching property types:", error);
+    }
+  };
+  useEffect(() => {
+    getPropertyTypes();
+  }, []);
+
+  //  LOAD COUNTRIES (on page load)
+  useEffect(() => {
+    axios
+      .get(`${apiUrl}/employee/allCountries`)
+      .then((res) => setCountries(res.data?.data || []))
+      .catch((err) => console.log(err));
+  }, []);
+
+  //  COUNTRY CHANGE → Load States
+  const handleCountryChange = async (e) => {
+    const countryId = e.target.value;
+    setSelectedLocation2({ country: countryId, state: "", city: "" });
+
+    setStates([]);
+    setCities([]);
+
+    if (!countryId) return;
+
+    try {
+      const res = await axios.get(`${apiUrl}/employee/allStates/${countryId}`);
+      setStates(res.data?.data || []);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  //  STATE CHANGE → Load Cities
+  const handleStateChange = async (e) => {
+    const stateId = e.target.value;
+    setSelectedLocation2((prev) => ({ ...prev, state: stateId, city: "" }));
+
+    setCities([]);
+
+    if (!stateId) return;
+
+    try {
+      const res = await axios.get(`${apiUrl}/employee/allCities/${stateId}`);
+      setCities(res.data?.data || []);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // CITY CHANGE
+  const handleCityChange = (e) => {
+    const cityId = e.target.value;
+    setSelectedLocation2((prev) => ({ ...prev, city: cityId }));
+  };
+
+  // save search APIs
+  const [savedSearchData, setSavedSearchData] = useState({
+    purpose: "",
+    type: "",
+    countryId: null,
+    stateId: null,
+    cityId: null,
+  });
+
+  // Update saved search data when filters change
+  useEffect(() => {
+    setSavedSearchData({
+      purpose: purposeFilter2 || "",
+      type: typeFilter2 || "",
+      countryId: selectedLocation2?.country || null,
+      stateId: selectedLocation2?.state || null,
+      cityId: selectedLocation2?.city || null,
+    });
+  }, [purposeFilter2, typeFilter2, selectedLocation2]);
+
+  // Save search API - FIXED: Now properly called on click
+  const handleSavedSearch = async () => {
+    if (!token2) {
+      toast.error("Please login first to save search!");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${apiUrl}/property/addCustomerSavedSearch`,
+        savedSearchData,
+        {
+          headers: {
+            Authorization: `Bearer ${token2}`,
+          },
+        }
+      );
+      toast.success(response?.data?.message);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  };
+
+  // Get Save Serch Data
+  const getSavedSearch = async () => {
+    try {
+      const response = await axios.get(
+        `${apiUrl}/property/getCustomerSavedSearch`,
+        {
+          headers: {
+            Authorization: `Bearer ${token2}`,
+          },
+        }
+      );
+      setSavedSearchesData(response?.data?.data || []);
+      console.log("firstResponse", response?.data?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getSavedSearch();
+  }, []);
+
+  // filter for dropdown
+  const handleSavedSearchSelect = (e) => {
+    const id = e.target.value;
+
+    setSelectedSavedSearch(id); // 🔥 dropdown me value show rahegi
+
+    if (!id) return;
+
+    const saved = savedSearchesData.find((item) => item.id == id);
+    if (!saved) return;
+
+    setPurposeFilter2(saved.purpose || "");
+    setTypeFilter2(saved.type || "");
+
+    setSelectedLocation2({
+      country: saved.countryId || "",
+      state: saved.stateId || "",
+      city: saved.cityId || "",
+    });
+  };
+
   return (
     <Fragment>
       <div className="index-page">
@@ -448,62 +623,138 @@ const PropertySell = () => {
                   <div className="main-filter">
                     <div className="fil1">
                       <div className="form-group">
-                        <select className="form-control" id="sel1">
-                          <option>Comprar</option>
-                          <option>2</option>
-                          <option>3</option>
-                          <option>4</option>
+                        <select
+                          className="form-select"
+                          value={purposeFilter2}
+                          onChange={(e) => setPurposeFilter2(e.target.value)}
+                        >
+                          <option>Transacción</option>
+                          <option value="Vender">Comprar</option>
+                          <option value="Alquilar">Alquilar</option>
                         </select>
                       </div>
                     </div>
                     <div className="fil2">
                       <div className="form-group">
-                        <select className="form-control" id="sel1">
-                          <option>Tipo de propiedad</option>
-                          <option>2</option>
-                          <option>3</option>
-                          <option>4</option>
+                        <select
+                          className="form-select"
+                          value={typeFilter2}
+                          onChange={(e) => {
+                            setTypeFilter2(e.target.value);
+                            getAllData({ typeFilter2: e.target.value });
+                          }}
+                        >
+                          <option value="">Tipo de propiedad</option>
+                          {propertyTypes.map((p) => (
+                            <option key={p.id} value={p.name}>
+                              {p.name}
+                            </option>
+                          ))}
                         </select>
                       </div>
                     </div>
                     <div className="fil3">
                       <div className="form-group">
-                        <select className="form-control" id="sel1">
-                          <option>Estados</option>
-                          <option>2</option>
-                          <option>3</option>
-                          <option>4</option>
+                        <select
+                          className="form-select"
+                          value={selectedLocation2?.country || ""}
+                          onChange={handleCountryChange}
+                        >
+                          <option value="">País</option>
+                          <option value="239">Venezuela</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="fil3">
+                      <div className="form-group">
+                        <select
+                          className="form-select"
+                          value={selectedLocation2?.state || ""}
+                          onChange={handleStateChange}
+                          disabled={!states.length}
+                        >
+                          <option value="">Estados</option>
+                          {states.map((state) => (
+                            <option key={state.id} value={state.id}>
+                              {state.name}
+                            </option>
+                          ))}
                         </select>
                       </div>
                     </div>
                     <div className="fil4">
                       <div className="form-group">
-                        <select className="form-control" id="sel1">
-                          <option>Ciudades</option>
-                          <option>2</option>
-                          <option>3</option>
-                          <option>4</option>
+                        <select
+                          className="form-select"
+                          value={selectedLocation2?.city || ""}
+                          onChange={handleCityChange}
+                          disabled={!cities.length}
+                        >
+                          <option value="">Ciudades</option>
+                          {cities.map((city) => (
+                            <option key={city.id} value={city.id}>
+                              {city.name}
+                            </option>
+                          ))}
                         </select>
                       </div>
                     </div>
                     <div className="fil5">
-                      <Link className="btn-getstarted" to="#">
+                      <Link
+                        className="btn-getstarted"
+                        to="#"
+                        onClick={handleSavedSearch}
+                      >
                         <i className="fa fa-bell" style={{ marginRight: 8 }} />
                         Guardar búsqueda{" "}
                       </Link>
                     </div>
-                    <div className="fil6">
+                    {/* <div className="fil6">
                       <p className="mb-0">
                         {" "}
                         ¿Necesita más opciones de búsqueda?
                       </p>
-                    </div>
+                    </div> */}
                     <div
                       className="fil7"
                       onClick={() => setShowFilter(true)}
                       style={{ transition: "0.5 linear" }}
                     >
                       <img src={filter_1} alt="filter" />
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section className="filter">
+                <div className="container">
+                  <div className="main-filte">
+                    <div className="fil1">
+                      <div className="form-group">
+                        <select
+                          className="form-select"
+                          value={selectedSavedSearch}
+                          onChange={handleSavedSearchSelect}
+                        >
+                          <option value="">
+                            Seleccionar búsqueda guardada
+                          </option>
+                          {savedSearchesData.map((item) => (
+                            <option key={item.id} value={item.id}>
+                              {[
+                                item.purpose,
+                                item.type,
+                                item.country,
+                                item.state,
+                                item.city,
+                              ]
+                                .filter(Boolean)
+                                .join(" || ")}
+                              {" (" + item.totalMatching + ")"}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -577,13 +828,48 @@ const PropertySell = () => {
                                   }}
                                 >
                                   <div className="thumb">
-                                    <img
+                                    {/* <img
                                       className="img-whp"
                                       src={e.images[0]}
                                       alt="fp1.jpg"
                                       style={{ width: "100%" }}
-                                    />
-                                    <div className="thmb_cntnt">
+                                    /> */}
+                                    <div className="swiper-button-prev custom-pre bg-transparent">
+                                      {" "}
+                                      <i className="fa fa-chevron-left"></i>{" "}
+                                    </div>
+                                    <div className="swiper-button-next custom-nex bg-transparent">
+                                      <i className="fa fa-chevron-right"></i>
+                                    </div>
+                                    <Swiper
+                                      modules={[
+                                        Autoplay,
+                                        Pagination,
+                                        Navigation,
+                                      ]}
+                                      // autoplay={{
+                                      //   delay: 3000,
+                                      //   disableOnInteraction: false,
+                                      // }}
+                                      pagination={{ clickable: true }}
+                                      navigation={{
+                                        nextEl: ".custom-nex",
+                                        prevEl: ".custom-pre",
+                                      }}
+                                      loop={true}
+                                      className="mySwiper"
+                                    >
+                                      {e.images.map((img, index) => (
+                                        <SwiperSlide key={index}>
+                                          <img
+                                            className="img-whp"
+                                            src={img}
+                                            alt={`property-${index}`}
+                                          />
+                                        </SwiperSlide>
+                                      ))}
+                                    </Swiper>
+                                    <div className="thmb_cntnt" style={{ zIndex: 1 }}>
                                       <ul className="tag mb0 p-0">
                                         {e.purpose && (
                                           <li
@@ -1005,55 +1291,6 @@ const PropertySell = () => {
                 </div>
               </div>
 
-              {/* <div className="mb-3">
-                <h5>Condición</h5>
-                <div className="d-flex align-items-center gap-2 flex-wrap">
-                  <div className="new-container-box">
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      id="nueva"
-                      autoComplete="off"
-                    />
-                    <label className="Transacción" htmlFor="nueva">
-                      Obra nueva
-                    </label>
-                  </div>
-                  <div className="new-container-box">
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      id="Reformado"
-                      autoComplete="off"
-                    />
-                    <label className="Transacción" htmlFor="Reformado">
-                      Reformado
-                    </label>
-                  </div>
-                  <div className="new-container-box">
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      id="estado"
-                      autoComplete="off"
-                    />
-                    <label className="Transacción" htmlFor="estado">
-                      Buen estado
-                    </label>
-                  </div>
-                  <div className="new-container-box">
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      id="reformar"
-                      autoComplete="off"
-                    />
-                    <label className="Transacción" htmlFor="reformar">
-                      A reformar
-                    </label>
-                  </div>
-                </div>
-              </div> */}
               <div className="mb-3">
                 <h5>Condición</h5>
                 <div className="d-flex align-items-center gap-2 flex-wrap">
@@ -1274,23 +1511,6 @@ const PropertySell = () => {
                     </div>
                   </div>
                 </div>
-                {/* <div className="col-md-6">
-                  <div className="section-title">Superficie</div>
-                  <div className="row g-2">
-                    <div className="col">
-                      <label htmlFor="">Mínimo</label>
-                      <select className="form-select mt-2">
-                        <option selected="">Indiferente</option>
-                      </select>
-                    </div>
-                    <div className="col">
-                      <label htmlFor="">Máximo</label>
-                      <select className="form-select mt-2">
-                        <option selected="">Indiferente</option>
-                      </select>
-                    </div>
-                  </div>
-                </div> */}
               </div>
               <div className="row mb-3 gy-3 justify-content-between">
                 <div className="col-12">
@@ -1684,41 +1904,6 @@ const PropertySell = () => {
               </div>
               <div className="mb-3">
                 <h5>Mobiliario</h5>
-                {/* <div className="d-flex align-items-center gap-2 flex-wrap">
-                  <div className="new-container-box">
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      id="Amueblado"
-                      autoComplete="off"
-                    />
-                    <label className="Transacción" htmlFor="Amueblado">
-                      Amueblado
-                    </label>
-                  </div>
-                  <div className="new-container-box">
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      id="Semiamueblado"
-                      autoComplete="off"
-                    />
-                    <label className="Transacción" htmlFor="Semiamueblado">
-                      Semiamueblado
-                    </label>
-                  </div>
-                  <div className="new-container-box">
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      id="amueblado"
-                      autoComplete="off"
-                    />
-                    <label className="Transacción" htmlFor="amueblado">
-                      No amueblado
-                    </label>
-                  </div>
-                </div> */}
                 <div className="d-flex align-items-center gap-2 flex-wrap">
                   {["Amueblado", "Semiamueblado", "No amueblado"].map(
                     (item) => (
@@ -1746,52 +1931,6 @@ const PropertySell = () => {
               </div>
               <div className="mb-3">
                 <h5>Publicado por</h5>
-                {/* <div className="d-flex align-items-center gap-2 flex-wrap">
-                  <div className="new-container-box">
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      id="nmobiliaria"
-                      autoComplete="off"
-                    />
-                    <label className="Transacción" htmlFor="nmobiliaria">
-                      Agencia inmobiliaria
-                    </label>
-                  </div>
-                  <div className="new-container-box">
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      id="Agente-in"
-                      autoComplete="off"
-                    />
-                    <label className="Transacción" htmlFor="Agente-in">
-                      Agente inmobiliario
-                    </label>
-                  </div>
-                  <div className="new-container-box">
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      id="Particular"
-                      autoComplete="off"
-                    />
-                    <label className="Transacción" htmlFor="Particular">
-                      Particular
-                    </label>
-                  </div>
-                  <div className="new-container-box">
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      id="Constructor"
-                      autoComplete="off"
-                    />
-                    <label className="Transacción" htmlFor="Constructor">
-                      Constructor o promotor
-                    </label>
-                  </div>
-                </div> */}
                 <div className="d-flex align-items-center gap-2 flex-wrap">
                   {[
                     "Agencia inmobiliaria",
@@ -1821,19 +1960,6 @@ const PropertySell = () => {
                 </div>
               </div>
               <div className="row g-4">
-                {/* <div className="col-lg-6">
-                  <label htmlFor="">Antigüedad</label>
-                  <select className="form-select mt-2">
-                    <option selected="">Indiferente</option>
-                    <option selected="">A estrenar</option>
-                    <option selected="">1 a 5 años</option>
-                    <option selected="">6 a 10 años</option>
-                    <option selected="">11 a 15 años</option>
-                    <option selected="">16 a 25 años</option>
-                    <option selected="">26 a 40 años</option>
-                    <option selected="">40 años o ma</option>
-                  </select>
-                </div> */}
                 <div className="col-lg-6">
                   <label htmlFor="">Antigüedad</label>
                   <select
@@ -1923,146 +2049,6 @@ const PropertySell = () => {
                   </select>
                 </div>
               </div>
-              {/* <div className="row mb-3 mt-3">
-                <h5 className="">Seguridad</h5>
-                <div className="col-lg-4">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="alarma"
-                    />
-                    <label className="form-check-label" htmlFor="alarma">
-                      Alarma
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="vigilancia"
-                    />
-                    <label className="form-check-label" htmlFor="vigilancia">
-                      Vigilancia
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="sistema-de-videointercomunicador"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="sistema-de-videointercomunicador"
-                    >
-                      Sistema de videointercomunicador
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="cctv"
-                    />
-                    <label className="form-check-label" htmlFor="cctv">
-                      Cámaras de vigilancia (CCTV)
-                    </label>
-                  </div>
-                </div>
-                <div className="col-lg-4">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="cerco-eléctrico"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="cerco-eléctrico"
-                    >
-                      Cerco eléctrico
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="cerco-perimetral"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="cerco-perimetral"
-                    >
-                      Cerco perimetral
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="portón-eléctrico"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="portón-eléctrico"
-                    >
-                      Portón eléctrico
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="iluminación-de-seguridad"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="iluminación-de-seguridad"
-                    >
-                      Iluminación de seguridad
-                    </label>
-                  </div>
-                </div>
-                <div className="col-lg-4">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="sistema-contra-incendios"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="sistema-contra-incendios"
-                    >
-                      Sistema contra incendios
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="caja-fuerte"
-                    />
-                    <label className="form-check-label" htmlFor="caja-fuerte">
-                      Caja fuerte
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="puerta-blindada"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="puerta-blindada"
-                    >
-                      Puerta blindada
-                    </label>
-                  </div>
-                </div>
-              </div> */}
               <div className="row mb-3 mt-3">
                 <h5 className="">Seguridad</h5>
 
@@ -2101,300 +2087,6 @@ const PropertySell = () => {
                 ))}
               </div>
 
-              {/* <div className="row mb-3 mt-3">
-                <h5 className="">Ambientes</h5>
-                <div className="col-lg-4">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="piscina"
-                    />
-                    <label className="form-check-label" htmlFor="piscina">
-                      Piscina
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="barbacoa"
-                    />
-                    <label className="form-check-label" htmlFor="barbacoa">
-                      Área de barbacoa/parrillera
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="estudio"
-                    />
-                    <label className="form-check-label" htmlFor="estudio">
-                      Estudio u oficina
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="cuarto-servicio"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="cuarto-servicio"
-                    >
-                      Cuarto de servicio
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="areadecomedor"
-                    />
-                    <label className="form-check-label" htmlFor="areadecomedor">
-                      Área de comedor
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="canchadebásquetbol"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="canchadebásquetbol"
-                    >
-                      Cancha de básquetbol
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="cancha-de-paddle"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="cancha-de-paddle"
-                    >
-                      Cancha de paddle
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="gimnasio"
-                    />
-                    <label className="form-check-label" htmlFor="gimnasio">
-                      Gimnasio
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="bar"
-                    />
-                    <label className="form-check-label" htmlFor="bar">
-                      Bar
-                    </label>
-                  </div>
-                </div>
-                <div className="col-lg-4">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="patio"
-                    />
-                    <label className="form-check-label" htmlFor="patio">
-                      Patio
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="mascotas"
-                    />
-                    <label className="form-check-label" htmlFor="mascotas">
-                      Área para mascotas
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="canchas"
-                    />
-                    <label className="form-check-label" htmlFor="canchas">
-                      Canchas de usos múltiples
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="eventos"
-                    />
-                    <label className="form-check-label" htmlFor="eventos">
-                      Salón de eventos
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="canchadefútbol"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="canchadefútbol"
-                    >
-                      Cancha de fútbol
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="sauna"
-                    />
-                    <label className="form-check-label" htmlFor="sauna">
-                      Sauna
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="bañodevisitas"
-                    />
-                    <label className="form-check-label" htmlFor="bañodevisitas">
-                      Baño de visitas
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="armarios"
-                    />
-                    <label className="form-check-label" htmlFor="armarios">
-                      Armarios
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="saladejuegos"
-                    />
-                    <label className="form-check-label" htmlFor="saladejuegos">
-                      Sala de juegos
-                    </label>
-                  </div>
-                </div>
-                <div className="col-lg-4">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="jacuzzi"
-                    />
-                    <label className="form-check-label" htmlFor="jacuzzi">
-                      Jacuzzi
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="jardines"
-                    />
-                    <label className="form-check-label" htmlFor="jardines">
-                      Jardines o áreas verdes
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="sala-reuniones"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="sala-reuniones"
-                    >
-                      Sala de reuniones
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="cine"
-                    />
-                    <label className="form-check-label" htmlFor="cine">
-                      Área de cine
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="cocina"
-                    />
-                    <label className="form-check-label" htmlFor="cocina">
-                      Cocina
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="vestier"
-                    />
-                    <label className="form-check-label" htmlFor="vestier">
-                      Vestier
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="cuartode"
-                    />
-                    <label className="form-check-label" htmlFor="cuartode">
-                      Cuarto de lavado
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="paradesayunar"
-                    />
-                    <label className="form-check-label" htmlFor="paradesayunar">
-                      Área para desayunar
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="canchadetenis"
-                    />
-                    <label className="form-check-label" htmlFor="canchadetenis">
-                      Cancha de tenis
-                    </label>
-                  </div>
-                </div>
-              </div> */}
               <div className="row mb-3 mt-3">
                 <h5 className="">Ambientes</h5>
 
@@ -2448,225 +2140,8 @@ const PropertySell = () => {
                   </div>
                 ))}
               </div>
-
-              {/* <div className="row mb-3 mt-3">
-                  <h5 className="">Equipamientos</h5>
-                  <div className="col-lg-4">
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="aire-acondicionado"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="aire-acondicionado"
-                      >
-                        Aire acondicionado
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="ascendor"
-                      />
-                      <label className="form-check-label" htmlFor="ascendor">
-                        Ascendor
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="conexión-eléctrica-capacidadr"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="conexión-eléctrica-capacidadr"
-                      >
-                        Conexión eléctrica de alta capacidad
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="calentador-gas-eléctrico"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="calentador-gas-eléctrico"
-                      >
-                        Calentador a gas/eléctrico
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="ona-para-vehículos-eléctricos"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="zona-para-vehículos-eléctricos"
-                      >
-                        Zona de carga para vehículos eléctricos
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="acceso-movilidad-reducida"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="acceso-movilidad-reducida"
-                      >
-                        Acceso para movilidad reducida
-                      </label>
-                    </div>
-                  </div>
-                  <div className="col-lg-4">
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="calefacción"
-                      />
-                      <label className="form-check-label" htmlFor="calefacción">
-                        Calefacción
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="acceso-internet"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="acceso-internet"
-                      >
-                        Acceso a internet
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="planta-eléctrica"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="planta-eléctrica"
-                      >
-                        Planta eléctrica
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="cámara-frigorífica"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="cámara-frigorífica"
-                      >
-                        Cámara frigorífica
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="chimenea"
-                      />
-                      <label className="form-check-label" htmlFor="chimenea">
-                        Chimenea
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="ventilador"
-                      />
-                      <label className="form-check-label" htmlFor="ventilador">
-                        Ventilador
-                      </label>
-                    </div>
-                  </div>
-                  <div className="col-lg-4">
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="TV"
-                      />
-                      <label className="form-check-label" htmlFor="TV">
-                        TV
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="sistema-de-domótica"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="sistema-de-domótica"
-                      >
-                        Sistema de domótica
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="cisterna-de-agua"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="cisterna-de-agua"
-                      >
-                        cisterna-de-agua
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="electrodomésticos"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="electrodomésticos"
-                      >
-                        Electrodomésticos
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="sistema-de-ventilación"
-                      />
-                      <label
-                        className="form-check-label"
-                        htmlFor="sistema-de-ventilación"
-                      >
-                        Sistema de ventilación
-                      </label>
-                    </div>
-                  </div>
-                </div> */}
               <div className="row mb-3 mt-3">
                 <h5 className="">Equipamientos</h5>
-
                 {[
                   "Aire acondicionado",
                   "Ascensor",
@@ -2708,108 +2183,6 @@ const PropertySell = () => {
                 ))}
               </div>
 
-              {/* <div className="row mb-3 mt-3">
-                <h5 className="">Servicios</h5>
-                <div className="col-lg-4">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="suministro-de-agua"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="suministro-de-agua"
-                    >
-                      Suministro de agua
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="recolección-de-basura"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="recolección-de-basura"
-                    >
-                      Recolección de basura
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="línea-telefónica"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="línea-telefónica"
-                    >
-                      Línea telefónica
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="red-eléctrica"
-                    />
-                    <label className="form-check-label" htmlFor="red-eléctrica">
-                      Red eléctrica
-                    </label>
-                  </div>
-                </div>
-                <div className="col-lg-4">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="alcantarillado-drenaje"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="alcantarillado-drenaje"
-                    >
-                      Alcantarillado y drenaje
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="energía-solar"
-                    />
-                    <label className="form-check-label" htmlFor="energía-solar">
-                      Energía solar
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="gas"
-                    />
-                    <label className="form-check-label" htmlFor="gas">
-                      Gas
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="suministro-agua-potable"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="suministro-agua-potable"
-                    >
-                      Suministro de agua potable
-                    </label>
-                  </div>
-                </div>
-              </div> */}
               <div className="row mb-3 mt-3">
                 <h5 className="">Servicios</h5>
 
@@ -2845,183 +2218,8 @@ const PropertySell = () => {
                 ))}
               </div>
 
-              {/* <div className="row mb-3 mt-3">
-                <h5 className="">Localización</h5>
-                <div className="col-lg-4">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="en-centro-comercial"
-                    />
-                    <label className="form-check-label" htmlFor="en-centro-comercial">
-                      En centro comercial
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="en-zona-tusrística"
-                    />
-                    <label className="form-check-label" htmlFor="en-zona-tusrística">
-                      En zona tusrística
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="en-planta-pisos-superiores"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="en-planta-pisos-superiores"
-                    >
-                      En planta alta o pisos superiores
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="a-pie-de-calle"
-                    />
-                    <label className="form-check-label" htmlFor="a-pie-de-calle">
-                      A pie de calle
-                    </label>
-                  </div>
-                </div>
-                <div className="col-lg-4">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="en-mercados-ferias"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="en-mercados-ferias"
-                    >
-                      En mercados o ferias
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="en-zona-residencial"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="en-zona-residencial"
-                    >
-                      En zona residencial
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="en-planta-baja-sótano"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="en-planta-baja-sótano"
-                    >
-                      En planta baja o sótano
-                    </label>
-                  </div>
-                </div>
-              </div> */}
-
-              {/* <div className="row mb-3 mt-3">
-                <h5 className="">Forma del terreno</h5>
-                <div className="col-lg-4">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="regular"
-                    />
-                    <label className="form-check-label" htmlFor="regular">
-                      Regular
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="irregular"
-                    />
-                    <label className="form-check-label" htmlFor="irregular">
-                      Irregular
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="plano"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="plano"
-                    >
-                      Plano
-                    </label>
-                  </div>
-                </div>
-              </div> */}
-
               <div className="mb-3">
                 <h5>Extras</h5>
-                {/* <div className="d-flex align-items-center gap-2 flex-wrap">
-                  <div className="new-container-box">
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      id="Negociable"
-                      autoComplete="off"
-                    />
-                    <label className="Transacción" htmlFor="Negociable">
-                      Negociable
-                    </label>
-                  </div>
-                  <div className="new-container-box">
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      id="financiamiento"
-                      autoComplete="off"
-                    />
-                    <label className="Transacción" htmlFor="financiamiento">
-                      Acepta financiamiento
-                    </label>
-                  </div>
-                  <div className="new-container-box">
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      id="compra"
-                      autoComplete="off"
-                    />
-                    <label className="Transacción" htmlFor="compra">
-                      Opción a compra
-                    </label>
-                  </div>
-                  <div className="new-container-box">
-                    <input
-                      type="checkbox"
-                      className="btn-check"
-                      id="intercambio"
-                      autoComplete="off"
-                    />
-                    <label className="Transacción" htmlFor="intercambio">
-                      Opción de intercambio
-                    </label>
-                  </div>
-                </div> */}
                 <div className="d-flex align-items-center gap-2 flex-wrap">
                   {[
                     "Negociable",

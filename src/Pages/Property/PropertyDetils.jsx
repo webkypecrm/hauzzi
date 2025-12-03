@@ -22,9 +22,9 @@ import share from "../../assets/img/my-img/share-icon.png";
 import call from "../../assets/img/blackCall.png";
 import mail from "../../assets/img/blackMail.png";
 import { Swiper, SwiperSlide } from "swiper/react";
-// import 'swiper/css';
 import "swiper/css/pagination";
-import { Autoplay, Pagination } from "swiper/modules";
+import "swiper/css/navigation";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import link from "../../assets/img/link.png";
 import twitter from "../../assets/img/twitter.png";
 import face from "../../assets/img/facebook.png";
@@ -61,7 +61,6 @@ const PropertyDetils = () => {
   const [selectedPropertyId, setSelectedPropertyId] = useState(null);
   const [selectedFolderId, setSelectedFolderId] = useState("");
   const [folderData, setFolderData] = useState([]);
-  const [note, setNote] = useState("");
 
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = "zaCELgL.0imfnc8mVLWwsAawjYr4rtwRx-Af50DDqtlx";
@@ -548,43 +547,6 @@ const PropertyDetils = () => {
     }
   };
 
-  // const handleCompare = async (id) => {
-  //   try {
-  //     // Check if the property is already in compare
-  //     const isAlreadyAdded = compareIds.includes(id);
-
-  //     // If not already added and compare list is full
-  //     if (!isAlreadyAdded && compareIds.length >= 4) {
-  //       toast.error("Compare list is full (max 4 properties)");
-  //       return;
-  //     }
-
-  //     const response = await axios.get(
-  //       `${apiUrl}/property/addToCompare/${customerId}-${id}`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
-
-  //     // Only toggle state if API responds successfully
-  //     if (response.data.success) {
-  //       toast.success(response.data.message);
-
-  //       setCompareIds((prev) =>
-  //         isAlreadyAdded ? prev.filter((i) => i !== id) : [...prev, id]
-  //       );
-  //     } else {
-  //       // Handle backend failure message
-  //       toast.error(response.data.message || "Cannot add property");
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     toast.error(error.response?.data?.message || "Something went wrong");
-  //   }
-  // };
-
   // Discart Api
   const handleDiscart = async (id) => {
     const confirmDiscart = window.confirm(
@@ -869,13 +831,6 @@ const PropertyDetils = () => {
                         <img src="img/my-img/camera.png" alt="" />
                         {images.length} Fotos
                       </Link>
-                      {/* <Link
-                        className="btn-getstarted"
-                        to="#"
-                        style={{ backgroundColor: "#fff", color: "#000" }}
-                      >
-                        3D Visita Virtual
-                      </Link> */}
                     </div>
                   </div>
                   <div className="col-md-6">
@@ -1068,23 +1023,6 @@ const PropertyDetils = () => {
                     >
                       <i className="fa fa-share-alt p-2" /> Compartir{" "}
                     </Link>
-                    {/* <Link
-                      className="btn-getstarted"
-                      to="#"
-                      onClick={() => handleCompare(propertyData?.id)}
-                      style={{backgroundColor: "#fff",border: "1.5px solid #EEEEEE"}}
-                    >
-                      <i
-                        key={compareIds.join(",")}
-                        className="fa fa-exchange p-2"
-                        style={{
-                          color: compareIds.includes(Number(propertyData?.id))
-                            ? "red"
-                            : "",
-                        }}
-                      />
-
-                    </Link> */}
                     <Link
                       className="ms-2"
                       style={{
@@ -1111,34 +1049,6 @@ const PropertyDetils = () => {
                         />
                       </svg>
                     </Link>
-                    {/* <Link
-                      className="ms-2"
-                      style={{
-                        border: "1.5px solid #EEEEEE",
-                        borderRadius: "6px",
-                        padding: "7.5px 10px",
-                      }}
-                    >
-                      <svg
-                        width={24}
-                        height={14.33}
-                        viewBox="0 0 29 31"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M1.375 7.25H4.29167M4.29167 7.25H27.625M4.29167 7.25V26.5C4.29167 27.2293 4.59896 27.9288 5.14594 28.4445C5.69292 28.9603 6.43479 29.25 7.20833 29.25H21.7917C22.5652 29.25 23.3071 28.9603 23.8541 28.4445C24.401 27.9288 24.7083 27.2293 24.7083 26.5V7.25M8.66667 7.25V4.5C8.66667 3.77065 8.97396 3.07118 9.52094 2.55546C10.0679 2.03973 10.8098 1.75 11.5833 1.75H17.4167C18.1902 1.75 18.9321 2.03973 19.4791 2.55546C20.026 3.07118 20.3333 3.77065 20.3333 4.5V7.25M11.5833 14.125V22.375M17.4167 14.125V22.375"
-                          stroke="#1E1E1E"
-                          style={{
-                            stroke: "color(display-p3 0.1176 0.1176 0.1176)",
-                            strokeOpacity: 1,
-                          }}
-                          strokeWidth={2}
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </Link> */}
 
                     <Link
                       className="ms-2"
@@ -1243,12 +1153,6 @@ const PropertyDetils = () => {
                         Antigüedad : {propertyData?.listingDetails?.Antigüedad}
                       </p>
                     </div>
-                    {/* <div className="col-md-3">
-                      <p className="view-m">
-                        <img src={img5} style={{ marginRight: 8, width: 18 }} />
-                        {propertyData?.builderName}
-                      </p>
-                    </div> */}
                     <div className="col-md-3">
                       <p className="view-m">
                         <img src={img5} style={{ marginRight: 8, width: 18 }} />
@@ -1581,71 +1485,6 @@ const PropertyDetils = () => {
                           </div>
                         </div>
                       </Link>
-
-                      {/* <div className="card-de" key={item.id}>
-                        <div className="pr-det" style={{ marginTop: "10%" }}>
-                          <p className="de-i"></p>
-                          <p
-                            style={{
-                              marginLeft: "40px",
-                              marginRight: "22%",
-                              fontSize: "13px",
-                            }}
-                          >
-                            <img
-                              src={telephn}
-                              style={{ width: 18, marginRight: 9 }}
-                            />
-                            Teléfono
-                          </p>
-                          <p>
-                            <b style={{ fontSize: "13px" }}>{item.phone}</b>
-                          </p>
-                          <p />
-                        </div>
-                        <div className="pr-det">
-                          <p className="de-i"></p>
-                          <p
-                            style={{
-                              marginLeft: "40px",
-                              marginRight: "25%",
-                              fontSize: "13px",
-                            }}
-                          >
-                            <img
-                              src={msg}
-                              style={{ width: 18, marginRight: 9 }}
-                            />
-                            Correo
-                          </p>
-                          <p>
-                            <b style={{ fontSize: "13px" }}>
-                              {propertyData?.Customer.email}
-                            </b>
-                          </p>
-                          <p />
-                        </div>
-                        <div className="pr-det">
-                          <p className="de-i"></p>
-                          <p
-                            style={{
-                              marginLeft: "40px",
-                              marginRight: "17%",
-                              fontSize: "13px",
-                            }}
-                          >
-                            <img
-                              src={global}
-                              style={{ width: 18, marginRight: 9 }}
-                            />
-                            Página web
-                          </p>
-                          <p>
-                            <b style={{ fontSize: "13px" }}>{item.website}</b>
-                          </p>
-                          <p />
-                        </div>
-                      </div> */}
                     </div>
                   ))}
 
@@ -1874,18 +1713,6 @@ const PropertyDetils = () => {
                               <option>Otro</option>
                             </select>
                           </div>
-                          {/* <div className="form-group mt-3">
-                            <textarea
-                              className="form-control"
-                              rows={5}
-                              id="comment"
-                              name="message"
-                              value={msgSendDAta.message}
-                              onChange={handelRequestInputChange}
-                              placeholder="Estoy buscando en Hauzzi y me gustaría recibir más información sobre el inmueble con referencia"
-                              required
-                            />
-                          </div> */}
                           <div className="checkbox mt-3 mb-3">
                             <label>
                               <input type="checkbox" defaultValue="" /> Quiero
@@ -1893,8 +1720,6 @@ const PropertyDetils = () => {
                             </label>
                           </div>
                           <div className="text-center mb-4">
-                            {/* <Link class="btn-getstarted agendar-tour" to="#">
-            Agendar tour </Link> */}
                             <button
                               type="submit"
                               className="btn btn-warning"
@@ -1974,18 +1799,24 @@ const PropertyDetils = () => {
                           }}
                         >
                           <div className="thumb">
-                            {/* <img
-                              className="img-whp"
-                              src={e.images[0]}
-                              alt="property"
-                            /> */}
+                            <div className="swiper-button-prev custom-pre bg-transparent">
+                                  {" "}
+                                  <i className="fa fa-chevron-left"></i>{" "}
+                                </div>
+                                <div className="swiper-button-next custom-nex bg-transparent">
+                                  <i className="fa fa-chevron-right"></i>
+                                </div>
                             <Swiper
-                              modules={[Autoplay, Pagination]}
-                              autoplay={{
-                                delay: 3000,
-                                disableOnInteraction: false,
-                              }}
+                              modules={[Autoplay, Pagination, Navigation]}
+                              // autoplay={{
+                              //   delay: 3000,
+                              //   disableOnInteraction: false,
+                              // }}
                               pagination={{ clickable: true }}
+                              navigation={{
+                                    nextEl: ".custom-nex",
+                                    prevEl: ".custom-pre",
+                                  }}
                               loop={true}
                               className="mySwiper"
                             >

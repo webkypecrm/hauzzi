@@ -453,15 +453,15 @@ ul.pagination .page-item a {
 
 .swiper-button-prev,
 .swiper-button-next {
-  /* position: absolute;
+  position: absolute;
   top: 50%;
-  background-color: var(--primary-color); */
-  color: #000!important;
+  background-color: var(--primary-color);
+  /* color: #000!important; */
   margin: 0 !important;
   transition: all 0.3s ease-in-out!important;
 }
 .swiper-button-prev {
-  right: 115px!important;
+  /* right: 115px!important; */
   left: auto!important;
 }
 .swiper-button-prev:after,
@@ -474,13 +474,14 @@ ul.pagination .page-item a {
 .swiper-button-prev,
 .swiper-button-next {
   position: absolute!important;
-  top: 0!important;
+  top: 42%!important;
   width: auto!important;
   transform: translateY(0)!important;
-  background: var(--primary-color)!important;
+  background: transparent!important;
   padding: 4px 12px !important;
   border-radius: 4px !important;
   height: 35px!important;
+  color: white!important;
 }
 #swiper1 .swiper-wrapper {
   margin-top: 5%;
