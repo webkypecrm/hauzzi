@@ -17,9 +17,9 @@ import twitter from "../../assets/img/twitter.png";
 import getApi from "../../Hook.js";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-// import 'swiper/css';
+import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Autoplay, Pagination } from "swiper/modules";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { toast } from "react-toastify";
 
 const Main = () => {
@@ -69,10 +69,10 @@ const Main = () => {
     }
   };
 
-  console.log(
-    "firstmainDATA",
-    mainData
-  );
+  // console.log(
+  //   "firstmainDATA",
+  //   mainData
+  // );
 
   const handleLookingForChange = (e) => {
     const selectedText = e.target.options[e.target.selectedIndex].text.trim();
@@ -181,10 +181,10 @@ const Main = () => {
   }, [customerId, token2]);
 
   const handelWishlist = async (id) => {
-      if (!token2) {
-    toast.error("Please login first!");
-    return;
-  }
+    if (!token2) {
+      toast.error("Please login first!");
+      return;
+    }
     try {
       const response = await axios.get(
         `${apiUrl}/property/addToWishlist/${customerId}-${id}`,
@@ -230,14 +230,11 @@ const Main = () => {
     }
   };
 
-  // useEffect(() => {
-  //   getFolderData();
-  // }, []);
   useEffect(() => {
-  if (!token2 || !customerId) return;
+    if (!token2 || !customerId) return;
 
-  getFolderData();
-}, [token2, customerId]);
+    getFolderData();
+  }, [token2, customerId]);
 
   // property add in folder
   useEffect(() => {
@@ -275,9 +272,9 @@ const Main = () => {
 
   const handleAddFolder = async (pid) => {
     if (!token2) {
-    toast.error("Please login first!");
-    return;
-  }
+      toast.error("Please login first!");
+      return;
+    }
     try {
       const response = await axios.post(
         `${apiUrl}/property/addpropertyFolderData`,
@@ -626,19 +623,26 @@ const Main = () => {
                               }}
                             >
                               <div className="thumb">
-                                {/* <img
-                                  className="img-whp"
-                                  src={e.images[0]}
-                                  alt="property"
-                                /> */}
+                                <div className="swiper-button-prev custom-pre bg-transparent">
+                                  {" "}
+                                  <i className="fa fa-chevron-left"></i>{" "}
+                                </div>
+                                <div className="swiper-button-next custom-nex bg-transparent">
+                                  <i className="fa fa-chevron-right"></i>
+                                </div>
 
                                 <Swiper
-                                  modules={[Autoplay, Pagination]}
-                                  autoplay={{
-                                    delay: 3000,
-                                    disableOnInteraction: false,
-                                  }}
+                                  modules={[Autoplay, Pagination, Navigation]}
+                                  // autoplay={{
+                                  //   delay: 3000,
+                                  //   disableOnInteraction: false,
+                                  // }}
                                   pagination={{ clickable: true }}
+                                  // navigation={true}
+                                  navigation={{
+                                    nextEl: ".custom-nex",
+                                    prevEl: ".custom-pre",
+                                  }}
                                   loop={true}
                                   className="mySwiper"
                                 >
@@ -663,7 +667,9 @@ const Main = () => {
                                         className="list-inline-item"
                                         style={{ backgroundColor: "#FFBD59" }}
                                       >
-                                        <span style={{ color: "black" }}>{e.purpose}</span>
+                                        <span style={{ color: "black" }}>
+                                          {e.purpose}
+                                        </span>
                                       </li>
                                     )}
 
@@ -808,7 +814,9 @@ const Main = () => {
                                     <h4 className="line-clamp-2">{e.name}</h4>
                                     <span className="fp_price">
                                       $
-                                      {Number(e.maxPrice ? e.maxPrice : e.rentalPrice).toLocaleString("de-DE")}
+                                      {Number(
+                                        e.maxPrice ? e.maxPrice : e.rentalPrice
+                                      ).toLocaleString("de-DE")}
                                     </span>
                                   </div>
                                   <p className="line-clamp-1">
@@ -1109,7 +1117,7 @@ const Main = () => {
                           <div className="tc_content">
                             <Link to="#">
                               <div className="title-price">
-                                <h4>Si eres profesional</h4>
+                                <h4 style={{fontFamily:"Montserrat"}}>Si eres profesional</h4>
                               </div>
                               <p
                                 style={{
@@ -1159,7 +1167,7 @@ const Main = () => {
                           <div className="tc_content">
                             <Link to="#">
                               <div className="title-price">
-                                <h4>Si eres particular</h4>
+                                <h4 style={{fontFamily:"Montserrat"}}>Si eres particular</h4>
                               </div>
                               <p
                                 style={{
@@ -1230,13 +1238,13 @@ const Main = () => {
                                     <span>Bienes raíces</span>
                                   </p>
                                   <div className="title-price">
-                                    <h4 className="line-clamp-2">
+                                    <h4 className="line-clamp-2" style={{fontFamily:"Montserrat"}}>
                                       {blog.title}
                                     </h4>
                                   </div>
                                   <h5
                                     className="mt-2"
-                                    style={{ color: "#FFBD59", fontSize: 18 }}
+                                    style={{ color: "#FFBD59", fontSize: 18,fontFamily:"Montserrat" }}
                                   >
                                     Seguir leyendo{" "}
                                     <i
@@ -1327,18 +1335,18 @@ const Main = () => {
                       data-aos="fade-up"
                       data-aos-delay={200}
                     >
-                      <h2 className="about-title">
+                      <h2 className="about-title" style={{fontFamily:"Montserrat"}}>
                         Descubre propiedades a un clic con nuestra app
                         inmobiliaria
                       </h2>
-                      <p className="about-description">
+                      <p className="about-description" style={{fontFamily:"Montserrat"}}>
                         &nbsp;La app que te acompaña en cada paso para vender o
                         encontrar tu propiedad
                       </p>
                       <div className="row feature-list-wrapper">
                         <div className="col-md-6">
                           <ul className="feature-list">
-                            <li>
+                            <li >
                               <img
                                 src="img/my-img/list3.png"
                                 width="6%"
@@ -1427,12 +1435,12 @@ const Main = () => {
                 {/* Section Title */}
                 <div
                   className="container section-title aos-init aos-animate"
-                  data-aos="fade-up"
+                  data-aos="fade-up" 
                 >
-                  <h2 className="mb-0">
+                  <h2 className="mb-0" style={{fontFamily:"Montserrat"}}>
                     ¿Todavía tienes dudas? Encuentra lo que estás buscando
                   </h2>
-                  <h4 className="mb-4">
+                  <h4 className="mb-4" style={{fontFamily:"Montserrat"}}>
                     Explora miles de propiedades y encuentra tu lugar ideal.
                   </h4>
                 </div>
@@ -1443,9 +1451,9 @@ const Main = () => {
                       <div className="instructor__item-two tg-svg d-flex justify-content-between imutable">
                         <div className="instructor__content-two">
                           <h3 className="title">
-                            <Link to="#">Inmuebles en venta</Link>
+                            <Link to="#" style={{fontFamily:"Montserrat"}}>Inmuebles en venta</Link>
                           </h3>
-                          <p className="mt-3 mb-5" style={{ color: "#1A1A1A" }}>
+                          <p className="mt-3 mb-5" style={{ color: "#1A1A1A",fontFamily:"Montserrat" }}>
                             Encuentra casas en venta, apartamentos, locales y
                             mucho más en Hauzzi. Utiliza nuestros filtros y
                             alertas para estar al día de todas las novedades.
@@ -1453,7 +1461,7 @@ const Main = () => {
                           <Link
                             className="btn-getstarted mt-3"
                             to={`/propertysell?purpose=wantToSell&type=&category=&search=`}
-                            style={{ padding: 16, margin: 0 }}
+                            style={{ padding: 16, margin: 0, fontFamily:"Montserrat" }}
                           >
                             Ver inmuebles a la venta{" "}
                             <i
@@ -1478,9 +1486,9 @@ const Main = () => {
                       <div className="instructor__item-two tg-svg d-flex justify-content-between imutable">
                         <div className="instructor__content-two">
                           <h3 className="title">
-                            <Link to="#">Inmuebles en alquiler</Link>
+                            <Link to="#" style={{fontFamily:"Montserrat"}}>Inmuebles en alquiler</Link>
                           </h3>
-                          <p className="mt-3 mb-5" style={{ color: "#1A1A1A" }}>
+                          <p className="mt-3 mb-5" style={{ color: "#1A1A1A",fontFamily:"Montserrat" }}>
                             Descubre los mejores apartamentos en alquiler en
                             cada ciudad. Filtra por precio, número de
                             habitaciones o baños y contacta fácilmente con el
@@ -1489,7 +1497,7 @@ const Main = () => {
                           <Link
                             className="btn-getstarted mt-3"
                             to={`/propertysell?purpose=wantToRent&type=&category=&search=`}
-                            style={{ padding: 16, margin: 0 }}
+                            style={{ padding: 16, margin: 0,fontFamily:"Montserrat" }}
                           >
                             Ver inmubles en alquiler{" "}
                             <i

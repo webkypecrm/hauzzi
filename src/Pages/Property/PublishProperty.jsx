@@ -86,7 +86,6 @@ const PublishProperty = () => {
   };
 
   // Type of property GET
-
   const getPropertyTypes = async () => {
     setLoading(true);
     try {
@@ -1106,7 +1105,7 @@ const PublishProperty = () => {
                       onChange={handleInputChange}
                     />
                   </div>
-                  <div className="col-md-4">
+                  {/* <div className="col-md-4">
                     <label className="form-label">País</label>
                     <select
                       className="form-select"
@@ -1117,7 +1116,7 @@ const PublishProperty = () => {
                           ...propertyData,
                           country: e.target.value,
                         });
-                        handleCountryChange(e); // Also load states
+                        handleCountryChange(e);
                       }}
                     >
                       <option value="">Seleccionar</option>
@@ -1127,7 +1126,7 @@ const PublishProperty = () => {
                         </option>
                       ))}
                     </select>
-                  </div>
+                  </div> */}
                   <div className="col-md-4">
                     <label className="form-label">Estado</label>
 
